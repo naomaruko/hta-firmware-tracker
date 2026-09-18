@@ -16,10 +16,11 @@ audio gear, so nobody has to manually check manufacturer sites.
   locally) and highlights anything whose version changed since the last
   check.
 - Dashboard grouped by manufacturer, with status badges (Up to date / Update
-  available / Manual check / Check failed), a "Log" button for manually-
-  checked items, and an "Acknowledge" button to clear an update flag once
-  you've dealt with it. Installable as a PWA on a phone (Add to Home Screen)
-  for a full-screen, app-like view.
+  available / Manual check / Check failed). A row with a new version gets a
+  soft amber highlight in place (it isn't reordered) that clears itself
+  automatically 2 weeks after the change was first detected — no one needs
+  to click anything to dismiss it. Installable as a PWA on a phone (Add to
+  Home Screen) for a full-screen, app-like view.
 
 ## Quick start
 
@@ -82,12 +83,10 @@ app — there's no server running continuously anywhere. Instead:
 - **Vercel** serves the `public/` directory as-is (see `vercel.json`) — no
   build step, no server, just static files. Importing this repo into Vercel
   needs no extra configuration.
-- Because the deployed site has no backend, **"Log" and "Acknowledge" are
-  read-only there** — the published dashboard is a live status *display*.
-  Those two buttons still work exactly as before when someone runs the app
-  locally (`start.command`); commit and push the resulting
-  `data/equipment.json` (and re-run `scripts/build_static.py`) to reflect a
-  manual change on the live site before the next scheduled run picks it up.
+- The dashboard has no interactive controls that write anything (no manual
+  "Log" or "Acknowledge" buttons) — it's a pure status *display*, matching
+  what a backend-less static site can actually support. Update flags clear
+  themselves automatically instead (see below).
 - `data/tracker.db` (SQLite) is still what the local interactive app uses
   day-to-day and is gitignored, same as always - it's not part of the
   deployment at all.
@@ -101,26 +100,39 @@ while your laptop has it open. The deployed site doesn't have this
 limitation, since GitHub Actions runs the check regardless of whether
 anyone's computer is on.
 
-When a version changes, the item flips to an "Update available" badge and
-stays that way (even across further checks) until someone clicks
-"Acknowledge" — so a change can't get silently missed between visits.
+When a version changes, the item gets an "Update available" badge and an
+amber row highlight, in its normal position - it isn't moved to the top.
+Both clear themselves automatically 2 weeks after the change was *first*
+detected (`Equipment.last_changed_at`, see `app/runner.py`'s
+`UPDATE_HIGHLIGHT_WINDOW`) - re-confirming the same pending version on later
+daily checks doesn't restart that clock, only a genuinely new version change
+does. No manual acknowledgment involved anywhere.
 
 ## Project layout
 
 ```
 app/
-  main.py           FastAPI routes + dashboard
-  models.py         Equipment / CheckLog tables (SQLAlchemy)
-  runner.py         Runs checkers, diffs versions, writes history
-  scheduler.py       Background interval job
-  seed.py            The 47-item equipment list + which checker covers each
+  main.py            FastAPI routes + dashboard
+  dashboard_data.py  Grouping/sorting/summary logic shared by the live app
+                     and the static-site builder
+  models.py          Equipment / CheckLog tables (SQLAlchemy)
+  runner.py          Runs checkers, diffs versions, writes history,
+                     auto-expires update flags after UPDATE_HIGHLIGHT_WINDOW
+  scheduler.py       Background interval job (local interactive use only)
+  seed.py            The 43-item equipment list + which checker covers each
+  export.py          Equipment <-> data/equipment.json round-trip, used by
+                     the CI pipeline
   checkers/
-    digico.py, yamaha.py, waves.py, shure.py, ssl.py   Static-page scrapers
+    digico.py, yamaha.py, shure.py, ssl.py             Static-page scrapers
     allenheath.py, dante.py, dbaudio.py                Headless-browser scrapers
     browser_base.py    Shared Playwright helper
     registry.py         Routes a checker_key to its module
   templates/, static/  Dashboard UI
-data/tracker.db      SQLite database (created on first run)
+scripts/
+  ci_check.py        Entry point for the daily GitHub Actions run
+  build_static.py    Renders the dashboard to public/ for Vercel
+data/tracker.db      SQLite database (created on first run, local dev only)
+data/equipment.json  Git-committed source of truth for the deployed site
 ```
 
 ## Adding equipment

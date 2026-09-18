@@ -5,8 +5,6 @@ can never drift apart - there's exactly one place this grouping/sorting logic
 lives.
 """
 
-STATUS_ORDER = {"update_detected": 0, "error": 1, "manual": 2, "unchecked": 3, "ok": 4}
-
 # Sub-category display order within a manufacturer's section. Categories not
 # listed here (or None, for manufacturers with no sub-grouping) sort last,
 # in the order encountered.
@@ -24,15 +22,17 @@ CATEGORY_ORDER = [
 def build_dashboard_context(items):
     # manufacturer -> category -> [items]. category is None for manufacturers
     # that don't use sub-grouping (the template renders those as a flat list,
-    # no sub-heading).
+    # no sub-heading). Items keep the order they arrived in (alphabetical by
+    # model, per the callers' query order) rather than being reordered by
+    # status - an update-available row is highlighted in place instead of
+    # jumping to the top, so a row's position never shifts as its status
+    # changes.
     by_manufacturer = {}
     for item in items:
         cats = by_manufacturer.setdefault(item.manufacturer, {})
         cats.setdefault(item.category, []).append(item)
 
     for manufacturer, cats in by_manufacturer.items():
-        for group in cats.values():
-            group.sort(key=lambda i: STATUS_ORDER.get(i.status, 9))
         by_manufacturer[manufacturer] = dict(
             sorted(
                 cats.items(),

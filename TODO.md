@@ -11,6 +11,9 @@ Already done:
   GitHub Actions workflow runs the checkers and commits the results, Vercel
   serves the published `public/` output, and it's installable as a PWA on a
   phone (Add to Home Screen, full-screen app-like view).
+- Removed the manual "Log"/"Acknowledge" buttons entirely - update flags
+  (amber row highlight + badge) now clear themselves automatically 2 weeks
+  after first being detected, with no one needing to click anything.
 
 ## 1. Slack integration
 
@@ -27,8 +30,6 @@ using it regularly, worth pointing a friendlier name (e.g.
 `firmware.hta.com`) at the Vercel deployment instead of the generated
 `*.vercel.app` address.
 
-**Interactive Log/Acknowledge on the live site.** Right now those only work
-when running the app locally (see README) - the published site is read-only
-by design, to keep it a free static deploy with no hosted backend/database.
-If that tradeoff stops being worth it, revisit adding a small backend with
-persistent storage.
+**A different highlight window than 2 weeks.** Currently a hardcoded
+constant (`UPDATE_HIGHLIGHT_WINDOW` in `app/runner.py`) - trivial to change
+if 2 weeks turns out to be too short/long in practice.

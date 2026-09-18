@@ -69,13 +69,6 @@ function applyFilters() {
       const errorRow = group.querySelector(`tr.error-row[data-parent-id="${row.dataset.id}"]`);
       if (errorRow) errorRow.classList.toggle("is-hidden", !visible);
 
-      // The log-check form should never be left open behind a filtered-out
-      // row - force it closed rather than leaving it visibly orphaned.
-      if (!visible) {
-        const formRow = group.querySelector(`tr.manual-form-row[data-parent-id="${row.dataset.id}"]`);
-        if (formRow) formRow.classList.add("is-hidden");
-      }
-
       if (visible) {
         groupHasVisible = true;
         visibleCount++;
@@ -130,71 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  document.querySelectorAll(".ack-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      btn.disabled = true;
-      try {
-        await postJSON(`/api/acknowledge/${btn.dataset.id}`);
-        window.location.reload();
-      } catch (e) {
-        btn.disabled = false;
-        alert("Failed: " + e);
-      }
-    });
-  });
-
-  document.querySelectorAll(".log-check-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const formRow = document.querySelector(`tr.manual-form-row[data-parent-id="${btn.dataset.id}"]`);
-      if (!formRow) return;
-      const opening = formRow.classList.contains("is-hidden");
-      // Only one log-check form open at a time, to avoid a page full of them.
-      document.querySelectorAll("tr.manual-form-row").forEach((r) => r.classList.add("is-hidden"));
-      if (opening) {
-        formRow.classList.remove("is-hidden");
-        formRow.querySelector(".manual-version-input")?.focus();
-      }
-    });
-  });
-
-  document.querySelectorAll(".manual-cancel-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelector(`tr.manual-form-row[data-parent-id="${btn.dataset.id}"]`)?.classList.add("is-hidden");
-    });
-  });
-
-  document.querySelectorAll(".manual-save-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const formRow = document.querySelector(`tr.manual-form-row[data-parent-id="${btn.dataset.id}"]`);
-      if (!formRow) return;
-      const version = formRow.querySelector(".manual-version-input").value.trim();
-      const releaseDate = formRow.querySelector(".manual-date-input").value.trim();
-      const errorEl = formRow.querySelector(".manual-form-error");
-      errorEl.hidden = true;
-
-      if (!version) {
-        errorEl.textContent = "Version is required.";
-        errorEl.hidden = false;
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = "Saving…";
-      try {
-        await postJSON(`/api/manual-check/${btn.dataset.id}`, {
-          version,
-          release_date: releaseDate || null,
-        });
-        window.location.reload();
-      } catch (e) {
-        btn.disabled = false;
-        btn.textContent = "Save";
-        errorEl.textContent = e.message || "Save failed.";
-        errorEl.hidden = false;
-      }
-    });
-  });
-
   const searchInput = document.getElementById("search-input");
   if (searchInput) {
     searchInput.addEventListener("input", applyFilters);
@@ -208,9 +136,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // "Updates found" KPI card: click through to just the rows with a
-  // pending Acknowledge button, by reusing the existing filter-chip logic
-  // rather than duplicating it.
+  // "Updates found" KPI card: click through to just the currently-flagged
+  // rows, by reusing the existing filter-chip logic rather than duplicating
+  // it.
   const updatesKpi = document.getElementById("updates-kpi");
   if (updatesKpi) {
     const jumpToUpdates = () => {

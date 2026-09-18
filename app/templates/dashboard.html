@@ -62,7 +62,7 @@
       Updates found
       <span class="info-wrap">
         <button type="button" class="info-icon" aria-expanded="false" aria-label="What does 'update found' mean?">ⓘ</button>
-        <div class="info-popover" role="tooltip" hidden>A newer firmware/software version was found for these items. Update the physical device first, then use its Acknowledge button to clear this alert - the previous version stays listed for reference.</div>
+        <div class="info-popover" role="tooltip" hidden>A newer firmware/software version was found for these items. The highlight clears automatically 2 weeks after it was first detected - no action needed, unless a further version change resets the clock.</div>
       </span>
     </span>
   </div>
@@ -115,14 +115,12 @@
         <th>Previous</th>
         <th>Last checked</th>
         <th class="source-col">Source</th>
-        <th class="action-col-log"></th>
-        <th class="action-col-ack"></th>
       </tr>
     </thead>
     <tbody>
       {% for category, items in categories.items() %}
       {% if category %}
-      <tr class="category-row" data-category="{{ category }}"><td colspan="9">{{ category }}</td></tr>
+      <tr class="category-row" data-category="{{ category }}"><td colspan="7">{{ category }}</td></tr>
       {% endif %}
       {% for item in items %}
       <tr data-id="{{ item.id }}"
@@ -159,36 +157,9 @@
             </svg>
           </a>{% else %}—{% endif %}
         </td>
-        <td class="action-col-log">
-          {% if interactive and item.check_method == 'manual' %}
-            <button class="btn btn-small log-check-btn" data-id="{{ item.id }}">Log</button>
-          {% endif %}
-        </td>
-        <td class="action-col-ack">
-          {% if interactive and item.status == 'update_detected' %}
-            <button class="btn btn-small ack-btn" data-id="{{ item.id }}">Acknowledge</button>
-          {% endif %}
-        </td>
       </tr>
       {% if item.last_error %}
-      <tr class="error-row" data-parent-id="{{ item.id }}"><td colspan="9">⚠ {{ item.last_error }}</td></tr>
-      {% endif %}
-      {% if interactive and item.check_method == 'manual' %}
-      <tr class="manual-form-row is-hidden" data-parent-id="{{ item.id }}">
-        <td colspan="9">
-          <div class="manual-form">
-            <label>Version found
-              <input type="text" class="manual-version-input" placeholder="e.g. 1.5.4" value="{{ item.current_version or '' }}">
-            </label>
-            <label>Release date <span class="muted">(optional)</span>
-              <input type="text" class="manual-date-input" placeholder="e.g. March 27, 2026" value="{{ item.release_date or '' }}">
-            </label>
-            <button class="btn btn-small btn-primary manual-save-btn" data-id="{{ item.id }}">Save</button>
-            <button class="btn btn-small manual-cancel-btn" data-id="{{ item.id }}">Cancel</button>
-            <span class="manual-form-error" hidden></span>
-          </div>
-        </td>
-      </tr>
+      <tr class="error-row" data-parent-id="{{ item.id }}"><td colspan="7">⚠ {{ item.last_error }}</td></tr>
       {% endif %}
       {% endfor %}
       {% endfor %}

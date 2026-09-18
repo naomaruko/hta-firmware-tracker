@@ -422,15 +422,10 @@ td.release-date-cell { white-space: nowrap; }
    has little competing for width elsewhere and this column stretched out
    wide, while a long-named one (Shure) never had that problem. */
 /* Every table uses table-layout:fixed with explicit widths for every
-   column - including Shure. Auto-layout (which Shure used to keep, so its
-   Model column could size to its own long names) turned out unreliable in
-   practice: when a whole column is empty on every single row (true for
-   Shure's Log/Acknowledge right now - none of its items currently need
-   either button), some browsers just discard the declared width for that
-   column entirely rather than honoring it as a minimum, which threw off
-   where the sticky columns actually landed and caused them to overlap
-   "Last checked" instead of sitting past "Source". Fixed-layout widths are
-   authoritative regardless of content, so this can't recur.
+   column - including Shure, which otherwise (auto-layout, sizing Model to
+   its own long names) turned out unreliable in practice under a mix of
+   empty and full columns. Fixed-layout widths are authoritative regardless
+   of content.
 
    Shure still isn't aligned with the other sections - it gets its own,
    separately-declared, wider Model column below - only the *mechanism*
@@ -451,24 +446,20 @@ th:nth-child(6), td:nth-child(6) { width: 160px; }
    container is narrower than that, the table grows past 100% and scrolls
    rather than any column being squeezed (which is what caused the header
    overlap bug earlier). */
-.manufacturer-group:not([data-manufacturer="shure"]) table { min-width: 1130px; }
+.manufacturer-group:not([data-manufacturer="shure"]) table { min-width: 936px; }
 .manufacturer-group:not([data-manufacturer="shure"]) th:first-child,
 .manufacturer-group:not([data-manufacturer="shure"]) td:first-child { width: auto; }
 
-.manufacturer-group[data-manufacturer="shure"] table { min-width: 1404px; }
+.manufacturer-group[data-manufacturer="shure"] table { min-width: 1210px; }
 .manufacturer-group[data-manufacturer="shure"] th:first-child,
 .manufacturer-group[data-manufacturer="shure"] td:first-child { width: 480px; }
 
 /* Model stays visible while a wide table scrolls horizontally - it's the
    one column every row's identity depends on, so losing sight of it while
-   scrolled right makes a row unreadable. Safe to pin here, unlike the
-   Log/Acknowledge sticky columns removed earlier: this is a single column
-   (no second sticky cell to keep from overlapping), and it always has real
-   content on every row (can't hit the empty-column-width-discarded bug
-   those two ran into under table-layout:fixed). Uses a dedicated class
-   rather than :first-child so it can't accidentally catch the colspan
-   divider/error/manual-form rows, which already rely on :first-child for
-   their own (unrelated) left-alignment. */
+   scrolled right makes a row unreadable. Uses a dedicated class rather than
+   :first-child so it can't accidentally catch the colspan divider/error
+   rows, which already rely on :first-child for their own (unrelated)
+   left-alignment. */
 .model-col {
   position: sticky;
   left: 0;
@@ -476,18 +467,15 @@ th:nth-child(6), td:nth-child(6) { width: 160px; }
   background: var(--surface);
 }
 
-/* Log/Acknowledge: plain trailing columns. These used to be position:sticky
-   (pinned to the right edge of the table so they stayed visible while
-   scrolled), but that caused more problems than it solved - a table-layout
-   bug where an entirely-empty column's declared width got discarded by the
-   browser, and a few px of unexplained overlap between the two pinned
-   cells, both requiring fragile buffer/workaround values to fix. Most rows
-   don't have a button in either column anyway, so the "always visible"
-   benefit was small next to that fragility. Plain columns render
-   predictably; the tradeoff is you scroll to see them on a wide table,
-   same as any other column past the fold. */
-.action-col-ack { width: 130px; }
-.action-col-log { width: 64px; }
+/* Update-detected rows are highlighted in place (not reordered to the top)
+   with a soft amber tint down the whole row, including the frozen Model
+   column while scrolled - the Status badge already flags it, this makes it
+   visible at a glance across the row too. Cleared automatically once
+   UPDATE_HIGHLIGHT_WINDOW elapses since the update was first detected (see
+   app/runner.py) - no manual acknowledgment involved. */
+tr.row-update_detected td {
+  background: var(--warning-bg);
+}
 
 .source-link {
   /* Deliberately quiet, not brand-colored - a link in every row would turn
@@ -541,38 +529,6 @@ th:nth-child(6), td:nth-child(6) { width: 160px; }
   text-transform: uppercase;
   letter-spacing: 0.03em;
   vertical-align: middle;
-}
-
-.manual-form-row td { background: var(--page-plane); padding: 14px; }
-.manual-form {
-  display: flex;
-  align-items: flex-end;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-.manual-form label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.76rem;
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-.manual-form input {
-  padding: 7px 10px;
-  border-radius: 7px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  font-family: inherit;
-  font-size: 0.85rem;
-  min-width: 180px;
-}
-.manual-form input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-.manual-form-error {
-  color: var(--critical);
-  font-size: 0.78rem;
-  font-weight: 600;
 }
 
 @media (max-width: 720px) {

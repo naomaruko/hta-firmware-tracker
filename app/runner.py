@@ -5,11 +5,18 @@ from collections import defaultdict
 
 from sqlalchemy.orm import Session
 
-from app.checkers.base import CheckResult
 from app.checkers.registry import module_for
 from app.models import CheckLog, Equipment
 
 logger = logging.getLogger("firmware_tracker.runner")
+
+# How long a genuinely new version stays flagged "Update available" (amber
+# row + badge) before it automatically reverts to "ok" with no one needing
+# to do anything. Re-confirming the *same* pending version on a later check
+# does not restart this clock - only a fresh version change (current_version
+# actually changing again) does, since that's the only thing that sets
+# last_changed_at.
+UPDATE_HIGHLIGHT_WINDOW = dt.timedelta(days=14)
 
 
 def _apply_result(db: Session, item: Equipment, result):
@@ -47,10 +54,11 @@ def _apply_result(db: Session, item: Equipment, result):
             result.version,
         )
     elif item.status == "update_detected" and result.version == item.current_version:
-        # Someone acknowledged it (or nothing new since) - keep as-is unless
-        # explicitly cleared elsewhere. We leave update_detected sticky until
-        # a human clears it via the dashboard, so it doesn't get silently lost.
-        pass
+        # Same pending version reconfirmed, not a new change - last_changed_at
+        # stays untouched. Auto-clear once the highlight window has elapsed
+        # since it was *first* detected; otherwise stay flagged.
+        if item.last_changed_at and now - item.last_changed_at >= UPDATE_HIGHLIGHT_WINDOW:
+            item.status = "ok"
     else:
         item.status = "ok"
 
@@ -104,41 +112,3 @@ def check_equipment(db: Session, equipment_items):
 def check_all(db: Session):
     items = db.query(Equipment).all()
     return check_equipment(db, items)
-
-
-def clear_update_flag(db: Session, equipment_id: int):
-    item = db.query(Equipment).get(equipment_id)
-    if item and item.status == "update_detected":
-        item.status = "ok"
-        # previous_version is deliberately left in place - it's useful history
-        # ("this went from V21 to V22"), not just an alert-pending marker. The
-        # "Up to date" badge already makes clear nothing is pending; the next
-        # real version change will naturally overwrite this when it happens.
-        db.commit()
-    return item
-
-
-def record_manual_check(db: Session, equipment_id: int, version: str, release_date: str = None):
-    """A human checked a manual-only item themselves and is logging what they
-    found. Goes through the exact same _apply_result logic an automated
-    checker's result would - so a manually-logged version change gets the
-    same "sticky until Acknowledged" treatment as a scraped one, and shows up
-    in the same version history.
-    """
-    item = db.query(Equipment).get(equipment_id)
-    if not item:
-        return None
-    if item.check_method != "manual":
-        raise ValueError("This item is auto-checked - only manual-check items can be logged by hand")
-    if not version or not version.strip():
-        raise ValueError("Version is required")
-
-    result = CheckResult(
-        version=version.strip(),
-        success=True,
-        source_url=item.source_url,
-        release_date=release_date.strip() if release_date and release_date.strip() else None,
-    )
-    _apply_result(db, item, result)
-    db.commit()
-    return item
