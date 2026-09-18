@@ -5,19 +5,21 @@ audio gear, so nobody has to manually check manufacturer sites.
 
 ## What it does
 
-- Tracks 47 pieces of equipment across DiGiCo, Yamaha, Solid State Logic,
-  Allen & Heath, Shure, d&b audiotechnik, Dante/Audinate, and Waves.
-- **43 items are checked automatically** — most by scraping a static page,
-  four manufacturers (SSL, Allen & Heath, d&b, Dante) via a real headless
-  browser where the site needs JavaScript or blocks plain requests.
-- **4 items are flagged "Manual check"** with a direct link to where to look,
-  because no version page/API could be found for them at all (see
+- Tracks 43 pieces of equipment across DiGiCo, Yamaha, Solid State Logic,
+  Allen & Heath, Shure, d&b audiotechnik, and Dante/Audinate.
+- **All 43 items are checked automatically** — most by scraping a static
+  page, several manufacturers via a real headless browser where the site
+  needs JavaScript or blocks plain requests (see
   [What's automatic vs. manual](#whats-automatic-vs-manual)).
-- Runs a background job that re-checks everything on an interval (default
-  24h) and highlights anything whose version changed since the last check.
+- Re-checks everything once a day (via a scheduled GitHub Actions workflow -
+  see [Deployment](#deployment) - or via a background job if you run it
+  locally) and highlights anything whose version changed since the last
+  check.
 - Dashboard grouped by manufacturer, with status badges (Up to date / Update
-  available / Manual check / Check failed), per-item "Check" button, and an
-  "Acknowledge" button to clear an update flag once you've dealt with it.
+  available / Manual check / Check failed), a "Log" button for manually-
+  checked items, and an "Acknowledge" button to clear an update flag once
+  you've dealt with it. Installable as a PWA on a phone (Add to Home Screen)
+  for a full-screen, app-like view.
 
 ## Quick start
 
@@ -45,11 +47,12 @@ checkers — see below.)
 | Solid State Logic | ✅ Scraped | `support.solidstatelogic.com`'s Zendesk API too; tracked via SOLSA (versions 1:1 with SSL Live console software) and the Network I/O firmware bundle |
 | Allen & Heath | ✅ Scraped (headless) | Site returns HTTP 403 to plain requests (bot protection) — works fine in a real headless browser |
 | Dante/Audinate | ✅ Scraped (headless) | The version table is inside a click-to-expand accordion, so it's not in the page until JS runs |
-| d&b audiotechnik | ✅ Scraped (headless) | Their Download Center is a JS-driven search box behind a cookie-consent overlay; D40/D90 share one firmware release. **DN1 Switch stays manual** — no firmware entry exists for it in their system at all |
-| Shure | ⚠️ Partial | Most receivers/transmitters/chargers are scraped from `shure.com`'s static firmware-archive pages |
-| Waves | ⚠️ Partial | Waves Central is scraped; **SuperRack, WSG-HY128, and Waves Plugins stay manual** — SuperRack installs through Waves Central (no standalone version page), and no dedicated page was found for the other two |
+| d&b audiotechnik | ✅ Scraped (headless) | Their Download Center is a JS-driven search box behind a cookie-consent overlay; D40/D90 share one firmware release, DN1 Switch has its own |
+| Shure | ✅ Scraped (headless) | Firmware versions come from `shure.com`'s searchable software/firmware archive listing |
 
-Every manual row on the dashboard links straight to the page to check.
+Every manufacturer is fully automated right now. If a new piece of gear gets
+added that has no scrapable version page, it'll show up here as "Manual
+check" with a direct link to where to look by hand instead.
 
 ### How the headless-browser checkers work
 
@@ -63,31 +66,40 @@ fine as part of the once-a-day background check. To add another one, copy
 the shape of `dante.py`, then register it in `app/checkers/registry.py` and
 point the relevant `app/seed.py` rows at it with `"scrape"` + a `checker_key`.
 
-## Sharing this with coworkers
+## Deployment
 
-Right now this runs as a normal FastAPI web app — anyone who can reach the
-host and port can view the dashboard, no separate frontend build needed.
-Options, roughly in order of effort:
+The published site (on Vercel) is a **static build**, not the live FastAPI
+app — there's no server running continuously anywhere. Instead:
 
-1. **Run it on a machine that's always on** (a spare Mac mini, a NAS, a
-   cheap VPS) and have coworkers hit `http://<that-machine>:8000`. This is
-   also what makes automatic checking actually automatic — see below.
-2. **Put it behind a reverse proxy with a real domain** (nginx/Caddy +
-   Tailscale or a proper DNS record) once more than a couple people are
-   using it.
-3. **Slack integration** (the current next step): the scraping/DB layer is
-   already separate from the web routes, so a Slack bot can call the same
-   `app/runner.py` functions and post to a channel when `status ==
-   "update_detected"` — no rework needed.
+- **`.github/workflows/daily-check.yml`** runs once a day (GitHub Actions
+  cron, plus a manual "Run workflow" button). It rebuilds a throwaway
+  database from `data/equipment.json`, runs every checker for real, writes
+  the results back to `data/equipment.json`, renders the dashboard to
+  `public/index.html` (`scripts/build_static.py`), and commits both back to
+  the repo — a fresh "Last checked" timestamp lands every single day, even
+  when no version actually changed, so there's always a commit to show the
+  check ran.
+- **Vercel** serves the `public/` directory as-is (see `vercel.json`) — no
+  build step, no server, just static files. Importing this repo into Vercel
+  needs no extra configuration.
+- Because the deployed site has no backend, **"Log" and "Acknowledge" are
+  read-only there** — the published dashboard is a live status *display*.
+  Those two buttons still work exactly as before when someone runs the app
+  locally (`start.command`); commit and push the resulting
+  `data/equipment.json` (and re-run `scripts/build_static.py`) to reflect a
+  manual change on the live site before the next scheduled run picks it up.
+- `data/tracker.db` (SQLite) is still what the local interactive app uses
+  day-to-day and is gitignored, same as always - it's not part of the
+  deployment at all.
 
-## Does it update automatically?
+### Local automatic checking
 
-Yes, with one caveat: the background scheduler (`app/scheduler.py`, using
-APScheduler) only runs **while the app's process is alive**. If it's just
-running on your laptop, it only checks while your laptop has it open. For
-true "set and forget" automatic checking, run it on a machine that stays on
-(see above) — then it checks every `CHECK_INTERVAL_HOURS` (default 24,
-override via env var) with no one needing to touch it.
+If you run this locally instead of relying on the deployed site, the
+background scheduler (`app/scheduler.py`, APScheduler) only runs **while the
+app's process is alive** — if it's just open on your laptop, it only checks
+while your laptop has it open. The deployed site doesn't have this
+limitation, since GitHub Actions runs the check regardless of whether
+anyone's computer is on.
 
 When a version changes, the item flips to an "Update available" badge and
 stays that way (even across further checks) until someone clicks
