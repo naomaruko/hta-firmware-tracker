@@ -76,13 +76,20 @@ def main():
     (OUT_DIR / "index.html").write_text(html)
     shutil.copytree(STATIC_SRC, OUT_DIR / "static")
 
+    # Also served at the site root (not just /static/sw.js) - a service
+    # worker's default max scope is the directory it's served from, so this
+    # is what lets app.js register it with scope "/" and actually control
+    # the dashboard page itself, not just static assets. Mirrors the /sw.js
+    # FastAPI route in app/main.py used for local dev.
+    shutil.copy(STATIC_SRC / "sw.js", OUT_DIR / "sw.js")
+
     # Bump the service worker's cache name so each deploy gets a clean cache
     # instead of a phone potentially holding onto a previous deploy's assets
     # indefinitely (see app/static/sw.js).
-    sw_path = OUT_DIR / "static" / "sw.js"
-    sw_path.write_text(
-        sw_path.read_text().replace('"hta-firmware-v1"', f'"hta-firmware-{env.globals["v"]}"')
-    )
+    for sw_path in (OUT_DIR / "sw.js", OUT_DIR / "static" / "sw.js"):
+        sw_path.write_text(
+            sw_path.read_text().replace('"hta-firmware-v1"', f'"hta-firmware-{env.globals["v"]}"')
+        )
 
     print(f"Built {OUT_DIR / 'index.html'} from {len(items)} items")
 

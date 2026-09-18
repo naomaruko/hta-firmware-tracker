@@ -1,6 +1,10 @@
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/static/sw.js").catch(() => {
+    // Registered from the root (not /static/sw.js) with an explicit scope
+    // of "/" so it can actually intercept the dashboard page itself, not
+    // just requests for static assets - a service worker's default max
+    // scope is the directory it's served from.
+    navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {
       // Installability/offline support is a nice-to-have, not load-bearing -
       // a failed registration (e.g. running over plain http in local dev)
       // shouldn't be treated as an app error.

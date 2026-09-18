@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Optional
 
 from fastapi import Depends, FastAPI, HTTPException, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -55,6 +55,15 @@ def on_startup():
 @app.on_event("shutdown")
 def on_shutdown():
     shutdown_scheduler()
+
+
+@app.get("/sw.js")
+def service_worker():
+    # Served from the root, not /static/sw.js - a service worker's default
+    # max scope is the directory it's served from, so this is what lets it
+    # register with scope "/" (covering the dashboard page itself, not just
+    # static assets) without needing a Service-Worker-Allowed header.
+    return FileResponse(APP_DIR / "static" / "sw.js", media_type="application/javascript")
 
 
 @app.get("/")
