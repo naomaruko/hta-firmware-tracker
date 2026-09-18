@@ -1,0 +1,45 @@
+name: Daily firmware check
+
+on:
+  schedule:
+    # Once every 24h. GitHub Actions cron runs in UTC and schedules can slip
+    # a few minutes under load - "once a day" is the guarantee, not an exact
+    # time of day.
+    - cron: "0 13 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Run firmware checks
+        run: python scripts/ci_check.py
+
+      - name: Build static site
+        run: python scripts/build_static.py
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/equipment.json public
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Automated firmware check $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi

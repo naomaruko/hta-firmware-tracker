@@ -1,0 +1,583 @@
+:root {
+  /* Chart chrome & ink (light) */
+  --surface: #fcfcfb;
+  --page-plane: #f9f9f7;
+  --text: #0b0b0b;
+  --text-secondary: #52514e;
+  --muted: #898781;
+  --gridline: #e1e0d9;
+  --border: rgba(11, 11, 11, 0.10);
+
+  /* Accent - Hi-Tech Audio's exact brand green (#009B67, from the logo).
+     Dark text reads far better on top of it than white (5.5:1 vs 3.6:1
+     contrast), so that's used for on-accent labels instead of white. Kept
+     for real brand moments (primary button, coverage meter, active filter) -
+     not applied to every link, so it doesn't turn into visual noise. */
+  --accent: #009B67;
+  --accent-text: #0b0b0b;
+  --accent-track: #cdeee1;
+
+  /* Status palette (fixed, never themed) */
+  --good: #0ca30c;
+  --good-bg: #e5f6e5;
+  --warning: #fab219;
+  --warning-text: #8a5b00;
+  --warning-bg: #fdf1d9;
+  --serious: #ec835a;
+  --serious-text: #a8431f;
+  --serious-bg: #fce6dc;
+  --critical: #d03b3b;
+  --critical-bg: #fbe4e4;
+
+  /* Non-status categories (manual / neutral - not health severities) */
+  --manual: #5b4fc4;
+  --manual-bg: #ece9fb;
+  --neutral: #6b6b74;
+  --neutral-bg: #ececee;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #1a1a19;
+    --page-plane: #0d0d0d;
+    --text: #ffffff;
+    --text-secondary: #c3c2b7;
+    --muted: #898781;
+    --gridline: #2c2c2a;
+    --border: rgba(255, 255, 255, 0.10);
+
+    --accent: #009B67;
+    --accent-text: #0b0b0b;
+    --accent-track: rgba(0, 155, 103, 0.28);
+
+    --good: #0ca30c;
+    --good-bg: #103410;
+    --warning: #fab219;
+    --warning-text: #fab219;
+    --warning-bg: #3a2f10;
+    --serious: #ec835a;
+    --serious-text: #ec835a;
+    --serious-bg: #3a2416;
+    --critical: #e66767;
+    --critical-bg: #3a1b18;
+
+    --manual: #b7a8ff;
+    --manual-bg: #241f42;
+    --neutral: #a3a3ab;
+    --neutral-bg: #26272c;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 28px 32px 64px;
+  background: var(--page-plane);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Wide enough that the content area (max-width minus this padding) clears
+     every non-Shure table's 1130px min-width (see .manufacturer-group rules
+     below) - otherwise those tables scroll unnecessarily even when their
+     actual content (short names, few columns) would fit in far less room.
+     Shure's table (1404px min-width) still exceeds this and scrolls, which
+     is correct - it genuinely needs the extra space. */
+  max-width: 1240px;
+  margin-inline: auto;
+}
+
+/* ---------- Header ---------- */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.logo {
+  height: 46px;
+  width: auto;
+  display: block;
+  margin-bottom: 28px;
+}
+/* The dark-mode logo is relit to a near-white gray so it reads on a dark
+   page (see app/static/img/logo-dark.png) - full-strength that's brighter
+   than anything else on the page, so it visually shouts over the title
+   right below it. Toning it down via opacity (rather than the pixels
+   themselves) keeps it easy to re-tune without regenerating the image. */
+.logo-dark { display: none; opacity: 0.8; }
+@media (prefers-color-scheme: dark) {
+  .logo-light { display: none; }
+  .logo-dark { display: block; }
+}
+
+.title-row { display: flex; align-items: center; gap: 10px; }
+.app-icon {
+  display: inline-flex;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+h1 { margin: 0 0 6px; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.01em; }
+.subtitle { margin: 0; color: var(--text-secondary); max-width: 620px; line-height: 1.5; }
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.btn:hover { opacity: 0.88; }
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.btn-primary { background: var(--accent); color: var(--accent-text); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+.btn-small { padding: 5px 11px; font-size: 0.78rem; background: var(--neutral-bg); color: var(--text); margin-left: 6px; }
+
+/* ---------- Hero coverage card ---------- */
+
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+
+.hero-figure-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.hero-figure {
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.hero-figure-unit { font-size: 1.6rem; font-weight: 600; color: var(--muted); margin-left: 2px; }
+
+.hero-figure-label {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+.hero-figure-label strong { color: var(--text); }
+
+.meter { margin-bottom: 10px; }
+.meter-track {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--accent-track);
+  overflow: hidden;
+}
+.meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+.hero-footnote { font-size: 0.82rem; color: var(--muted); }
+
+/* ---------- KPI row ---------- */
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.kpi-value {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.kpi-label { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+.kpi-alert .kpi-value { color: var(--warning-text); }
+.kpi-warn .kpi-value { color: var(--critical); }
+
+/* Updates-found card doubles as a shortcut: click it to jump straight to
+   just the rows with a pending Acknowledge button, instead of having to
+   notice the count then separately remember the filter chip exists. Only
+   made clickable when there's actually something to jump to (see the
+   Jinja condition in the template) - an empty state has nothing to filter
+   into. */
+.kpi-clickable { cursor: pointer; transition: border-color 0.15s ease; }
+.kpi-clickable:hover { border-color: var(--warning); }
+.kpi-clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Small click-to-open explainer for what "Acknowledge" actually means (it
+   should follow a real firmware update on the device, not just dismiss the
+   alert) - placed on the always-visible KPI row rather than on the
+   Acknowledge button itself, since that button can be scrolled out of view
+   on a wide table but this can't. A real <button> + popover rather than a
+   title-attribute tooltip: a hover tooltip's cursor:help "?" would be the
+   only place on the page using that cursor (everything else clickable uses
+   a plain pointer), the native tooltip box can't be themed to match the
+   app's dark/light surface, and hover doesn't exist at all on touch
+   devices. Click works everywhere and looks consistent. */
+.info-wrap { position: relative; display: inline-flex; }
+.info-icon {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 3px;
+  font: inherit;
+  font-size: 1.15em;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+.info-icon:hover,
+.info-icon:focus-visible,
+.info-icon[aria-expanded="true"] { color: var(--text); }
+.info-icon:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+
+.info-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 240px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  text-align: left;
+  text-transform: none;
+  letter-spacing: normal;
+  cursor: default;
+  z-index: 5;
+}
+.info-popover[hidden] { display: none; }
+
+/* ---------- Toolbar: search + filter chips ---------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1 1 220px;
+  max-width: 320px;
+}
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+#search-input {
+  width: 100%;
+  padding: 8px 12px 8px 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.88rem;
+  font-family: inherit;
+}
+#search-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+#search-input::placeholder { color: var(--muted); }
+
+.filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.chip:hover { border-color: var(--accent); }
+.chip.is-active { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ---------- Manufacturer groups ---------- */
+
+.manufacturer-group { margin-bottom: 28px; }
+.manufacturer-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--gridline);
+}
+.manufacturer-heading h2 { font-size: 1.02rem; font-weight: 700; margin: 0; }
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+/* min-width (not just width:100%) so that when content genuinely needs more
+   room than the container has, the table grows and .table-wrap's
+   horizontal scroll kicks in - instead of every column being proportionally
+   squeezed to force-fit 100%, which is what caused header text to overlap
+   last time. */
+/* border-collapse:separate (not collapse) - position:sticky on a table cell
+   is unreliable/broken in some browsers when combined with collapsed
+   borders. border-spacing:0 keeps cells visually touching like collapse
+   did; we only ever set border-bottom (never border-top), so there's no
+   doubled-border seam to worry about from the switch. */
+table { width: 100%; min-width: 760px; border-collapse: separate; border-spacing: 0; font-size: 0.87rem; }
+/* Some browsers apply a default border to table cells that border-collapse
+   normally merges away invisibly - switching to separate (above, needed for
+   sticky to work) can expose that default as a stray line, especially
+   visible as a dark vertical seam next to the sticky columns. Reset it
+   explicitly so only the border-bottom rules further down ever show. */
+table th, table td { border: 0; }
+.category-row td {
+  padding: 8px 14px 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  background: var(--page-plane);
+  border-bottom: 1px solid var(--gridline);
+}
+.category-row.is-hidden { display: none; }
+thead th {
+  text-align: left;
+  padding: 10px 14px;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--gridline);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--gridline);
+  vertical-align: top;
+}
+/* Model stays left-aligned (it's the one text-heavy, read-left-to-right
+   column); every other column reads cleaner centered - short badges,
+   versions, dates and the icon. Divider/error/form rows are a single
+   colspan cell each, so they're structurally :first-child and keep the
+   default left alignment regardless - no extra exceptions needed. */
+thead th:not(:first-child),
+tbody td:not(:first-child) {
+  text-align: center;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr.is-hidden { display: none; }
+
+/* Long descriptive names (e.g. Shure's official titles) shouldn't wrap to a
+   second line - the table already scrolls horizontally (.table-wrap) if a
+   row runs wide, which reads better than a ragged multi-line grid. */
+.model-name { font-weight: 600; white-space: nowrap; }
+.model-notes { color: var(--muted); font-size: 0.76rem; margin-top: 3px; max-width: 360px; line-height: 1.4; }
+.version-cell { font-variant-numeric: tabular-nums; }
+td.release-date-cell { white-space: nowrap; }
+.muted { color: var(--muted); }
+.time-cell { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.actions { white-space: nowrap; }
+
+/* width:1% + nowrap is the standard trick to make an auto-layout table
+   column shrink to just its content's width instead of soaking up whatever
+   space is left over - without it, a short-named section (DiGiCo, Yamaha)
+   has little competing for width elsewhere and this column stretched out
+   wide, while a long-named one (Shure) never had that problem. */
+/* Every table uses table-layout:fixed with explicit widths for every
+   column - including Shure. Auto-layout (which Shure used to keep, so its
+   Model column could size to its own long names) turned out unreliable in
+   practice: when a whole column is empty on every single row (true for
+   Shure's Log/Acknowledge right now - none of its items currently need
+   either button), some browsers just discard the declared width for that
+   column entirely rather than honoring it as a minimum, which threw off
+   where the sticky columns actually landed and caused them to overlap
+   "Last checked" instead of sitting past "Source". Fixed-layout widths are
+   authoritative regardless of content, so this can't recur.
+
+   Shure still isn't aligned with the other sections - it gets its own,
+   separately-declared, wider Model column below - only the *mechanism*
+   (fixed layout) is now shared, not the actual widths. */
+table { table-layout: fixed; }
+
+th:nth-child(2), td:nth-child(2) { width: 140px; }
+th:nth-child(3), td:nth-child(3) { width: 110px; }
+th:nth-child(4), td:nth-child(4) { width: 130px; }
+th:nth-child(5), td:nth-child(5) { width: 100px; }
+th:nth-child(6), td:nth-child(6) { width: 160px; }
+.source-col { width: 90px; white-space: nowrap; }
+
+/* Every section except Shure shares an identical Model width too, so they
+   line up with each other from one manufacturer's table to the next.
+   Shure keeps its own wider one so its long names never wrap. min-width
+   below is the sum of every column's declared width for each case - if the
+   container is narrower than that, the table grows past 100% and scrolls
+   rather than any column being squeezed (which is what caused the header
+   overlap bug earlier). */
+.manufacturer-group:not([data-manufacturer="shure"]) table { min-width: 1130px; }
+.manufacturer-group:not([data-manufacturer="shure"]) th:first-child,
+.manufacturer-group:not([data-manufacturer="shure"]) td:first-child { width: auto; }
+
+.manufacturer-group[data-manufacturer="shure"] table { min-width: 1404px; }
+.manufacturer-group[data-manufacturer="shure"] th:first-child,
+.manufacturer-group[data-manufacturer="shure"] td:first-child { width: 480px; }
+
+/* Model stays visible while a wide table scrolls horizontally - it's the
+   one column every row's identity depends on, so losing sight of it while
+   scrolled right makes a row unreadable. Safe to pin here, unlike the
+   Log/Acknowledge sticky columns removed earlier: this is a single column
+   (no second sticky cell to keep from overlapping), and it always has real
+   content on every row (can't hit the empty-column-width-discarded bug
+   those two ran into under table-layout:fixed). Uses a dedicated class
+   rather than :first-child so it can't accidentally catch the colspan
+   divider/error/manual-form rows, which already rely on :first-child for
+   their own (unrelated) left-alignment. */
+.model-col {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--surface);
+}
+
+/* Log/Acknowledge: plain trailing columns. These used to be position:sticky
+   (pinned to the right edge of the table so they stayed visible while
+   scrolled), but that caused more problems than it solved - a table-layout
+   bug where an entirely-empty column's declared width got discarded by the
+   browser, and a few px of unexplained overlap between the two pinned
+   cells, both requiring fragile buffer/workaround values to fix. Most rows
+   don't have a button in either column anyway, so the "always visible"
+   benefit was small next to that fragility. Plain columns render
+   predictably; the tradeoff is you scroll to see them on a wide table,
+   same as any other column past the fold. */
+.action-col-ack { width: 130px; }
+.action-col-log { width: 64px; }
+
+.source-link {
+  /* Deliberately quiet, not brand-colored - a link in every row would turn
+     the accent green into wallpaper. Green is reserved for the button,
+     meter, and active filter - the things that are actually "the brand."
+     An icon rather than the domain as text, since the domain repeats
+     identically down most of a manufacturer's section (every Shure row
+     points to shure.com, etc.) even though each one is a genuinely
+     different page - the hover tooltip (title attr) still surfaces the
+     domain for anyone who wants to confirm it before clicking. */
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+}
+.source-link:hover { color: var(--text); }
+
+/* ---------- Status badges (icon-free but always paired with a text label) ---------- */
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.badge-good { background: var(--good-bg); color: var(--good); }
+.badge-warning { background: var(--warning-bg); color: var(--warning-text); }
+.badge-critical { background: var(--critical-bg); color: var(--critical); }
+.badge-manual { background: var(--manual-bg); color: var(--manual); }
+.badge-neutral { background: var(--neutral-bg); color: var(--neutral); }
+
+.error-row td {
+  color: var(--serious-text);
+  background: var(--serious-bg);
+  font-size: 0.78rem;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.error-row.is-hidden { display: none; }
+
+.manual-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--manual-bg);
+  color: var(--manual);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  vertical-align: middle;
+}
+
+.manual-form-row td { background: var(--page-plane); padding: 14px; }
+.manual-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.manual-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.manual-form input {
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  min-width: 180px;
+}
+.manual-form input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.manual-form-error {
+  color: var(--critical);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  body { padding: 18px; }
+  .page-header { flex-direction: column; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .hero-figure { font-size: 2.4rem; }
+}

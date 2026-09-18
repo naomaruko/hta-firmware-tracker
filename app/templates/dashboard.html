@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HTA Firmware Tracker</title>
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#009B67">
+<link rel="icon" href="/static/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Firmware">
+<link rel="stylesheet" href="/static/style.css?v={{ v }}">
+</head>
+<body>
+<header class="page-header">
+  <div>
+    <img class="logo logo-light" src="/static/img/logo-light.png?v={{ v }}" alt="Hi-Tech Audio">
+    <img class="logo logo-dark" src="/static/img/logo-dark.png?v={{ v }}" alt="Hi-Tech Audio">
+    <div class="title-row">
+      <span class="app-icon" aria-hidden="true">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M5 13H7.5L9.5 8L12.5 17L14.5 9.5L16 13H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <h1>Firmware Tracker</h1>
+    </div>
+    <p class="subtitle">Latest firmware/software versions for our audio gear, checked automatically.</p>
+  </div>
+  {% if interactive %}
+  <button id="check-all-btn" class="btn btn-primary">
+    <span class="btn-label">Check All Now</span>
+  </button>
+  {% endif %}
+</header>
+
+<section class="hero-card">
+  <div class="hero-figure-wrap">
+    <div class="hero-figure">{{ summary.coverage_pct }}<span class="hero-figure-unit">%</span></div>
+    <div class="hero-figure-label">
+      <strong>{{ summary.scraped }} of {{ summary.total }}</strong> tracked items checked automatically
+    </div>
+  </div>
+  <div class="meter" role="img" aria-label="{{ summary.scraped }} of {{ summary.total }} items automated">
+    <div class="meter-track">
+      <div class="meter-fill" style="width: {{ summary.coverage_pct }}%"></div>
+    </div>
+  </div>
+  <div class="hero-footnote">
+    {{ summary.manual }} item{{ 's' if summary.manual != 1 else '' }} still need a manual check.
+  </div>
+</section>
+
+<section class="kpi-row">
+  <div
+    class="kpi {% if summary.updates_detected %}kpi-alert kpi-clickable{% endif %}"
+    {% if summary.updates_detected %}id="updates-kpi" role="button" tabindex="0" aria-label="Show the {{ summary.updates_detected }} item{{ 's' if summary.updates_detected != 1 else '' }} with an update available"{% endif %}>
+    <span class="kpi-value">{{ summary.updates_detected }}</span>
+    <span class="kpi-label">
+      Updates found
+      <span class="info-wrap">
+        <button type="button" class="info-icon" aria-expanded="false" aria-label="What does 'update found' mean?">ⓘ</button>
+        <div class="info-popover" role="tooltip" hidden>A newer firmware/software version was found for these items. Update the physical device first, then use its Acknowledge button to clear this alert - the previous version stays listed for reference.</div>
+      </span>
+    </span>
+  </div>
+  <div class="kpi {% if summary.errors %}kpi-warn{% endif %}">
+    <span class="kpi-value">{{ summary.errors }}</span>
+    <span class="kpi-label">Check errors</span>
+  </div>
+  <div class="kpi">
+    <span class="kpi-value" id="last-run">{{ last_run|pacific if last_run else 'never' }}</span>
+    <span class="kpi-label">Last run</span>
+  </div>
+  <div class="kpi">
+    <span class="kpi-value">{{ check_interval_hours|int }}h</span>
+    <span class="kpi-label">Check interval</span>
+  </div>
+</section>
+
+<section class="toolbar">
+  <div class="search-wrap">
+    <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="7" cy="7" r="5.25" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <input id="search-input" type="text" placeholder="Search model or manufacturer…" aria-label="Search equipment">
+  </div>
+  <div class="filter-chips" role="group" aria-label="Filter by status">
+    <button class="chip is-active" data-filter="all">All</button>
+    <button class="chip" data-filter="ok">Up to date</button>
+    <button class="chip" data-filter="update_detected">Update available</button>
+    <button class="chip" data-filter="manual">Manual check</button>
+    <button class="chip" data-filter="error">Check failed</button>
+  </div>
+</section>
+
+<div id="empty-state" class="empty-state" hidden>No equipment matches your search/filter.</div>
+
+{% for manufacturer, categories in by_manufacturer.items() %}
+<section class="manufacturer-group" data-manufacturer="{{ manufacturer|lower }}">
+  <div class="manufacturer-heading">
+    <h2>{{ manufacturer }}</h2>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th class="model-col">Model</th>
+        <th>Status</th>
+        <th>Current Ver.</th>
+        <th>Release date</th>
+        <th>Previous</th>
+        <th>Last checked</th>
+        <th class="source-col">Source</th>
+        <th class="action-col-log"></th>
+        <th class="action-col-ack"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for category, items in categories.items() %}
+      {% if category %}
+      <tr class="category-row" data-category="{{ category }}"><td colspan="9">{{ category }}</td></tr>
+      {% endif %}
+      {% for item in items %}
+      <tr data-id="{{ item.id }}"
+          data-status="{{ item.status }}"
+          data-category="{{ category or '' }}"
+          data-search="{{ (manufacturer ~ ' ' ~ item.model)|lower }}"
+          class="row-{{ item.status }}">
+        <td class="model-col">
+          <div class="model-name">{{ item.model }}</div>
+          {# Notes only shown for manual items - there they explain *why*
+             something isn't automated, which is useful context. On
+             automated rows they were really just dev notes about how the
+             scraper was built/verified, not something a viewer needs. #}
+          {% if item.notes and item.check_method == 'manual' %}<div class="model-notes">{{ item.notes }}</div>{% endif %}
+        </td>
+        <td>
+          {% if item.status == 'ok' %}<span class="badge badge-good">Up to date</span>
+          {% elif item.status == 'update_detected' %}<span class="badge badge-warning">Update available</span>
+          {% elif item.status == 'error' %}<span class="badge badge-critical">Check failed</span>
+          {% elif item.status == 'manual' %}<span class="badge badge-manual">Manual check</span>
+          {% else %}<span class="badge badge-neutral">Not checked yet</span>
+          {% endif %}
+        </td>
+        <td class="version-cell">{{ item.current_version or '—' }}</td>
+        <td class="muted release-date-cell">{{ item.release_date or '—' }}</td>
+        <td class="version-cell muted">{{ item.previous_version or '—' }}</td>
+        <td class="muted time-cell" data-utc="{{ item.last_checked_at.isoformat() if item.last_checked_at else '' }}"><span class="time-text">{{ item.last_checked_at|pacific if item.last_checked_at else '—' }}</span>{% if item.check_method == 'manual' and item.last_checked_at %}<span class="manual-tag">manual</span>{% endif %}</td>
+        <td class="source-col">
+          {% if item.source_url %}<a class="source-link" href="{{ item.source_url }}" target="_blank" rel="noopener" title="{{ item.source_url.split('/')[2] }}" aria-label="Open source ({{ item.source_url.split('/')[2] }}) in a new tab">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15 3H21V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>{% else %}—{% endif %}
+        </td>
+        <td class="action-col-log">
+          {% if interactive and item.check_method == 'manual' %}
+            <button class="btn btn-small log-check-btn" data-id="{{ item.id }}">Log</button>
+          {% endif %}
+        </td>
+        <td class="action-col-ack">
+          {% if interactive and item.status == 'update_detected' %}
+            <button class="btn btn-small ack-btn" data-id="{{ item.id }}">Acknowledge</button>
+          {% endif %}
+        </td>
+      </tr>
+      {% if item.last_error %}
+      <tr class="error-row" data-parent-id="{{ item.id }}"><td colspan="9">⚠ {{ item.last_error }}</td></tr>
+      {% endif %}
+      {% if interactive and item.check_method == 'manual' %}
+      <tr class="manual-form-row is-hidden" data-parent-id="{{ item.id }}">
+        <td colspan="9">
+          <div class="manual-form">
+            <label>Version found
+              <input type="text" class="manual-version-input" placeholder="e.g. 1.5.4" value="{{ item.current_version or '' }}">
+            </label>
+            <label>Release date <span class="muted">(optional)</span>
+              <input type="text" class="manual-date-input" placeholder="e.g. March 27, 2026" value="{{ item.release_date or '' }}">
+            </label>
+            <button class="btn btn-small btn-primary manual-save-btn" data-id="{{ item.id }}">Save</button>
+            <button class="btn btn-small manual-cancel-btn" data-id="{{ item.id }}">Cancel</button>
+            <span class="manual-form-error" hidden></span>
+          </div>
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endfor %}
+
+<script src="/static/app.js?v={{ v }}"></script>
+</body>
+</html>
