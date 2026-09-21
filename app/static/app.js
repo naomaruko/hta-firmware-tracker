@@ -60,7 +60,14 @@ function applyFilters() {
   let visibleCount = 0;
   document.querySelectorAll(".manufacturer-group").forEach((group) => {
     let groupHasVisible = false;
-    group.querySelectorAll("tbody tr[data-id]").forEach((row) => {
+    // Desktop table rows and phone cards represent the same items in
+    // parallel markup (see dashboard.html) - both carry identical
+    // data-id/status/category/search attributes, so one pass over this
+    // compound selector filters both layouts at once. Only one is ever
+    // visible at a time (CSS), but keeping both in sync means the layout
+    // that's on screen is always already correct, with nothing to
+    // recompute on resize.
+    group.querySelectorAll("tbody tr[data-id], .item-card[data-id]").forEach((row) => {
       const matchesSearch = !query || row.dataset.search.includes(query);
       const matchesStatus = statusFilter === "all" || row.dataset.status === statusFilter;
       const visible = matchesSearch && matchesStatus;
@@ -71,16 +78,22 @@ function applyFilters() {
 
       if (visible) {
         groupHasVisible = true;
-        visibleCount++;
+        // Count once per item, not once per representation - a table row
+        // exists for every item (cards don't), so it's the canonical one.
+        if (row.tagName === "TR") visibleCount++;
       }
     });
 
     // A category divider ("Consoles", "I/O Racks", ...) should disappear
     // once every row under it has been filtered out - otherwise it's left
-    // floating above nothing.
-    group.querySelectorAll("tr.category-row").forEach((catRow) => {
-      const anyVisible = [...group.querySelectorAll(`tbody tr[data-id][data-category="${catRow.dataset.category}"]`)]
-        .some((row) => !row.classList.contains("is-hidden"));
+    // floating above nothing. Covers both the table's divider row and the
+    // card list's, matched to whichever kind of item element is present.
+    group.querySelectorAll("tr.category-row, .card-category-row").forEach((catRow) => {
+      const anyVisible = [
+        ...group.querySelectorAll(
+          `tbody tr[data-id][data-category="${catRow.dataset.category}"], .item-card[data-id][data-category="${catRow.dataset.category}"]`
+        ),
+      ].some((row) => !row.classList.contains("is-hidden"));
       catRow.classList.toggle("is-hidden", !anyVisible);
     });
 
@@ -133,6 +146,30 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".chip").forEach((c) => c.classList.remove("is-active"));
       chip.classList.add("is-active");
       applyFilters();
+    });
+  });
+
+  // Phone card list: tap a card's summary to reveal its remaining fields
+  // (detected on/previous/last checked/source), tucked away by default so
+  // the collapsed list stays compact. Independent per card - not a
+  // one-at-a-time accordion, since expanding one card has no reason to
+  // affect any other. role="button" (not a real <button>) because the
+  // model name inside it is a heading (<h3>), which isn't valid content for
+  // a <button>.
+  document.querySelectorAll(".card-summary").forEach((summary) => {
+    const details = summary.closest(".item-card")?.querySelector(".card-details");
+    if (!details) return;
+    const toggle = () => {
+      const opening = details.hidden;
+      details.hidden = !opening;
+      summary.setAttribute("aria-expanded", String(opening));
+    };
+    summary.addEventListener("click", toggle);
+    summary.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggle();
+      }
     });
   });
 

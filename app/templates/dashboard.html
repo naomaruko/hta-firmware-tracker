@@ -174,6 +174,71 @@
     </tbody>
   </table>
   </div>
+
+  {# Phone-width view of the exact same items - a parallel markup block
+     rather than reshaping the table via CSS, so the desktop table (already
+     hardened through several rounds of layout bugs this project) is never
+     touched by anything mobile-related. CSS shows exactly one of
+     .table-wrap / .card-list at a time (see the max-width:720px media
+     query) - both always exist in the DOM; JS filtering (app.js) drives
+     both from the same search/status state via compound selectors, so
+     neither needs its own copy of that logic. #}
+  <div class="card-list">
+    {% for category, items in categories.items() %}
+    {% if category %}
+    <div class="card-category-row" data-category="{{ category }}">{{ category }}</div>
+    {% endif %}
+    {% for item in items %}
+    <div class="item-card row-{{ item.status }}"
+         data-id="{{ item.id }}"
+         data-status="{{ item.status }}"
+         data-category="{{ category or '' }}"
+         data-search="{{ (manufacturer ~ ' ' ~ item.model)|lower }}">
+      <div class="card-summary" role="button" tabindex="0" aria-expanded="false">
+        <div class="card-summary-top">
+          <h3 class="card-model">{{ item.model }}</h3>
+          {% if item.status == 'ok' %}<span class="badge badge-good">Up to date</span>
+          {% elif item.status == 'update_detected' %}<span class="badge badge-warning">Update available</span>
+          {% elif item.status == 'error' %}<span class="badge badge-critical">Check failed</span>
+          {% elif item.status == 'manual' %}<span class="badge badge-manual">Manual check</span>
+          {% else %}<span class="badge badge-neutral">Not checked yet</span>
+          {% endif %}
+        </div>
+        {% if item.notes and item.check_method == 'manual' %}<div class="model-notes">{{ item.notes }}</div>{% endif %}
+        <div class="card-summary-bottom">
+          <span class="card-version">{{ item.current_version or '—' }}</span>
+          <svg class="card-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      {% if item.last_error %}<div class="card-error">⚠ {{ item.last_error }}</div>{% endif %}
+      <div class="card-details" hidden>
+        <div class="card-detail-row">
+          <span class="card-detail-label">{{ 'Release date' if has_release_dates else 'Detected on' }}</span>
+          <span class="card-detail-value">
+            {% if has_release_dates %}{{ item.release_date or '—' }}
+            {% else %}{{ item.last_changed_at|pacific("%B %-d, %Y") if item.last_changed_at else '—' }}
+            {% endif %}
+          </span>
+        </div>
+        <div class="card-detail-row">
+          <span class="card-detail-label">Previous</span>
+          <span class="card-detail-value">{{ item.previous_version or '—' }}</span>
+        </div>
+        <div class="card-detail-row">
+          <span class="card-detail-label">Last checked</span>
+          <span class="card-detail-value muted time-cell" data-utc="{{ item.last_checked_at.isoformat() if item.last_checked_at else '' }}"><span class="time-text">{{ item.last_checked_at|pacific if item.last_checked_at else '—' }}</span>{% if item.check_method == 'manual' and item.last_checked_at %}<span class="manual-tag">manual</span>{% endif %}</span>
+        </div>
+        <div class="card-detail-row">
+          <span class="card-detail-label">Source</span>
+          <span class="card-detail-value">{% if item.source_url %}<a class="source-link" href="{{ item.source_url }}" target="_blank" rel="noopener">{{ item.source_url.split('/')[2] }}</a>{% else %}—{% endif %}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+  </div>
 </section>
 {% endfor %}
 
