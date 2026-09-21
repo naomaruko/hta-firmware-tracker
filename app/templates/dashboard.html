@@ -100,6 +100,7 @@
 <div id="empty-state" class="empty-state" hidden>No equipment matches your search/filter.</div>
 
 {% for manufacturer, categories in by_manufacturer.items() %}
+{% set has_release_dates = manufacturer_has_release_dates.get(manufacturer, True) %}
 <section class="manufacturer-group" data-manufacturer="{{ manufacturer|lower }}">
   <div class="manufacturer-heading">
     <h2>{{ manufacturer }}</h2>
@@ -111,7 +112,10 @@
         <th class="model-col">Model</th>
         <th>Status</th>
         <th>Current Ver.</th>
-        <th>Release date</th>
+        {# Manufacturers with no published release date (Yamaha, Allen &
+           Heath, Dante as of writing - see dashboard_data.py) show when the
+           tracker itself first caught a version change instead. #}
+        <th>{{ 'Release date' if has_release_dates else 'Detected on' }}</th>
         <th>Previous</th>
         <th>Last checked</th>
         <th class="source-col">Source</th>
@@ -145,7 +149,11 @@
           {% endif %}
         </td>
         <td class="version-cell">{{ item.current_version or '—' }}</td>
-        <td class="muted release-date-cell">{{ item.release_date or '—' }}</td>
+        <td class="muted release-date-cell">
+          {% if has_release_dates %}{{ item.release_date or '—' }}
+          {% else %}{{ item.last_changed_at|pacific("%B %-d, %Y") if item.last_changed_at else '—' }}
+          {% endif %}
+        </td>
         <td class="version-cell muted">{{ item.previous_version or '—' }}</td>
         <td class="muted time-cell" data-utc="{{ item.last_checked_at.isoformat() if item.last_checked_at else '' }}"><span class="time-text">{{ item.last_checked_at|pacific if item.last_checked_at else '—' }}</span>{% if item.check_method == 'manual' and item.last_checked_at %}<span class="manual-tag">manual</span>{% endif %}</td>
         <td class="source-col">

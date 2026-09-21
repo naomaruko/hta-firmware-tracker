@@ -55,6 +55,15 @@ Every manufacturer is fully automated right now. If a new piece of gear gets
 added that has no scrapable version page, it'll show up here as "Manual
 check" with a direct link to where to look by hand instead.
 
+Yamaha, Allen & Heath, and Dante/Audinate don't publish a release date at
+all - their checkers have nothing to put there. For those manufacturers
+only, that column is labeled "Detected on" instead of "Release date" and
+shows the day the tracker itself first caught a version change
+(`last_changed_at`), not a manufacturer-published date. It stays blank for
+anything that hasn't had a detected change - existing entries aren't
+backfilled, and it's determined per manufacturer from the data (any item
+with a real release date), not a hardcoded list.
+
 ### How the headless-browser checkers work
 
 `app/checkers/browser_base.py` holds a small Playwright helper

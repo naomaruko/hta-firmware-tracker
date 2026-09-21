@@ -59,4 +59,26 @@ def build_dashboard_context(items):
 
     last_run = max((i.last_checked_at for i in items if i.last_checked_at), default=None)
 
-    return {"by_manufacturer": by_manufacturer, "summary": summary, "last_run": last_run}
+    # Some manufacturers (Yamaha, Allen & Heath, Dante/Audinate as of this
+    # writing) never publish a release date at all - their checkers simply
+    # have nothing to put in that field. For those, the column becomes
+    # "Detected on" and shows last_changed_at (when the tracker itself first
+    # caught a version change) instead of a manufacturer-published date.
+    # Determined from the data (does any item for this manufacturer have a
+    # release_date) rather than a hardcoded manufacturer list, so a future
+    # manufacturer with the same gap is handled automatically. A manufacturer
+    # counts as "has release dates" if *any* of its items has one - checkers
+    # are per-manufacturer, so this is a stable, all-or-nothing trait, not
+    # something that varies item to item.
+    manufacturer_has_release_dates = {}
+    for item in items:
+        manufacturer_has_release_dates[item.manufacturer] = (
+            manufacturer_has_release_dates.get(item.manufacturer, False) or bool(item.release_date)
+        )
+
+    return {
+        "by_manufacturer": by_manufacturer,
+        "summary": summary,
+        "last_run": last_run,
+        "manufacturer_has_release_dates": manufacturer_has_release_dates,
+    }
