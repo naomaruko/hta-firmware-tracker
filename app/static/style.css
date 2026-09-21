@@ -421,20 +421,7 @@ tbody tr.is-hidden { display: none; }
    row runs wide, which reads better than a ragged multi-line grid. */
 .model-name { font-weight: 600; white-space: nowrap; }
 .model-notes { color: var(--muted); font-size: 0.76rem; margin-top: 3px; max-width: 360px; line-height: 1.4; }
-/* Monospace + muted + smaller than the model name - version strings read as
-   data, not as the row's identity, and shouldn't compete with it for
-   attention. .muted (applied to the Previous column too) fades it further
-   still via normal cascade order, which is the right relative weighting:
-   current version > previous version. Shared with .card-version so the
-   mobile card list gets identical treatment. */
-.version-cell,
-.card-version {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-.version-cell { font-size: 0.85em; }
+.version-cell { font-variant-numeric: tabular-nums; }
 td.release-date-cell { white-space: nowrap; }
 .muted { color: var(--muted); }
 .time-cell { font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -529,13 +516,14 @@ tr.row-update_detected td {
 .badge-warning { background: var(--warning-bg); color: var(--warning-text); }
 .badge-critical { background: var(--critical-bg); color: var(--critical); }
 .badge-manual { background: var(--manual-bg); color: var(--manual); }
+/* Desktop keeps the original solid pill for "Up to date" - see
+   .card-list .badge-good below for the phone-only quiet treatment. */
+.badge-good { background: var(--good-bg); color: var(--good); }
 
-/* "Up to date" and "not checked yet" don't need attention, so they don't get
-   an attention-grabbing filled pill like the other three statuses - a small
-   dot + plain text instead, so a row of mostly-green pills doesn't compete
-   with the ones that actually need a look (Update available / Manual check
-   / Check failed). */
-.badge-good, .badge-neutral {
+/* "Not checked yet" doesn't need attention, so - everywhere, not just on
+   phone - it doesn't get an attention-grabbing filled pill like the
+   statuses that do: a small dot + plain text instead. */
+.badge-neutral {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -545,15 +533,14 @@ tr.row-update_detected td {
   color: var(--text-secondary);
   font-weight: 600;
 }
-.badge-good::before, .badge-neutral::before {
+.badge-neutral::before {
   content: "";
   width: 6px;
   height: 6px;
   border-radius: 50%;
+  background: var(--neutral);
   flex-shrink: 0;
 }
-.badge-good::before { background: var(--good); }
-.badge-neutral::before { background: var(--neutral); }
 
 .error-row td {
   color: var(--serious-text);
@@ -624,8 +611,42 @@ tr.row-update_detected td {
 }
 .card-model { margin: 0; font-size: 0.95rem; font-weight: 700; }
 .card-summary .model-notes { margin-top: -2px; }
+
+/* Phone-only: on the card, model name and version sit close together in the
+   same compact summary line, so the two need a stronger visual split than
+   on desktop (separate table columns already do that job there) - smaller,
+   monospace, and muted rather than matching the model name's weight/color. */
+.card-version {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
 .card-summary-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.card-version { font-size: 0.9rem; }
+
+/* Phone-only quiet "Up to date": desktop keeps the original solid pill
+   (.badge-good above) - only the card view gets the dot+plain-text
+   treatment, since .badge-good is otherwise identical markup in both. */
+.card-list .badge-good {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.card-list .badge-good::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--good);
+  flex-shrink: 0;
+}
 .card-chevron { color: var(--muted); flex-shrink: 0; transition: transform 0.15s ease; }
 /* [aria-expanded] rather than a JS-toggled class - app.js already sets this
    attribute for accessibility, so the chevron rotation rides along for free
