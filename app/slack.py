@@ -22,7 +22,7 @@ DASHBOARD_URL = "https://hta-firmware-tracker.vercel.app/"
 
 
 def _format_message(changes):
-    lines = ["<!channel> Firmware update detected:", ""]
+    lines = ["<!channel> New firmware available:", ""]
     for c in changes:
         previous = c["previous_version"] or "unknown"
         lines.append(f"• *{c['manufacturer']} {c['model']}*: {previous} → {c['current_version']}")
