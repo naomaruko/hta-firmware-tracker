@@ -100,6 +100,25 @@ app — there's no server running continuously anywhere. Instead:
   day-to-day and is gitignored, same as always - it's not part of the
   deployment at all.
 
+### Slack notifications
+
+The daily workflow posts to Slack (`app/slack.py`) whenever it finds a
+**genuinely new** firmware version - comparing each item's version before
+and after that day's run, not just whatever's currently flagged. A version
+that's still pending from a previous day, or one that just auto-cleared
+after its 2-week window, doesn't trigger a repeat message; only an actual
+change does. The message starts with `@channel`, lists what changed
+(`Manufacturer Model: old → new` per item), and links to the live
+dashboard.
+
+Reads the webhook URL from the `SLACK_WEBHOOK_URL` repository secret (GitHub
+→ Settings → Secrets and variables → Actions), passed to the workflow step
+as an env var - never hardcoded, and not logged anywhere (GitHub also masks
+any exact occurrence of a registered secret's value in the Action's log
+output automatically). Missing the secret, or the POST itself failing,
+never breaks the daily commit - `notify_updates()` in `app/slack.py`
+degrades to a no-op (logged, not raised) in either case.
+
 ### Local automatic checking
 
 If you run this locally instead of relying on the deployed site, the

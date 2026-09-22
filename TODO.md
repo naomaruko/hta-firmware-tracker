@@ -14,14 +14,10 @@ Already done:
 - Removed the manual "Log"/"Acknowledge" buttons entirely - update flags
   (amber row highlight + badge) now clear themselves automatically 2 weeks
   after first being detected, with no one needing to click anything.
-
-## 1. Slack integration
-
-The plan: when a scraper detects a version change, post it to a channel
-instead of relying on someone opening the dashboard. The checking logic is
-already separate from the web routes, so this is additive, not a rewrite -
-the daily GitHub Actions run would be the natural place to add a
-"post to Slack if anything changed" step after `scripts/ci_check.py`.
+- Slack integration: the daily GitHub Actions run posts an `@channel`
+  message with a dashboard link whenever it finds a genuinely new firmware
+  version - not on every run, and not a repeat ping for a version that's
+  still pending or just auto-cleared (see README's "Deployment" section).
 
 ## Later, only if it becomes worth it
 
