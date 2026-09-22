@@ -6,10 +6,8 @@
 <title>HTA Firmware Tracker</title>
 <link rel="manifest" href="/static/manifest.json">
 <meta name="theme-color" content="#009B67">
-{# Same pulse glyph as the header's inline SVG at every size - see
-   scripts/gen_icons.py. 16px uses a deliberately simplified single-peak
-   version of the wave (the full 6-point path turns into an unrecognizable
-   blob that small); 32px and up use the full glyph, which holds up fine. #}
+{# Same source icon as the header (hta-firmware-tracker-icon.png) at every
+   size - see scripts/gen_icons.py. #}
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32.png">
@@ -26,10 +24,7 @@
     <img class="logo logo-dark" src="/static/img/logo-dark.png?v={{ v }}" alt="Hi-Tech Audio">
     <div class="title-row">
       <span class="app-icon" aria-hidden="true">
-        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M5 13H7.5L9.5 8L12.5 17L14.5 9.5L16 13H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <img src="/static/icons/app-icon-header.png?v={{ v }}" width="46" height="46" alt="">
       </span>
       <h1>Firmware Tracker</h1>
     </div>
