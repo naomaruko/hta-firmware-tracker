@@ -83,6 +83,11 @@ def main():
     # FastAPI route in app/main.py used for local dev.
     shutil.copy(STATIC_SRC / "sw.js", OUT_DIR / "sw.js")
 
+    # Also served at the site root - browsers request /favicon.ico directly
+    # regardless of the <link> tags in <head>. Mirrors the /favicon.ico
+    # FastAPI route in app/main.py used for local dev.
+    shutil.copy(STATIC_SRC / "icons" / "favicon.ico", OUT_DIR / "favicon.ico")
+
     # Bump the service worker's cache name so each deploy gets a clean cache
     # instead of a phone potentially holding onto a previous deploy's assets
     # indefinitely (see app/static/sw.js).

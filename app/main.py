@@ -64,6 +64,13 @@ def service_worker():
     return FileResponse(APP_DIR / "static" / "sw.js", media_type="application/javascript")
 
 
+@app.get("/favicon.ico")
+def favicon():
+    # Browsers request /favicon.ico directly regardless of the <link> tags
+    # in <head> - served from the root for that fallback case.
+    return FileResponse(APP_DIR / "static" / "icons" / "favicon.ico", media_type="image/x-icon")
+
+
 @app.get("/")
 def dashboard(request: Request, db: Session = Depends(get_db)):
     items = db.query(Equipment).order_by(Equipment.manufacturer, Equipment.model).all()

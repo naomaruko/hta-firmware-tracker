@@ -6,8 +6,14 @@
 <title>HTA Firmware Tracker</title>
 <link rel="manifest" href="/static/manifest.json">
 <meta name="theme-color" content="#009B67">
-<link rel="icon" href="/static/icons/icon-192.png">
-<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+{# Same pulse glyph as the header's inline SVG at every size - see
+   scripts/gen_icons.py. 16px uses a deliberately simplified single-peak
+   version of the wave (the full 6-point path turns into an unrecognizable
+   blob that small); 32px and up use the full glyph, which holds up fine. #}
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Firmware">
