@@ -125,7 +125,14 @@ body {
 .title-row { display: flex; align-items: center; gap: 10px; }
 .app-icon { display: inline-flex; flex-shrink: 0; }
 .app-icon img { display: block; }
-h1 { margin: 0 0 6px; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.01em; }
+/* No margin-bottom: title-row's align-items:center centers each child's
+   full margin box, so an asymmetric bottom margin here (h1 is taller than
+   its own text but shorter than the 46px icon beside it) pushed the
+   visible text upward relative to the icon - the icon looked "lower" than
+   the heading. The gap to .subtitle below doesn't depend on this margin
+   anyway - the icon (taller than the text) already sets the row's height,
+   so .subtitle starts after that regardless. */
+h1 { margin: 0; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.01em; }
 .subtitle { margin: 0; color: var(--text-secondary); max-width: 620px; line-height: 1.5; }
 
 .btn {
