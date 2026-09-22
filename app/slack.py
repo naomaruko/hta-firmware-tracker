@@ -20,22 +20,79 @@ logger = logging.getLogger("firmware_tracker.slack")
 # Update if that ever moves to a custom domain (see TODO.md).
 DASHBOARD_URL = "https://hta-firmware-tracker.vercel.app/"
 
+# checker_key -> a human-readable name for the family of items it covers,
+# used instead of listing every model when several share one firmware
+# release (e.g. all 5 DiGiCo Quantum consoles are one release, one
+# checker_key, and always report the identical version - that's exactly
+# why they share a checker_key in the first place, so it's a more reliable
+# "these are really the same family" signal than just matching version
+# strings, which could coincidentally collide between two unrelated
+# manufacturers). Only worth naming here for keys that actually cover more
+# than one item - see _family_label for the fallback for everything else.
+FAMILY_NAMES = {
+    "ah:dlive": "Allen & Heath dLive series",
+    "db:d40d90": "d&b D40/D90",
+    "digico:quantum": "DiGiCo Quantum series",
+    "shure:ad_transmitters": "Shure AD/ADX transmitters",
+    "shure:adxr": "Shure ADXR/ADTQ receivers",
+    "ssl:live": "Solid State Logic Live console series",
+    "ssl:networkio": "Solid State Logic Network I/O series",
+    "yamaha:rivage_pm": "Yamaha Rivage PM series",
+}
 
-def _format_message(changes):
-    lines = ["<!channel> New firmware available:", ""]
+
+def _group_changes(changes):
+    """Groups changes by checker_key, preserving first-seen order (so
+    messages post in a stable, deterministic sequence) - items sharing a
+    checker_key were checked together and always carry the same new
+    version, which is what makes collapsing them into one message correct
+    rather than just convenient. Items with no checker_key (shouldn't
+    happen for scrape-method items, but not load-bearing to assume) fall
+    back to grouping by (manufacturer, model), i.e. their own singleton
+    group."""
+    groups = {}
+    order = []
     for c in changes:
-        previous = c["previous_version"] or "unknown"
-        lines.append(f"• *{c['manufacturer']} {c['model']}*: {previous} → {c['current_version']}")
-    lines.append("")
-    lines.append(f"<{DASHBOARD_URL}|View dashboard>")
-    return "\n".join(lines)
+        key = c.get("checker_key") or (c["manufacturer"], c["model"])
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append(c)
+    return [(key, groups[key]) for key in order]
+
+
+def _family_label(key, group):
+    if isinstance(key, str):
+        name = FAMILY_NAMES.get(key)
+        if name:
+            return name
+    if len(group) == 1:
+        c = group[0]
+        return f"{c['manufacturer']} {c['model']}"
+    # A genuinely multi-item family we haven't given a friendly name to
+    # (e.g. a new checker_key added since) - list the actual models rather
+    # than invent a collective name we can't vouch for.
+    manufacturer = group[0]["manufacturer"]
+    models = "/".join(c["model"] for c in group)
+    return f"{manufacturer} {models}"
+
+
+def _format_message(key, group):
+    label = _family_label(key, group)
+    version = group[0]["current_version"]
+    return f"<!channel> New firmware available for *{label}* → {version}\n\n<{DASHBOARD_URL}|View dashboard>"
 
 
 def notify_updates(changes, webhook_url):
-    """changes: list of {manufacturer, model, previous_version,
+    """changes: list of {manufacturer, model, checker_key, previous_version,
     current_version} dicts, one per item that genuinely changed version this
-    run. No-ops (never raises) if there's nothing to say or nowhere to say
-    it - a Slack outage or a missing webhook_url (e.g. running this locally,
+    run. Groups them by family (see _group_changes) and posts one message
+    per family - not one message per item, and not everything bundled into
+    a single message, so a DiGiCo update and an unrelated Yamaha update the
+    same day still read as two distinct notifications.
+
+    No-ops (never raises) if there's nothing to say or nowhere to say it -
+    a Slack outage or a missing webhook_url (e.g. running this locally,
     where the secret isn't set) must never break the daily commit.
 
     Returns a short status string (not just True/False) so the caller can
@@ -50,11 +107,19 @@ def notify_updates(changes, webhook_url):
         logger.info("SLACK_WEBHOOK_URL not set - skipping notification for %d update(s)", len(changes))
         return "skipped (no SLACK_WEBHOOK_URL)"
 
-    try:
-        r = requests.post(webhook_url, json={"text": _format_message(changes)}, timeout=10)
-        r.raise_for_status()
-        logger.info("Posted Slack notification for %d update(s)", len(changes))
-        return "sent"
-    except Exception as e:  # noqa: BLE001
-        logger.exception("Failed to post Slack notification")
-        return f"failed ({e.__class__.__name__})"
+    groups = _group_changes(changes)
+    sent = 0
+    failures = []
+    for key, group in groups:
+        try:
+            r = requests.post(webhook_url, json={"text": _format_message(key, group)}, timeout=10)
+            r.raise_for_status()
+            sent += 1
+        except Exception as e:  # noqa: BLE001
+            logger.exception("Failed to post Slack notification for %r", key)
+            failures.append(e.__class__.__name__)
+
+    logger.info("Posted %d/%d Slack notification(s)", sent, len(groups))
+    if failures:
+        return f"sent {sent}/{len(groups)}, failed: {', '.join(failures)}"
+    return f"sent {sent}/{len(groups)}"

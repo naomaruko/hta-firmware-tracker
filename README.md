@@ -107,9 +107,19 @@ The daily workflow posts to Slack (`app/slack.py`) whenever it finds a
 and after that day's run, not just whatever's currently flagged. A version
 that's still pending from a previous day, or one that just auto-cleared
 after its 2-week window, doesn't trigger a repeat message; only an actual
-change does. The message starts with `@channel`, lists what changed
-(`Manufacturer Model: old → new` per item), and links to the live
-dashboard.
+change does.
+
+Items are grouped by family before posting - e.g. all 5 DiGiCo Quantum
+consoles updating together becomes one message ("New firmware available
+for *DiGiCo Quantum series* → V23"), not five. Grouped by `checker_key`
+(items that share one get checked together and always report the same new
+version, by construction - a more reliable "these are really the same
+family" signal than just matching version-number strings, which could
+coincidentally collide between two unrelated manufacturers), with a
+hand-curated `FAMILY_NAMES` mapping in `app/slack.py` for the friendly
+name shown. A genuinely unrelated update detected the same day (different
+`checker_key`) always gets its own separate message, `@channel` and all -
+never bundled into someone else's.
 
 Reads the webhook URL from the `SLACK_WEBHOOK_URL` repository secret (GitHub
 → Settings → Secrets and variables → Actions), passed to the workflow step

@@ -52,6 +52,7 @@ def main():
             {
                 "manufacturer": item.manufacturer,
                 "model": item.model,
+                "checker_key": item.checker_key,
                 "previous_version": old_versions[(item.manufacturer, item.model)],
                 "current_version": item.current_version,
             }
