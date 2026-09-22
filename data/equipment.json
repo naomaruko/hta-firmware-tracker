@@ -94,11 +94,11 @@
     "source_url": "https://support.digico.biz/hc/en-gb/articles/44972387714449-V22-Quantum-Console-Software",
     "notes": null,
     "current_version": "V22",
-    "previous_version": "V21-test",
+    "previous_version": null,
     "release_date": "March 20, 2026",
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-09-22T22:10:14.002321",
-    "last_changed_at": "2026-09-22T22:10:14.002321",
+    "last_changed_at": null,
     "last_error": null
   },
   {
@@ -111,11 +111,11 @@
     "source_url": "https://support.digico.biz/hc/en-gb/articles/44972387714449-V22-Quantum-Console-Software",
     "notes": null,
     "current_version": "V22",
-    "previous_version": "V21-test",
+    "previous_version": null,
     "release_date": "March 20, 2026",
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-09-22T22:10:14.002303",
-    "last_changed_at": "2026-09-22T22:10:14.002303",
+    "last_changed_at": null,
     "last_error": null
   },
   {
@@ -128,11 +128,11 @@
     "source_url": "https://support.digico.biz/hc/en-gb/articles/44972387714449-V22-Quantum-Console-Software",
     "notes": null,
     "current_version": "V22",
-    "previous_version": "V21-test",
+    "previous_version": null,
     "release_date": "March 20, 2026",
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-09-22T22:10:14.002282",
-    "last_changed_at": "2026-09-22T22:10:14.002282",
+    "last_changed_at": null,
     "last_error": null
   },
   {
@@ -145,11 +145,11 @@
     "source_url": "https://support.digico.biz/hc/en-gb/articles/44972387714449-V22-Quantum-Console-Software",
     "notes": null,
     "current_version": "V22",
-    "previous_version": "V21-test",
+    "previous_version": null,
     "release_date": "March 20, 2026",
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-09-22T22:10:14.002257",
-    "last_changed_at": "2026-09-22T22:10:14.002257",
+    "last_changed_at": null,
     "last_error": null
   },
   {
@@ -162,11 +162,11 @@
     "source_url": "https://support.digico.biz/hc/en-gb/articles/44972387714449-V22-Quantum-Console-Software",
     "notes": null,
     "current_version": "V22",
-    "previous_version": "V21-test",
+    "previous_version": null,
     "release_date": "March 20, 2026",
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-09-22T22:10:14.002094",
-    "last_changed_at": "2026-09-22T22:10:14.002094",
+    "last_changed_at": null,
     "last_error": null
   },
   {
@@ -621,11 +621,11 @@
     "source_url": "https://usa.yamaha.com/support/updates/rivage_pm_firm.html",
     "notes": null,
     "current_version": "V7.10",
-    "previous_version": "V7.09-test",
+    "previous_version": null,
     "release_date": null,
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-09-22T22:10:15.365637",
-    "last_changed_at": "2026-09-22T22:10:15.365637",
+    "last_changed_at": null,
     "last_error": null
   },
   {
