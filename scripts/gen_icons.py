@@ -1,8 +1,15 @@
-"""Regenerates app/static/icons/* (and the in-app header icon) from
-hta-firmware-tracker-icon.png at the project root - the canonical source
-design asset. Replaces the earlier version of this script, which rendered a
-hand-drawn SVG pulse-wave glyph instead; that source no longer exists now
-that a real designed icon replaced it.
+"""Regenerates app/static/icons/* from two canonical source assets at the
+project root:
+
+- hta-firmware-tracker-icon.png: the rounded-square app icon (opaque dark
+  navy background baked in). Used for every favicon/PWA icon size, which
+  all need a filled background regardless of what page/OS chrome they sit
+  in.
+- hta-firmware-tracker-logo-transparent.png: the same glyph with no
+  background, true alpha transparency. Used only for the in-app header
+  icon, which sits directly on the page's own background (and needs to
+  work in both light and dark mode - checked contrast against both before
+  adopting it).
 
 Not run automatically by anything (icons don't change often) - run manually
 with `python3 scripts/gen_icons.py` after activating the venv, then commit
@@ -14,6 +21,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / "hta-firmware-tracker-icon.png"
+SOURCE_LOGO = ROOT / "hta-firmware-tracker-logo-transparent.png"
 OUT = ROOT / "app" / "static" / "icons"
 
 # The source has its own rounded corners baked in with transparency outside
@@ -69,14 +77,12 @@ def main():
     flattened = _flatten(src, BG_FLATTEN_COLOR)
     _resize(flattened, 180).save(OUT / "apple-touch-icon.png")
 
-    # 48px frame for favicon.ico, from the same flattened/opaque version -
-    # some ICO viewers render alpha poorly, and there's no benefit to
-    # transparency in a favicon anyway.
-    fav48 = _resize(flattened, 48)
-
-    # In-app header icon: same source, modest size (46px display, ~2x
-    # headroom for retina).
-    _resize(src, 96).save(OUT / "app-icon-header.png")
+    # In-app header icon: the transparent-background logo, not the
+    # favicon/PWA source - it sits directly on the page rather than needing
+    # its own background. Modest size (46px display, ~2x headroom for
+    # retina).
+    logo = Image.open(SOURCE_LOGO).convert("RGBA")
+    _resize(logo, 96).save(OUT / "app-icon-header.png")
 
     # Maskable: real padding (not just the source's baked-in rounding) so
     # an aggressive OS mask (e.g. a circle) can't clip the glyph - the
