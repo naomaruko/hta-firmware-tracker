@@ -120,12 +120,10 @@ body {
   margin-bottom: 24px;
   min-height: 260px;
   display: flex;
-  /* Top-anchored rather than vertically centred - brings the logo closer
-     to the banner's top edge. .hero-banner-content's own padding-top
-     controls exactly how close; the spacing between logo/title/button
-     below it is untouched, so they keep the same position relative to
-     each other, just as a group sitting higher up. */
-  align-items: flex-start;
+  /* stretch (the default) - .hero-banner-content fills the full height so
+     its own grid rows below can position the logo at the top, the title
+     centred in the leftover middle space, and the button at the bottom,
+     independently of each other. */
   /* Flat fallback colour sampled from the hero image's own background -
      shows through briefly before the image loads, and on any viewport
      proportions wide/short enough that background-size:cover still leaves
@@ -140,10 +138,23 @@ body {
 }
 
 .hero-banner-content {
+  /* Grid instead of normal flow: logo takes the first (auto-height) row,
+     button the last, and the title's row soaks up whatever's left via
+     1fr - align-items:center then centers the title within that leftover
+     space, which is most of the banner's height, so it reads as "centred
+     in the banner" while the logo stays pinned near the top and the
+     button near the bottom. justify-items:start keeps every row's item
+     at its own natural width on the left, like normal block flow would -
+     grid's own default (stretch) would otherwise widen the button. */
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: center;
+  justify-items: start;
+  height: 100%;
   width: 100%;
   max-width: 1240px;
   margin-inline: auto;
-  padding: 32px 32px 0;
+  padding: 32px;
 }
 
 /* hero-logo.png is logo-dark.png's two flat colours remapped (darker grey
@@ -786,7 +797,10 @@ tr.row-update_detected td {
 @media (max-width: 720px) {
   body { padding: 18px; }
   .hero-banner { margin-top: -18px; min-height: 190px; }
-  .hero-banner-content { padding: 20px 20px 0; }
+  /* Horizontal padding matches body's own mobile padding (18px, set just
+     above) exactly, so the logo/title line up with the stats row/search/
+     table content below, which all inherit that same body padding. */
+  .hero-banner-content { padding: 20px 18px; }
   .hero-logo { height: 24px; margin-bottom: 16px; }
   /* No max-width here (unlike the old two-line version) - "Firmware
      Tracker" needs to fit on one line at phone widths, so the title wraps
