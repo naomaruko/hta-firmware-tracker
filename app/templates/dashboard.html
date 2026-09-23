@@ -243,6 +243,27 @@
 </section>
 {% endfor %}
 
+{# "Add to Home Screen" banner - phone only (JS gates on device, CSS gates
+   on viewport width as a second guard - see style.css and app.js). Starts
+   hidden and stays that way unless JS decides there's something useful to
+   show: either a one-tap native install button (Chrome/Edge/Samsung
+   Internet etc. via beforeinstallprompt) or manual steps (iOS Safari,
+   Firefox for Android, or anywhere else that event never fires). Shown on
+   both the live app and the static deployed site deliberately - it's
+   arguably more relevant on the real deployed site, since that's what
+   coworkers would actually install. #}
+<div id="install-banner" class="install-banner" hidden>
+  <span id="install-banner-text" class="install-banner-text"></span>
+  <div class="install-banner-actions">
+    <button type="button" id="install-banner-action" class="btn btn-small btn-primary" hidden>Install</button>
+    <button type="button" id="install-banner-dismiss" class="install-banner-dismiss" aria-label="Dismiss">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M3 3L13 13M13 3L3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
 <script src="/static/app.js?v={{ v }}"></script>
 </body>
 </html>

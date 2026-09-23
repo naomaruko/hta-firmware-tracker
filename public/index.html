@@ -14,16 +14,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Firmware">
-<link rel="stylesheet" href="/static/style.css?v=20260922221147">
+<link rel="stylesheet" href="/static/style.css?v=20260923120330">
 </head>
 <body>
 <header class="page-header">
   <div>
-    <img class="logo logo-light" src="/static/img/logo-light.png?v=20260922221147" alt="Hi-Tech Audio">
-    <img class="logo logo-dark" src="/static/img/logo-dark.png?v=20260922221147" alt="Hi-Tech Audio">
+    <img class="logo logo-light" src="/static/img/logo-light.png?v=20260923120330" alt="Hi-Tech Audio">
+    <img class="logo logo-dark" src="/static/img/logo-dark.png?v=20260923120330" alt="Hi-Tech Audio">
     <div class="title-row">
       <span class="app-icon" aria-hidden="true">
-        <img src="/static/icons/app-icon-header.png?v=20260922221147" width="46" height="46" alt="">
+        <img src="/static/icons/app-icon-header.png?v=20260923120330" width="46" height="46" alt="">
       </span>
       <h1>Firmware Tracker</h1>
     </div>
@@ -3710,6 +3710,19 @@
 </section>
 
 
-<script src="/static/app.js?v=20260922221147"></script>
+
+<div id="install-banner" class="install-banner" hidden>
+  <span id="install-banner-text" class="install-banner-text"></span>
+  <div class="install-banner-actions">
+    <button type="button" id="install-banner-action" class="btn btn-small btn-primary" hidden>Install</button>
+    <button type="button" id="install-banner-dismiss" class="install-banner-dismiss" aria-label="Dismiss">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M3 3L13 13M13 3L3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script src="/static/app.js?v=20260923120330"></script>
 </body>
 </html>

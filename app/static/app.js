@@ -220,4 +220,118 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeAllInfoPopovers();
   });
+
+  setupInstallBanner();
 });
+
+// "Add to Home Screen" banner. Phone only, and only when there's something
+// useful to say: a one-tap install button where the browser offers the
+// native beforeinstallprompt flow (Chrome, Edge, Samsung Internet, and
+// most other Chromium-based Android browsers), otherwise manual steps for
+// iOS Safari or any other mobile browser that never fires that event.
+// Stays hidden entirely if the app is already installed or the person has
+// dismissed it before (localStorage, so the choice persists across visits
+// on this device).
+function setupInstallBanner() {
+  const STORAGE_KEY = "installBannerDismissed";
+  const banner = document.getElementById("install-banner");
+  const textEl = document.getElementById("install-banner-text");
+  const actionBtn = document.getElementById("install-banner-action");
+  const dismissBtn = document.getElementById("install-banner-dismiss");
+  if (!banner || !textEl || !actionBtn || !dismissBtn) return;
+
+  const isStandalone = () =>
+    window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+
+  const isDismissed = () => {
+    try {
+      return localStorage.getItem(STORAGE_KEY) === "1";
+    } catch (e) {
+      return false; // private browsing / storage blocked - fail open rather than crash
+    }
+  };
+
+  const dismiss = () => {
+    banner.hidden = true;
+    try {
+      localStorage.setItem(STORAGE_KEY, "1");
+    } catch (e) {
+      // Can't persist (private browsing, storage disabled, quota) - it's
+      // still hidden for this page view, just won't stay dismissed next visit.
+    }
+  };
+
+  // Already installed, or already dismissed before - nothing to do, and
+  // deliberately don't even check the device type below in that case.
+  if (isStandalone() || isDismissed()) return;
+
+  const ua = navigator.userAgent;
+  // iPadOS 13+ reports as "MacIntel" with no "iPad" in the UA - the
+  // touch-points check is the standard way to still catch it. Excluding
+  // "Android" guards against non-Apple devices/browsers that also happen to
+  // report a MacIntel-like platform with touch points.
+  const isIOS =
+    /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1 && !/Android/i.test(ua));
+  // Chrome/Firefox/Edge "for iOS" are re-skinned Safari (Apple requires
+  // WebKit for all iOS browsers) and don't expose "Add to Home Screen" the
+  // same way outside the actual Safari app - showing Safari-specific
+  // instructions there would just be wrong, so skip the banner entirely
+  // rather than guess.
+  const isIOSOtherBrowser = isIOS && /CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua);
+  const isMobile = (isIOS || /Android/i.test(ua) || window.innerWidth < 768) && !isIOSOtherBrowser;
+  if (!isMobile) return;
+
+  dismissBtn.addEventListener("click", dismiss);
+
+  let deferredPrompt = null;
+  let nativePromptOffered = false;
+
+  function showManualInstructions() {
+    if (!banner.hidden) return; // native prompt already claimed the banner
+    textEl.textContent = isIOS
+      ? "Add this app to your home screen: tap Share, then “Add to Home Screen.”"
+      : "Add this app to your home screen: open your browser menu, then “Add to Home Screen” or “Install.”";
+    actionBtn.hidden = true;
+    banner.hidden = false;
+  }
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    nativePromptOffered = true;
+    textEl.textContent = "Install this app for quick access from your home screen.";
+    actionBtn.hidden = false;
+    banner.hidden = false;
+  });
+
+  window.addEventListener("appinstalled", dismiss);
+
+  actionBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    actionBtn.disabled = true;
+    deferredPrompt.prompt();
+    try {
+      await deferredPrompt.userChoice;
+    } catch (e) {
+      // ignore - either way we're done offering it this visit
+    }
+    deferredPrompt = null;
+    // Whether they accepted or declined the native prompt, don't keep
+    // asking every visit - accepting also fires "appinstalled" above,
+    // which calls dismiss() too, so this covers the decline case.
+    dismiss();
+  });
+
+  if (isIOS) {
+    // beforeinstallprompt never fires on iOS Safari - no reason to wait for it.
+    showManualInstructions();
+  } else {
+    // Give the browser a few seconds to offer the native prompt (Chrome
+    // etc.) before assuming this one doesn't support it (Firefox for
+    // Android) and falling back to manual steps.
+    setTimeout(() => {
+      if (!nativePromptOffered) showManualInstructions();
+    }, 3000);
+  }
+}

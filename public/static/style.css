@@ -688,6 +688,52 @@ tr.row-update_detected td {
 .card-detail-label { color: var(--muted); flex-shrink: 0; }
 .card-detail-value { text-align: right; }
 
+/* ---------- "Add to Home Screen" banner (phone only) ---------- */
+
+.install-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)) 16px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+}
+/* display:none as the base (not just relying on the [hidden] attribute)
+   because a bare .install-banner{display:flex} rule would otherwise beat
+   the browser's default [hidden] styling - same pattern as
+   .card-details[hidden] above. JS is the real gate on whether this ever
+   appears at all (device/standalone/dismissed checks); min-width below is
+   a second guard so a desktop-width viewport can never show it even if
+   that JS logic has a gap. */
+.install-banner[hidden] { display: none; }
+.install-banner-text { font-size: 0.83rem; color: var(--text); line-height: 1.4; flex: 1 1 auto; }
+.install-banner-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.install-banner-dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 0;
+  color: var(--muted);
+  cursor: pointer;
+}
+.install-banner-dismiss:hover { color: var(--text); background: var(--page-plane); }
+
+@media (min-width: 721px) {
+  .install-banner { display: none !important; }
+}
+
 @media (max-width: 720px) {
   body { padding: 18px; }
   .page-header { flex-direction: column; }
