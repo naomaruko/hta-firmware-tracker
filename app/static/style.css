@@ -798,21 +798,29 @@ tr.row-update_detected td {
   .install-banner { display: none !important; }
 }
 
-/* Desktop only: the hero image's circle graphic sits centred in the
-   source file, but background-size:cover crops vertically around the
-   image's own centre - at a plain fixed height, that crop gets more
-   aggressive the WIDER the viewport gets (cover's vertical scale grows
-   with width, while a fixed height doesn't), so a flat height bump only
-   fixes narrower desktop windows and re-crops the circle again on wider
-   monitors. aspect-ratio instead ties the banner's height to its own
-   width, which keeps the same vertical slice of the source image visible
-   (and the circle centred within it) at every desktop width uniformly.
+/* Desktop only: the hero image's circle graphic sits a bit below the
+   source file's own vertical centre (its middle is around 56% down the
+   image, not 50%), but background-size:cover with the default "centre"
+   position crops symmetrically around the image's own centre - at a
+   plain fixed height, that crop gets more aggressive the WIDER the
+   viewport gets too (cover's vertical scale grows with width, while a
+   fixed height doesn't), so a flat height bump only fixes narrower
+   desktop windows and re-crops the circle again on wider monitors.
+   aspect-ratio ties the banner's height to its own width, which keeps
+   the same vertical slice of the source image visible at every desktop
+   width uniformly; shifting the vertical background-position down to
+   56% (matching the circle's own centre) means that slice only needs to
+   be tall enough to cover the circle symmetrically around *its* centre,
+   not the image's - letting the banner stay close to its original
+   height instead of needing to grow a lot taller. Both values came from
+   measuring the source image directly and checking the resulting crop.
    Not applied below this breakpoint - tablet/phone's own narrower widths
    already show enough of the image's height without this. */
 @media (min-width: 1025px) {
   .hero-banner {
     height: auto;
-    aspect-ratio: 3.6;
+    aspect-ratio: 4.72;
+    background-position: right 56%;
   }
 }
 
