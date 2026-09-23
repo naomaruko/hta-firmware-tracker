@@ -744,10 +744,11 @@ tr.row-update_detected td {
 /* ---------- "Add to Home Screen" banner (phone only) ---------- */
 
 .install-banner {
-  /* Fixed brand blue (sampled from the app icon's gradient), not a theme
-     variable - this is reinforcing brand identity rather than signaling
-     status, so it deliberately stays the same in light and dark mode. */
-  --install-banner-blue: #1376d4;
+  /* Fixed deep blue (sampled from the hero banner image's own darker
+     blue tones, to match its vibe), not a theme variable - this is
+     reinforcing brand identity rather than signaling status, so it
+     deliberately stays the same in light and dark mode. */
+  --install-banner-blue: #0361ab;
   position: fixed;
   left: 0;
   right: 0;
