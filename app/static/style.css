@@ -769,12 +769,24 @@ tr.row-update_detected td {
   .install-banner { display: none !important; }
 }
 
+/* Tablet: same hero layout as desktop, just a smaller logo - this also
+   applies under the phone breakpoint below (max-width:720px is narrower
+   than max-width:1024px), which sets its own smaller .hero-logo that wins
+   by appearing later in the file. */
+@media (max-width: 1024px) {
+  .hero-logo { height: 32px; margin-bottom: 24px; }
+}
+
 @media (max-width: 720px) {
   body { padding: 18px; }
   .hero-banner { margin-top: -18px; min-height: 190px; }
   .hero-banner-content { padding: 0 20px; }
-  .hero-logo { height: 27px; margin-bottom: 20px; }
-  .hero-title { font-size: 2rem; max-width: 230px; margin-bottom: 18px; }
+  .hero-logo { height: 24px; margin-bottom: 16px; }
+  /* No max-width here (unlike the old two-line version) - "Firmware
+     Tracker" needs to fit on one line at phone widths, so the title wraps
+     only on whatever's left after the font-size shrink below, not a
+     deliberate cap. */
+  .hero-title { font-size: 1.55rem; margin-bottom: 18px; }
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
   .hero-figure { font-size: 2.4rem; }
 
