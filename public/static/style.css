@@ -81,6 +81,13 @@
 body {
   margin: 0;
   padding: 28px 32px 64px;
+  /* .hero-banner below intentionally breaks out to 100vw to go full-bleed -
+     that's consistently a hair wider than 100% because it doesn't account
+     for the scrollbar's own width, which would otherwise add a horizontal
+     scrollbar of its own. Nothing else on the page needs to scroll
+     horizontally at the body level (tables that overflow scroll within
+     their own container), so this is safe. */
+  overflow-x: hidden;
   background: var(--page-plane);
   color: var(--text);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -94,46 +101,63 @@ body {
   margin-inline: auto;
 }
 
-/* ---------- Header ---------- */
+/* ---------- Hero banner ---------- */
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  flex-wrap: wrap;
+.hero-banner {
+  /* Full-bleed: breaks out of body's centered max-width column so this
+     spans the actual viewport edge-to-edge, matching
+     firmware-tracker-mockup.png - the standard "full-bleed from a centered
+     container" trick. Needs body { overflow-x: hidden } (see below) since
+     100vw doesn't account for the scrollbar's own width. */
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  margin-left: -50vw;
+  /* Cancels out body's own top padding so this sits flush at the very top
+     of the page - tied to body's padding-top (28px, 18px under the mobile
+     breakpoint below). */
+  margin-top: -28px;
   margin-bottom: 24px;
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  /* Flat fallback colour sampled from the hero image's own background -
+     shows through briefly before the image loads, and on any viewport
+     proportions wide/short enough that background-size:cover still leaves
+     a sliver uncovered. Fixed rather than theme-based: like the image
+     itself, this is a brand moment, not a status colour - same reasoning
+     as the install banner's blue. */
+  background-color: #001d14;
+  background-image: var(--hero-image);
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
 }
 
-.logo {
-  height: 46px;
-  width: auto;
-  display: block;
-  margin-bottom: 28px;
-}
-/* The dark-mode logo is relit to a near-white gray so it reads on a dark
-   page (see app/static/img/logo-dark.png) - full-strength that's brighter
-   than anything else on the page, so it visually shouts over the title
-   right below it. Toning it down via opacity (rather than the pixels
-   themselves) keeps it easy to re-tune without regenerating the image. */
-.logo-dark { display: none; opacity: 0.8; }
-@media (prefers-color-scheme: dark) {
-  .logo-light { display: none; }
-  .logo-dark { display: block; }
+.hero-banner-content {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding: 0 32px;
 }
 
-.title-row { display: flex; align-items: center; gap: 10px; }
-.app-icon { display: inline-flex; flex-shrink: 0; }
-.app-icon img { display: block; }
-/* No margin-bottom: title-row's align-items:center centers each child's
-   full margin box, so an asymmetric bottom margin here (h1 is taller than
-   its own text but shorter than the 46px icon beside it) pushed the
-   visible text upward relative to the icon - the icon looked "lower" than
-   the heading. The gap to .subtitle below doesn't depend on this margin
-   anyway - the icon (taller than the text) already sets the row's height,
-   so .subtitle starts after that regardless. */
-h1 { margin: 0; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.01em; }
-.subtitle { margin: 0; color: var(--text-secondary); max-width: 620px; line-height: 1.5; }
+/* Always the light/white-lettered logo variant (the same one the old
+   header used in dark mode) - the hero's background is a fixed dark image
+   regardless of site theme, so unlike the old header logo this one never
+   swaps with prefers-color-scheme. */
+.hero-logo { height: 28px; width: auto; display: block; margin-bottom: 20px; }
+
+.hero-title {
+  margin: 0 0 22px;
+  color: #fff;
+  font-size: 2.75rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.hero-check-btn { display: inline-flex; align-items: center; gap: 8px; }
+.hero-check-icon { flex-shrink: 0; }
 
 .btn {
   border: none;
@@ -747,7 +771,10 @@ tr.row-update_detected td {
 
 @media (max-width: 720px) {
   body { padding: 18px; }
-  .page-header { flex-direction: column; }
+  .hero-banner { margin-top: -18px; min-height: 190px; }
+  .hero-banner-content { padding: 0 20px; }
+  .hero-logo { height: 20px; margin-bottom: 14px; }
+  .hero-title { font-size: 2rem; max-width: 230px; margin-bottom: 18px; }
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
   .hero-figure { font-size: 2.4rem; }
 
