@@ -145,7 +145,7 @@ body {
    header used in dark mode) - the hero's background is a fixed dark image
    regardless of site theme, so unlike the old header logo this one never
    swaps with prefers-color-scheme. */
-.hero-logo { height: 38px; width: auto; display: block; margin-bottom: 20px; }
+.hero-logo { height: 38px; width: auto; display: block; margin-bottom: 30px; }
 
 .hero-title {
   margin: 0 0 22px;
@@ -773,7 +773,7 @@ tr.row-update_detected td {
   body { padding: 18px; }
   .hero-banner { margin-top: -18px; min-height: 190px; }
   .hero-banner-content { padding: 0 20px; }
-  .hero-logo { height: 27px; margin-bottom: 14px; }
+  .hero-logo { height: 27px; margin-bottom: 20px; }
   .hero-title { font-size: 2rem; max-width: 230px; margin-bottom: 18px; }
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
   .hero-figure { font-size: 2.4rem; }
