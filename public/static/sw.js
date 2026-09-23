@@ -8,7 +8,7 @@
 // CACHE_VERSION is replaced with a fresh value on every static-site deploy
 // (see scripts/build_static.py) so a new deploy's assets can't get stuck
 // behind an old cache indefinitely.
-const CACHE_VERSION = "hta-firmware-20260923120330";
+const CACHE_VERSION = "hta-firmware-20260923123105";
 
 const APP_SHELL = [
   "/",

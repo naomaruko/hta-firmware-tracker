@@ -691,6 +691,10 @@ tr.row-update_detected td {
 /* ---------- "Add to Home Screen" banner (phone only) ---------- */
 
 .install-banner {
+  /* Fixed brand blue (sampled from the app icon's gradient), not a theme
+     variable - this is reinforcing brand identity rather than signaling
+     status, so it deliberately stays the same in light and dark mode. */
+  --install-banner-blue: #1376d4;
   position: fixed;
   left: 0;
   right: 0;
@@ -701,8 +705,8 @@ tr.row-update_detected td {
   justify-content: space-between;
   gap: 12px;
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)) 16px;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
+  background: var(--install-banner-blue);
+  border-top: 1px solid var(--install-banner-blue);
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
 }
 /* display:none as the base (not just relying on the [hidden] attribute)
@@ -713,7 +717,7 @@ tr.row-update_detected td {
    a second guard so a desktop-width viewport can never show it even if
    that JS logic has a gap. */
 .install-banner[hidden] { display: none; }
-.install-banner-text { font-size: 0.83rem; color: var(--text); line-height: 1.4; flex: 1 1 auto; }
+.install-banner-text { font-size: 0.83rem; color: #fff; line-height: 1.4; flex: 1 1 auto; }
 .install-banner-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .install-banner-dismiss {
   display: inline-flex;
@@ -725,10 +729,10 @@ tr.row-update_detected td {
   border: none;
   border-radius: 6px;
   padding: 0;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
 }
-.install-banner-dismiss:hover { color: var(--text); background: var(--page-plane); }
+.install-banner-dismiss:hover { color: #fff; background: rgba(255, 255, 255, 0.15); }
 
 @media (min-width: 721px) {
   .install-banner { display: none !important; }
