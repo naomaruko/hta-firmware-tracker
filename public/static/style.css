@@ -139,23 +139,35 @@ body {
 
 .hero-banner-content {
   /* Grid instead of normal flow: logo takes the first (auto-height) row,
-     button the last, and the title's row soaks up whatever's left via
-     1fr - align-items:center then centers the title within that leftover
-     space, which is most of the banner's height, so it reads as "centred
-     in the banner" while the logo stays pinned near the top and the
-     button near the bottom. justify-items:start keeps every row's item
-     at its own natural width on the left, like normal block flow would -
-     grid's own default (stretch) would otherwise widen the button. */
+     and the title+button wrapper takes the second, which soaks up
+     whatever's left via 1fr - align-items:center then centers that
+     wrapper within the leftover space (most of the banner's height), so
+     the title reads as roughly centred while the logo stays pinned near
+     the top. The button is *inside* that centred wrapper rather than a
+     separate grid row of its own - giving it its own row (as an earlier
+     version of this did) ate into the leftover space and pulled the
+     centred title noticeably higher than the banner's true centre.
+     justify-items:start keeps each row's item at its own natural width on
+     the left, like normal block flow would - grid's own default
+     (stretch) would otherwise widen them. */
+  /* No explicit height here - the flex parent's default align-items:stretch
+     already stretches this to the banner's full height. An explicit
+     height:100% looks equivalent but isn't: .hero-banner only has
+     min-height (not height), so this box's percentage has no definite
+     value to resolve against and silently falls back to auto - which
+     collapsed grid's 1fr row down to the title/button wrapper's own
+     natural size (no leftover space left to centre it within). */
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr;
   align-items: center;
   justify-items: start;
-  height: 100%;
   width: 100%;
   max-width: 1240px;
   margin-inline: auto;
-  padding: 32px;
+  padding: 32px 32px 32px 44px;
 }
+
+.hero-title-wrap { display: flex; flex-direction: column; }
 
 /* hero-logo.png is logo-dark.png's two flat colours remapped (darker grey
    letters, brighter green ticks) - see app/static/img/logo-dark.png for
@@ -797,10 +809,10 @@ tr.row-update_detected td {
 @media (max-width: 720px) {
   body { padding: 18px; }
   .hero-banner { margin-top: -18px; min-height: 190px; }
-  /* Horizontal padding matches body's own mobile padding (18px, set just
-     above) exactly, so the logo/title line up with the stats row/search/
-     table content below, which all inherit that same body padding. */
-  .hero-banner-content { padding: 20px 18px; }
+  /* Right/bottom padding matches body's own mobile padding (18px, set just
+     above); left is intentionally larger for a bit more breathing room
+     from the banner's edge, same reasoning as the desktop 44px. */
+  .hero-banner-content { padding: 20px 18px 20px 26px; }
   .hero-logo { height: 24px; margin-bottom: 16px; }
   /* No max-width here (unlike the old two-line version) - "Firmware
      Tracker" needs to fit on one line at phone widths, so the title wraps
