@@ -138,13 +138,19 @@ body {
   width: 100%;
   max-width: 1240px;
   margin-inline: auto;
-  padding: 0 32px;
+  /* Left padding is intentionally smaller than the right - the logo and
+     title (both direct children here, so they already share this same
+     left edge) sit closer to the hero's own left edge than the rest of
+     the page's content column does. Right side keeps the wider padding
+     so the button/text still clear the background graphic comfortably. */
+  padding: 0 32px 0 18px;
 }
 
-/* Always the light/white-lettered logo variant (the same one the old
-   header used in dark mode) - the hero's background is a fixed dark image
-   regardless of site theme, so unlike the old header logo this one never
-   swaps with prefers-color-scheme. */
+/* hero-logo.png is logo-dark.png's two flat colours remapped (darker grey
+   letters, brighter green ticks) - see app/static/img/logo-dark.png for
+   the unmodified original. Always this variant regardless of site theme -
+   the hero's background is a fixed dark image, so unlike the old header
+   logo this one never swaps with prefers-color-scheme. */
 .hero-logo { height: 38px; width: auto; display: block; margin-bottom: 30px; }
 
 .hero-title {
@@ -780,7 +786,7 @@ tr.row-update_detected td {
 @media (max-width: 720px) {
   body { padding: 18px; }
   .hero-banner { margin-top: -18px; min-height: 190px; }
-  .hero-banner-content { padding: 0 20px; }
+  .hero-banner-content { padding: 0 20px 0 14px; }
   .hero-logo { height: 24px; margin-bottom: 16px; }
   /* No max-width here (unlike the old two-line version) - "Firmware
      Tracker" needs to fit on one line at phone widths, so the title wraps
