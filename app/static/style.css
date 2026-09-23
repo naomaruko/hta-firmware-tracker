@@ -713,9 +713,16 @@ tr.row-update_detected td {
    because a bare .install-banner{display:flex} rule would otherwise beat
    the browser's default [hidden] styling - same pattern as
    .card-details[hidden] above. JS is the real gate on whether this ever
-   appears at all (device/standalone/dismissed checks); min-width below is
-   a second guard so a desktop-width viewport can never show it even if
-   that JS logic has a gap. */
+   appears at all (device/standalone/dismissed checks); the hover/pointer
+   query below is a second guard so a real desktop-with-mouse can never
+   show it even if that JS logic has a gap. It's deliberately not a
+   min-width query - tablet viewports (iPad portrait starts at 744px, and
+   landscape goes well past 1024px) are wider than any phone breakpoint,
+   so a width cutoff meant to catch "desktop" ends up hiding the banner on
+   every tablet too. Coarse-pointer/no-hover correctly matches phones and
+   tablets (iOS deliberately reports this even with an external trackpad
+   or Magic Keyboard attached) while still excluding real desktop/laptop
+   mice regardless of how narrow that browser window is resized. */
 .install-banner[hidden] { display: none; }
 .install-banner-text { font-size: 0.83rem; color: #fff; line-height: 1.4; flex: 1 1 auto; }
 .install-banner-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
@@ -734,7 +741,7 @@ tr.row-update_detected td {
 }
 .install-banner-dismiss:hover { color: #fff; background: rgba(255, 255, 255, 0.15); }
 
-@media (min-width: 721px) {
+@media (hover: hover) and (pointer: fine) {
   .install-banner { display: none !important; }
 }
 
