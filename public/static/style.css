@@ -798,6 +798,24 @@ tr.row-update_detected td {
   .install-banner { display: none !important; }
 }
 
+/* Desktop only: the hero image's circle graphic sits centred in the
+   source file, but background-size:cover crops vertically around the
+   image's own centre - at a plain fixed height, that crop gets more
+   aggressive the WIDER the viewport gets (cover's vertical scale grows
+   with width, while a fixed height doesn't), so a flat height bump only
+   fixes narrower desktop windows and re-crops the circle again on wider
+   monitors. aspect-ratio instead ties the banner's height to its own
+   width, which keeps the same vertical slice of the source image visible
+   (and the circle centred within it) at every desktop width uniformly.
+   Not applied below this breakpoint - tablet/phone's own narrower widths
+   already show enough of the image's height without this. */
+@media (min-width: 1025px) {
+  .hero-banner {
+    height: auto;
+    aspect-ratio: 3.6;
+  }
+}
+
 /* Tablet: same hero layout as desktop, just a smaller logo - this also
    applies under the phone breakpoint below (max-width:720px is narrower
    than max-width:1024px), which sets its own smaller .hero-logo that wins
