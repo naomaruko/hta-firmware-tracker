@@ -834,7 +834,22 @@ tr.row-update_detected td {
 
 @media (max-width: 720px) {
   body { padding: 18px; }
-  .hero-banner { margin-top: -18px; min-height: 190px; }
+  .hero-banner {
+    margin-top: -18px;
+    min-height: 190px;
+    /* Phone only: darkens the left side (where the logo/title/button
+       sit) fading to fully transparent by 70% width, well before the
+       circle graphic - the text needs more contrast against the busy
+       wave background at this size than desktop/tablet do, where the
+       text has more breathing room from the graphic. Colour matches the
+       image's own dark background tone (sampled from the source file)
+       rather than plain black, so it blends in instead of looking like
+       an obviously separate layer. */
+    background-image: linear-gradient(to right, rgba(0, 29, 20, 0.8) 0%, rgba(0, 29, 20, 0.8) 35%, rgba(0, 29, 20, 0) 70%), var(--hero-image);
+    background-size: auto, cover;
+    background-position: left center, right center;
+    background-repeat: no-repeat, no-repeat;
+  }
   /* Right/bottom padding matches body's own mobile padding (18px, set just
      above); left is intentionally larger for a bit more breathing room
      from the banner's edge, same reasoning as the desktop 44px. */
