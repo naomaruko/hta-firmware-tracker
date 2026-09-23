@@ -120,7 +120,12 @@ body {
   margin-bottom: 24px;
   min-height: 260px;
   display: flex;
-  align-items: center;
+  /* Top-anchored rather than vertically centred - brings the logo closer
+     to the banner's top edge. .hero-banner-content's own padding-top
+     controls exactly how close; the spacing between logo/title/button
+     below it is untouched, so they keep the same position relative to
+     each other, just as a group sitting higher up. */
+  align-items: flex-start;
   /* Flat fallback colour sampled from the hero image's own background -
      shows through briefly before the image loads, and on any viewport
      proportions wide/short enough that background-size:cover still leaves
@@ -138,12 +143,7 @@ body {
   width: 100%;
   max-width: 1240px;
   margin-inline: auto;
-  /* Left padding is intentionally smaller than the right - the logo and
-     title (both direct children here, so they already share this same
-     left edge) sit closer to the hero's own left edge than the rest of
-     the page's content column does. Right side keeps the wider padding
-     so the button/text still clear the background graphic comfortably. */
-  padding: 0 32px 0 18px;
+  padding: 32px 32px 0;
 }
 
 /* hero-logo.png is logo-dark.png's two flat colours remapped (darker grey
@@ -786,7 +786,7 @@ tr.row-update_detected td {
 @media (max-width: 720px) {
   body { padding: 18px; }
   .hero-banner { margin-top: -18px; min-height: 190px; }
-  .hero-banner-content { padding: 0 20px 0 14px; }
+  .hero-banner-content { padding: 20px 20px 0; }
   .hero-logo { height: 24px; margin-bottom: 16px; }
   /* No max-width here (unlike the old two-line version) - "Firmware
      Tracker" needs to fit on one line at phone widths, so the title wraps
