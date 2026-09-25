@@ -8,6 +8,13 @@ data/*.db
 link-icon.png
 firmware tracker design ideas.jpg
 
+# Design mockups and the full-size source PNGs the stat-card icons were
+# cropped/resized from (the app uses the small derived copies in
+# app/static/img/stat-*.png). Kept locally, just not committed.
+firmware-tracker-mockup.png
+stat-card-and-filter-button-mockup.png
+stat-card-icon-*.png
+
 # Local Claude Code tooling config - hardcodes this machine's absolute path,
 # not useful to anyone else who clones the repo.
 .claude/
