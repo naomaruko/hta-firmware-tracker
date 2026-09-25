@@ -27,14 +27,15 @@ DASHBOARD_URL = "https://hta-firmware-tracker.vercel.app/"
 # why they share a checker_key in the first place, so it's a more reliable
 # "these are really the same family" signal than just matching version
 # strings, which could coincidentally collide between two unrelated
-# manufacturers). Only worth naming here for keys that actually cover more
-# than one item - see _family_label for the fallback for everything else.
+# manufacturers). Worth naming here for keys that cover more than one item,
+# or that stand for a whole product family even though only some of it is
+# tracked (SD) - see _family_label for the fallback for everything else.
 FAMILY_NAMES = {
     "ah:dlive": "Allen & Heath dLive series",
     "db:d40d90": "d&b D40/D90",
     "digico:quantum": "DiGiCo Quantum series",
+    "digico:sd": "DiGiCo SD series",
     "shure:ad_transmitters": "Shure AD/ADX transmitters",
-    "shure:adxr": "Shure ADXR/ADTQ receivers",
     "ssl:live": "Solid State Logic Live console series",
     "ssl:networkio": "Solid State Logic Network I/O series",
     "yamaha:rivage_pm": "Yamaha Rivage PM series",

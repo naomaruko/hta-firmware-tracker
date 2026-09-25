@@ -38,6 +38,10 @@ PRODUCTS = {
     "shure:ad610": ("AD610", "AD610 - Axient Digital Diversity ShowLink"),
     "shure:ad8c": ("AD8C", "AD8C - Axient Digital PSM 8-Port Antenna Combiner"),
     "shure:adxr": ("ADXR", "ADXR - Axient Digital PSM Wireless Bodypack Receiver"),
+    # Shure publishes ADTD/ADTQ firmware as its own release (currently the
+    # same version as ADXR, but a separate listing) - tracked on its own so
+    # the row's source link is the ADTQ search, not ADXR's.
+    "shure:adtq": ("ADTQ", "ADTD and ADTQ - Axient Digital PSM Wireless Transmitters"),
     "shure:sbc441": ("SBC441", "SBC441 - Axient Digital PSM 4-Bay Docking Charger"),
     "shure:sbc240": ("SBC240", "SBC220/240 - 2-Bay Chargers"),
     "shure:sbrc": ("SBRC", "SBRC - Shure Battery Rack Charger"),

@@ -80,7 +80,7 @@ EQUIPMENT = [
     ("Shure", "AD600 — Axient Digital Spectrum Manager", None, "shure:ad600", None, None),
     ("Shure", "AD610 — Axient Digital Diversity ShowLink Access Point", None, "shure:ad610", None, "Confirmed via Shure Update Utility (1.5.4.0, Mar 27 2026)."),
     ("Shure", "AD8C — Axient Digital PSM 8-Port Antenna Combiner", None, "shure:ad8c", None, None),
-    ("Shure", "ADTQ — Axient Digital PSM Quad Channel Transmitter", None, "shure:adxr", None, "G57 band, US SKU. Updates via ADXR - shares its firmware (confirmed via Shure Update Utility)."),
+    ("Shure", "ADTQ — Axient Digital PSM Quad Channel Transmitter", None, "shure:adtq", None, "G57 band, US SKU. Shure lists its firmware together with the ADTD as \"ADTD and ADTQ\"."),
     ("Shure", "ADX1/ADX2 — Axient Digital Bodypack/Handheld Transmitter", None, "shure:ad_transmitters", None, None),
     ("Shure", "ADXR — Axient Digital PSM Wireless Bodypack Receiver", None, "shure:adxr", None, None),
     ("Shure", "SBC240 — Two-Bay Networked Docking Charger", None, "shure:sbc240", None, "Shares a firmware page with SBC220 (\"SBC220/240 - 2-Bay Chargers\")."),
