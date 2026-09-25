@@ -18,6 +18,21 @@
 <link rel="stylesheet" href="/static/style.css?v={{ v }}">
 </head>
 <body>
+{# Per-platform versions (Dante Controller: Windows / macOS Apple Silicon /
+   macOS Intel), shown when a row is expanded - shared by the desktop table
+   and the phone card so both list them identically. A platform with a
+   recent update is tagged, with the version it replaced. #}
+{% macro platform_list(plats) %}
+<ul class="platform-list">
+  {% for p in plats %}
+  <li class="platform-item">
+    <span class="platform-name">{{ p.name }}</span>
+    <span class="platform-version">{{ p.current_version }}</span>
+    {% if p.update_pending %}<span class="badge badge-warning platform-badge">Update</span>{% if p.previous_version %}<span class="platform-prev">was {{ p.previous_version }}</span>{% endif %}{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endmacro %}
 <section class="hero-banner" style="--hero-image: url('/static/img/hero-banner.webp?v={{ v }}');">
   <div class="hero-banner-content">
     <img class="hero-logo" src="/static/img/hero-logo.png?v={{ v }}" alt="Hi-Tech Audio">
@@ -128,13 +143,16 @@
       <tr class="category-row" data-category="{{ category }}"><td colspan="7">{{ category }}</td></tr>
       {% endif %}
       {% for item in items %}
+      {% set plats = item.platforms or [] %}
       <tr data-id="{{ item.id }}"
           data-status="{{ item.status }}"
           data-category="{{ category or '' }}"
           data-search="{{ (manufacturer ~ ' ' ~ item.model)|lower }}"
           class="row-{{ item.status }}">
         <td class="model-col">
-          <div class="model-name">{{ item.model }}</div>
+          <div class="model-name">{{ item.model }}{% if plats %}<button type="button" class="row-toggle" aria-expanded="false" aria-controls="platforms-{{ item.id }}" aria-label="Show versions by platform for {{ item.model }}">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>{% endif %}</div>
         </td>
         <td>
           {% if item.status == 'ok' %}<span class="badge badge-good">Up to date</span>
@@ -143,7 +161,7 @@
           {% else %}<span class="badge badge-neutral">Not checked yet</span>
           {% endif %}
         </td>
-        <td class="version-cell">{{ item.current_version or '—' }}</td>
+        <td class="version-cell">{{ item.current_version or '—' }}{% if plats %}<span class="platform-hint">{{ plats|length }} platforms</span>{% endif %}</td>
         <td class="muted release-date-cell">
           {% if has_release_dates %}{{ item.release_date or '—' }}
           {% else %}{{ item.last_changed_at|pacific("%B %-d, %Y") if item.last_changed_at else '—' }}
@@ -161,6 +179,11 @@
           </a>{% else %}—{% endif %}
         </td>
       </tr>
+      {% if plats %}
+      <tr class="platform-row row-{{ item.status }}" id="platforms-{{ item.id }}" data-parent-id="{{ item.id }}" hidden>
+        <td colspan="7"><div class="platform-wrap">{{ platform_list(plats) }}</div></td>
+      </tr>
+      {% endif %}
       {% if item.last_error %}
       <tr class="error-row" data-parent-id="{{ item.id }}"><td colspan="7">⚠ {{ item.last_error }}</td></tr>
       {% endif %}
@@ -184,6 +207,7 @@
     <div class="card-category-row" data-category="{{ category }}">{{ category }}</div>
     {% endif %}
     {% for item in items %}
+    {% set plats = item.platforms or [] %}
     <div class="item-card row-{{ item.status }}"
          data-id="{{ item.id }}"
          data-status="{{ item.status }}"
@@ -199,7 +223,7 @@
           {% endif %}
         </div>
         <div class="card-summary-bottom">
-          <span class="card-version">{{ item.current_version or '—' }}</span>
+          <span class="card-version">{{ item.current_version or '—' }}{% if plats %}<span class="platform-hint">{{ plats|length }} platforms</span>{% endif %}</span>
           <svg class="card-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -207,6 +231,7 @@
       </div>
       {% if item.last_error %}<div class="card-error">⚠ {{ item.last_error }}</div>{% endif %}
       <div class="card-details" hidden>
+        {% if plats %}<div class="card-platforms">{{ platform_list(plats) }}</div>{% endif %}
         <div class="card-detail-row">
           <span class="card-detail-label">{{ 'Release date' if has_release_dates else 'Detected on' }}</span>
           <span class="card-detail-value">

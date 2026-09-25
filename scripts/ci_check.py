@@ -13,6 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from app.changes import find_changes, snapshot_versions  # noqa: E402
 from app.database import Base, SessionLocal, engine, run_light_migrations  # noqa: E402
 from app.export import load_json, restore_equipment_state, write_json  # noqa: E402
 from app.models import Equipment  # noqa: E402
@@ -38,7 +39,7 @@ def main():
         # current_version untouched, so neither shows up here). Empty on
         # the very first-ever run, which correctly means nothing counts as
         # "changed" yet - there's nothing to compare against.
-        old_versions = {(r["manufacturer"], r["model"]): r.get("current_version") for r in previous}
+        old_versions, old_platforms = snapshot_versions(previous)
         if previous:
             restore_equipment_state(db, previous)
             print(f"Restored check history for {len(previous)} items from {JSON_PATH.name}")
@@ -48,19 +49,7 @@ def main():
         checked = check_all(db)
         print(f"Checked {checked} items")
 
-        changes = [
-            {
-                "manufacturer": item.manufacturer,
-                "model": item.model,
-                "checker_key": item.checker_key,
-                "previous_version": old_versions[(item.manufacturer, item.model)],
-                "current_version": item.current_version,
-            }
-            for item in db.query(Equipment).all()
-            if old_versions.get((item.manufacturer, item.model))
-            and item.status == "update_detected"
-            and item.current_version != old_versions[(item.manufacturer, item.model)]
-        ]
+        changes = find_changes(db.query(Equipment).all(), old_versions, old_platforms)
         if changes:
             print(f"{len(changes)} genuine version change(s) detected this run")
             status = notify_updates(changes, os.environ.get("SLACK_WEBHOOK_URL"))

@@ -1,5 +1,6 @@
 """Shared types and HTTP helper for checkers."""
 import datetime as dt
+import re
 from dataclasses import dataclass
 from typing import Optional
 
@@ -22,6 +23,23 @@ class CheckResult:
     # Free text exactly as the manufacturer states it (formats vary between
     # sources) - None where that source doesn't publish a release date at all.
     release_date: Optional[str] = None
+    # For products published as separate per-platform builds with their own
+    # version numbers (Dante Controller: Windows / macOS Apple Silicon /
+    # macOS Intel): display name -> version, in display order. When set,
+    # `version` is the newest of them (see newest_version) and the runner
+    # tracks each platform's changes separately. None for everything else.
+    platforms: Optional[dict] = None
+
+
+def version_key(version):
+    """Sort key for dotted version strings ("4.18.1.2" > "4.18.1.1"); falls
+    back to comparing as text if there are no digits to parse."""
+    parts = re.findall(r"\d+", version or "")
+    return (tuple(int(p) for p in parts), version or "")
+
+
+def newest_version(versions):
+    return max(versions, key=version_key) if versions else None
 
 
 def http_get(url, **kwargs):

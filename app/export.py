@@ -56,6 +56,7 @@ def restore_equipment_state(db, records: list):
         item.current_version = r.get("current_version")
         item.previous_version = r.get("previous_version")
         item.release_date = r.get("release_date")
+        item.platforms = r.get("platforms")
         item.status = r.get("status") or item.status
         item.last_error = r.get("last_error")
         for field in _DT_FIELDS:

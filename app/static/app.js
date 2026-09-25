@@ -76,8 +76,11 @@ function applyFilters() {
       const visible = matchesSearch && matchesStatus;
       row.classList.toggle("is-hidden", !visible);
 
-      const errorRow = group.querySelector(`tr.error-row[data-parent-id="${row.dataset.id}"]`);
-      if (errorRow) errorRow.classList.toggle("is-hidden", !visible);
+      group
+        .querySelectorAll(
+          `tr.error-row[data-parent-id="${row.dataset.id}"], tr.platform-row[data-parent-id="${row.dataset.id}"]`
+        )
+        .forEach((detailRow) => detailRow.classList.toggle("is-hidden", !visible));
 
       if (visible) {
         groupHasVisible = true;
@@ -183,6 +186,18 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         toggle();
       }
+    });
+  });
+
+  // Desktop table: expand a row to show its per-platform versions (Dante
+  // Controller). The phone card list does the same via .card-summary above.
+  document.querySelectorAll(".row-toggle").forEach((btn) => {
+    const detailRow = document.getElementById(btn.getAttribute("aria-controls"));
+    if (!detailRow) return;
+    btn.addEventListener("click", () => {
+      const opening = detailRow.hidden;
+      detailRow.hidden = !opening;
+      btn.setAttribute("aria-expanded", String(opening));
     });
   });
 

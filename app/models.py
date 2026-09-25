@@ -2,6 +2,7 @@
 import datetime as dt
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     Column,
     DateTime,
@@ -38,6 +39,13 @@ class Equipment(Base):
     # into one date type, which risks silently misreading an ambiguous
     # format like d&b's DD.MM.YYYY. None where no source publishes a date.
     release_date = Column(String, nullable=True)
+    # Only for products published as separate per-platform builds with their
+    # own versions (Dante Controller); None for everything else. A list of
+    # {name, current_version, previous_version, last_changed_at (ISO string,
+    # naive UTC), update_pending} dicts. current_version above then holds the
+    # newest of them, and status is update_detected if *any* platform has a
+    # pending update.
+    platforms = Column(JSON, nullable=True)
     # unchecked | ok | update_detected | error
     status = Column(String, nullable=False, default="unchecked")
 
@@ -61,6 +69,7 @@ class Equipment(Base):
             "current_version": self.current_version,
             "previous_version": self.previous_version,
             "release_date": self.release_date,
+            "platforms": self.platforms,
             "status": self.status,
             "last_checked_at": self.last_checked_at.isoformat()
             if self.last_checked_at

@@ -66,20 +66,30 @@ def _family_label(key, group):
         name = FAMILY_NAMES.get(key)
         if name:
             return name
-    if len(group) == 1:
+    # Several entries can be the same *item* (one per changed platform), not
+    # several items - count distinct models.
+    models = list(dict.fromkeys(c["model"] for c in group))
+    if len(models) == 1:
         c = group[0]
         return f"{c['manufacturer']} {c['model']}"
     # A genuinely multi-item family we haven't given a friendly name to
     # (e.g. a new checker_key added since) - list the actual models rather
     # than invent a collective name we can't vouch for.
     manufacturer = group[0]["manufacturer"]
-    models = "/".join(c["model"] for c in group)
-    return f"{manufacturer} {models}"
+    return f"{manufacturer} {'/'.join(models)}"
 
 
 def _format_message(key, group):
     label = _family_label(key, group)
-    version = group[0]["current_version"]
+    if group[0].get("platform"):
+        # Per-platform product (Dante Controller): versions can differ by
+        # platform, so name each one rather than implying a single version.
+        if len(group) == 1:
+            label, version = f"{label} ({group[0]['platform']})", group[0]["current_version"]
+        else:
+            version = ", ".join(f"{c['platform']} {c['current_version']}" for c in group)
+    else:
+        version = group[0]["current_version"]
     return f"<!channel> New firmware available for *{label}* → {version}\n\n<{DASHBOARD_URL}|View dashboard>"
 
 

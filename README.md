@@ -51,12 +51,21 @@ checkers — see below.)
 | Yamaha | ✅ Scraped | Static per-product firmware pages on `usa.yamaha.com` |
 | Solid State Logic | ✅ Scraped | `support.solidstatelogic.com`'s Zendesk API too; tracked via SOLSA (versions 1:1 with SSL Live console software) and the Network I/O firmware bundle |
 | Allen & Heath | ✅ Scraped (headless) | Site returns HTTP 403 to plain requests (bot protection) — works fine in a real headless browser |
-| Dante/Audinate | ✅ Scraped (headless) | The version table is inside a click-to-expand accordion, so it's not in the page until JS runs |
+| Dante/Audinate | ✅ Scraped (headless) | The version table is inside a click-to-expand accordion, so it's not in the page until JS runs. Dante Controller is published as separate Windows / macOS Apple Silicon / macOS Intel builds with their own versions, so all three are tracked (see below) |
 | d&b audiotechnik | ✅ Scraped (headless) | Their Download Center is a JS-driven search box behind a cookie-consent overlay; D40/D90 share one firmware release, DN1 Switch has its own |
 | Shure | ✅ Scraped (headless) | Firmware versions come from `shure.com`'s searchable software/firmware archive listing |
 
 Every item is checked automatically. A piece of gear only gets added to the
 list once a checker can read its version.
+
+**Per-platform versions (Dante Controller).** Its row stays compact - one
+status badge and the newest version, with a "3 platforms" note - and expands
+(chevron on desktop, tap on phone) to list each platform's own version. Each
+platform tracks its own previous version and change date, and the row's badge
+is "Update available" whenever *any* platform changed within the 2-week
+highlight window (the expanded list tags which one). Slack alerts name the
+platform(s), e.g. "Dante Controller (Windows) → 4.18.1.3", and an update to
+just one platform is caught even if it doesn't change the headline version.
 
 Yamaha, Allen & Heath, and Dante/Audinate don't publish a release date at
 all - their checkers have nothing to put there. For those manufacturers

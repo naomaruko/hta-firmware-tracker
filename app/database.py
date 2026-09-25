@@ -35,6 +35,7 @@ def get_db():
 _EQUIPMENT_COLUMNS_ADDED_LATER = [
     ("release_date", "VARCHAR"),
     ("category", "VARCHAR"),
+    ("platforms", "JSON"),
 ]
 
 

@@ -567,6 +567,60 @@ tr.row-update_detected td {
 }
 .error-row.is-hidden { display: none; }
 
+/* ---------- Per-platform versions (Dante Controller) ---------- */
+
+/* Small muted note under the headline version - it's the newest of several
+   platform builds, so say so instead of implying they're all that number. */
+.platform-hint {
+  display: block;
+  margin-top: 2px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: normal;
+}
+.card-version .platform-hint {
+  display: inline;
+  margin: 0 0 0 8px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.72rem;
+}
+
+.row-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-left: 6px;
+  padding: 0;
+  vertical-align: middle;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.row-toggle:hover { color: var(--text); background: var(--neutral-bg); }
+.row-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.row-toggle svg { transition: transform 0.15s ease; }
+.row-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+/* Expanded row: one line per platform. sticky-left inside the scrolling
+   table wrapper so the list stays in view when a narrow window scrolls the
+   table sideways, instead of sitting off-screen at the far left. */
+.platform-row td { padding-top: 4px; padding-bottom: 12px; }
+.platform-row[hidden] { display: none; }
+.platform-row.is-hidden { display: none; }
+.platform-wrap { position: sticky; left: 14px; width: fit-content; }
+.platform-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.platform-item { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; font-size: 0.85rem; }
+.platform-name { min-width: 150px; color: var(--muted); }
+.platform-version { font-variant-numeric: tabular-nums; font-weight: 600; }
+.platform-badge { font-size: 0.68rem; padding: 2px 8px; }
+.platform-prev { font-size: 0.75rem; color: var(--muted); }
+
 /* ---------- Phone card list (hidden on desktop - see media query below) ---------- */
 
 /* Hidden by default (desktop shows .table-wrap instead); flipped in the
@@ -682,6 +736,12 @@ tr.row-update_detected td {
   gap: 12px;
   font-size: 0.85rem;
 }
+/* Platform versions sit at the top of the details, set off from the
+   general rows below by a divider - same list markup as the desktop row. */
+.card-platforms { padding-bottom: 10px; border-bottom: 1px solid var(--gridline); }
+.card-platforms .platform-name { min-width: 0; flex: 1 1 auto; }
+.card-platforms .platform-item { flex-wrap: nowrap; gap: 8px; }
+.card-platforms .platform-version { margin-left: auto; }
 .card-detail-label { color: var(--muted); flex-shrink: 0; }
 .card-detail-value { text-align: right; }
 
