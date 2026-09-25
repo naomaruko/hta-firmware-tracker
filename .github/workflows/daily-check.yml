@@ -45,3 +45,23 @@ jobs:
             git commit -m "Automated firmware check $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             git push
           fi
+
+      # Only runs if an earlier step failed. Deliberately curl + jq (both
+      # preinstalled on the runner) rather than app/slack.py - if the
+      # failure was the dependency install itself, `requests` may not exist
+      # yet. Not @channel: a failed run needs the maintainer, not everyone.
+      # Never fails the step itself - a Slack outage shouldn't add noise on
+      # top of the failure already being reported.
+      - name: Notify Slack if the run failed
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set - skipping failure notification"
+            exit 0
+          fi
+          curl -sS -X POST --max-time 10 -H 'Content-type: application/json' \
+            --data "$(jq -n --arg text ":warning: The daily firmware check failed - the dashboard may be out of date. <$RUN_URL|View the run>" '{text: $text}')" \
+            "$SLACK_WEBHOOK_URL" || echo "Slack failure notification could not be sent"

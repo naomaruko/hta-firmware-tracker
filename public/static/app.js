@@ -31,12 +31,15 @@ function relativeTime(iso) {
   if (!iso) return null;
   const then = new Date(iso + "Z"); // stored as naive UTC
   const diffMs = Date.now() - then.getTime();
-  const mins = Math.round(diffMs / 60000);
+  // Rounds down, not to the nearest unit - rounding made 23h30m read as
+  // "1d ago" when a full day hadn't actually passed yet, which looks like a
+  // missed daily check when it isn't one.
+  const mins = Math.floor(diffMs / 60000);
   if (mins < 1) return "just now";
   if (mins < 60) return `${mins}m ago`;
-  const hours = Math.round(mins / 60);
+  const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours}h ago`;
-  const days = Math.round(hours / 24);
+  const days = Math.floor(hours / 24);
   return `${days}d ago`;
 }
 
