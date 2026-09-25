@@ -11,11 +11,10 @@
   /* Accent - Hi-Tech Audio's exact brand green (#009B67, from the logo).
      Dark text reads far better on top of it than white (5.5:1 vs 3.6:1
      contrast), so that's used for on-accent labels instead of white. Kept
-     for real brand moments (primary button, coverage meter, active filter) -
+     for real brand moments (primary button, active filter) -
      not applied to every link, so it doesn't turn into visual noise. */
   --accent: #009B67;
   --accent-text: #0b0b0b;
-  --accent-track: #cdeee1;
 
   /* Status palette (fixed, never themed) */
   --good: #0ca30c;
@@ -29,16 +28,14 @@
   --critical: #d03b3b;
   --critical-bg: #fbe4e4;
 
-  /* Non-status categories (manual / neutral - not health severities) */
-  --manual: #5b4fc4;
-  --manual-bg: #ece9fb;
+  /* Non-status category (neutral - not a health severity) */
   --neutral: #6b6b74;
   --neutral-bg: #ececee;
 
-  /* Slightly lifted off --surface specifically for the phone card list - a
-     card needs to read as a distinct, tappable element against the page
-     background, more than a table (which already has row borders/stripes
-     doing that job) or a one-off box like .hero-card does. */
+  /* Slightly lifted off --surface for the phone card list and the stat
+     cards - a card needs to read as a distinct element against the page or
+     panel behind it, more than a table (which already has row
+     borders/stripes doing that job) does. */
   --card-surface: #ffffff;
 }
 
@@ -54,7 +51,6 @@
 
     --accent: #009B67;
     --accent-text: #0b0b0b;
-    --accent-track: rgba(0, 155, 103, 0.28);
 
     --good: #0ca30c;
     --good-bg: #103410;
@@ -67,8 +63,6 @@
     --critical: #e66767;
     --critical-bg: #3a1b18;
 
-    --manual: #b7a8ff;
-    --manual-bg: #241f42;
     --neutral: #a3a3ab;
     --neutral-bg: #26272c;
 
@@ -204,88 +198,57 @@ body {
 .btn-primary { background: var(--accent); color: var(--accent-text); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
 .btn-small { padding: 5px 11px; font-size: 0.78rem; background: var(--neutral-bg); color: var(--text); margin-left: 6px; }
 
-/* ---------- Hero coverage card ---------- */
+/* ---------- Stats panel: stat cards + search/filter ---------- */
 
-.hero-card {
+.stats-panel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 24px 28px;
-  margin-bottom: 16px;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.05);
 }
 
-.hero-figure-wrap {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-
-.hero-figure {
-  font-size: 3.2rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
-.hero-figure-unit { font-size: 1.6rem; font-weight: 600; color: var(--muted); margin-left: 2px; }
-
-.hero-figure-label {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-}
-.hero-figure-label strong { color: var(--text); }
-
-.meter { margin-bottom: 10px; }
-.meter-track {
-  height: 12px;
-  border-radius: 999px;
-  background: var(--accent-track);
-  overflow: hidden;
-}
-.meter-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: var(--accent);
-  transition: width 0.4s ease;
-}
-
-.hero-footnote { font-size: 0.82rem; color: var(--muted); }
-
-/* ---------- KPI row ---------- */
-
-.kpi-row {
+.stat-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 14px;
+  margin-bottom: 16px;
 }
-.kpi {
-  background: var(--surface);
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  background: var(--card-surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 16px;
+  border-radius: 14px;
+  padding: 14px 18px;
 }
-.kpi-value {
-  display: block;
-  font-size: 1.3rem;
+.stat-icon { display: block; width: 56px; height: 56px; flex-shrink: 0; }
+.stat-text { display: flex; flex-direction: column; min-width: 0; }
+.stat-value {
+  font-size: 1.9rem;
   font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
   color: var(--text);
 }
-.kpi-label { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-.kpi-alert .kpi-value { color: var(--warning-text); }
-.kpi-warn .kpi-value { color: var(--critical); }
+/* "Last checked" is a short relative phrase ("2h ago"), not a bare number,
+   so it gets a smaller size than the counts beside it. */
+.stat-value-text { font-size: 1.4rem; line-height: 1.2; }
+.stat-label { font-size: 0.95rem; color: var(--text-secondary); margin-top: 2px; }
+.stat-alert .stat-value { color: var(--warning-text); }
+.stat-warn .stat-value { color: var(--critical); }
 
-/* Updates-found card doubles as a shortcut: click it to jump straight to
-   just the rows with a pending Acknowledge button, instead of having to
-   notice the count then separately remember the filter chip exists. Only
-   made clickable when there's actually something to jump to (see the
-   Jinja condition in the template) - an empty state has nothing to filter
-   into. */
-.kpi-clickable { cursor: pointer; transition: border-color 0.15s ease; }
-.kpi-clickable:hover { border-color: var(--warning); }
-.kpi-clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+/* Updates card doubles as a shortcut: click it to jump straight to the
+   rows flagged as having an update, instead of having to notice the count
+   then separately remember the filter chip exists. Only made clickable when
+   there's actually something to jump to (see the Jinja condition in the
+   template) - an empty state has nothing to filter into. */
+.stat-clickable { cursor: pointer; transition: border-color 0.15s ease; }
+.stat-clickable:hover { border-color: var(--warning); }
+.stat-clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 /* Small click-to-open explainer for what "Acknowledge" actually means (it
    should follow a real firmware update on the device, not just dismiss the
@@ -336,59 +299,57 @@ body {
 }
 .info-popover[hidden] { display: none; }
 
-/* ---------- Toolbar: search + filter chips ---------- */
+/* ---------- Toolbar: search + filter chips (inside .stats-panel) ---------- */
 
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
 }
 
 .search-wrap {
   position: relative;
-  flex: 1 1 220px;
-  max-width: 320px;
+  flex: 1 1 260px;
 }
 .search-icon {
   position: absolute;
-  left: 10px;
+  left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--muted);
+  color: var(--text);
   pointer-events: none;
 }
 #search-input {
   width: 100%;
-  padding: 8px 12px 8px 32px;
-  border-radius: 8px;
+  padding: 10px 16px 10px 40px;
+  border-radius: 999px;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: var(--card-surface);
   color: var(--text);
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   font-family: inherit;
 }
 #search-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 #search-input::placeholder { color: var(--muted); }
 
-.filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.filter-chips { display: flex; gap: 10px; flex-wrap: wrap; }
 .chip {
   border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-secondary);
+  background: var(--card-surface);
+  color: var(--text);
   border-radius: 999px;
-  padding: 6px 13px;
-  font-size: 0.8rem;
+  padding: 9px 18px;
+  font-size: 0.92rem;
   font-family: inherit;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 }
 .chip:hover { border-color: var(--accent); }
 /* Neutral inverted fill (text color as background), not green - green is
    reserved for what "up to date" actually means, not reused as a generic
    "this is selected" UI color that would blur the two meanings together. */
-.chip.is-active { background: var(--text); border-color: var(--text); color: var(--surface); }
+.chip.is-active { background: var(--text); border-color: var(--text); color: var(--surface); font-weight: 600; }
 
 .empty-state {
   text-align: center;
@@ -477,7 +438,6 @@ tbody tr.is-hidden { display: none; }
    second line - the table already scrolls horizontally (.table-wrap) if a
    row runs wide, which reads better than a ragged multi-line grid. */
 .model-name { font-weight: 600; white-space: nowrap; }
-.model-notes { color: var(--muted); font-size: 0.76rem; margin-top: 3px; max-width: 360px; line-height: 1.4; }
 .version-cell { font-variant-numeric: tabular-nums; }
 td.release-date-cell { white-space: nowrap; }
 .muted { color: var(--muted); }
@@ -547,8 +507,8 @@ tr.row-update_detected td {
 
 .source-link {
   /* Deliberately quiet, not brand-colored - a link in every row would turn
-     the accent green into wallpaper. Green is reserved for the button,
-     meter, and active filter - the things that are actually "the brand."
+     the accent green into wallpaper. Green is reserved for the button
+     and the active filter - the things that are actually "the brand."
      An icon rather than the domain as text, since the domain repeats
      identically down most of a manufacturer's section (every Shure row
      points to shure.com, etc.) even though each one is a genuinely
@@ -572,7 +532,6 @@ tr.row-update_detected td {
 }
 .badge-warning { background: var(--warning-bg); color: var(--warning-text); }
 .badge-critical { background: var(--critical-bg); color: var(--critical); }
-.badge-manual { background: var(--manual-bg); color: var(--manual); }
 /* Desktop keeps the original solid pill for "Up to date" - see
    .card-list .badge-good below for the phone-only quiet treatment. */
 .badge-good { background: var(--good-bg); color: var(--good); }
@@ -607,20 +566,6 @@ tr.row-update_detected td {
   padding-bottom: 8px;
 }
 .error-row.is-hidden { display: none; }
-
-.manual-tag {
-  display: inline-block;
-  margin-left: 6px;
-  padding: 1px 6px;
-  border-radius: 999px;
-  background: var(--manual-bg);
-  color: var(--manual);
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  vertical-align: middle;
-}
 
 /* ---------- Phone card list (hidden on desktop - see media query below) ---------- */
 
@@ -667,7 +612,6 @@ tr.row-update_detected td {
   flex-wrap: wrap;
 }
 .card-model { margin: 0; font-size: 0.95rem; font-weight: 700; }
-.card-summary .model-notes { margin-top: -2px; }
 
 /* Phone-only: on the card, model name and version sit close together in the
    same compact summary line, so the two need a stronger visual split than
@@ -861,8 +805,21 @@ tr.row-update_detected td {
      only on whatever's left after the font-size shrink below, not a
      deliberate cap. */
   .hero-title { font-size: 1.55rem; margin-bottom: 18px; }
-  .kpi-row { grid-template-columns: repeat(2, 1fr); }
-  .hero-figure { font-size: 2.4rem; }
+  .stats-panel { padding: 12px; border-radius: 16px; }
+  .stat-row { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+  .stat-card { gap: 8px; padding: 12px 10px; border-radius: 12px; }
+  .stat-icon { width: 42px; height: 42px; }
+  .stat-value { font-size: 1.5rem; }
+  .stat-value-text { font-size: 1.1rem; }
+  .stat-label { font-size: 0.78rem; }
+  /* Updates is the right-hand card in its row here, so a popover anchored
+     to the left edge of its label would run off the panel - anchor it to
+     the right edge instead. */
+  .info-popover { left: auto; right: 0; }
+  .toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+  .search-wrap { flex: 0 0 auto; }
+  .filter-chips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .chip { width: 100%; text-align: center; padding: 9px 12px; }
 
   .table-wrap { display: none; }
   .card-list { display: flex; }

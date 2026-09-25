@@ -46,15 +46,10 @@ def build_dashboard_context(items):
     # where it actually belongs alphabetically.
     by_manufacturer = dict(sorted(by_manufacturer.items(), key=lambda kv: kv[0].lower()))
 
-    total = len(items)
-    scraped = sum(1 for i in items if i.check_method == "scrape")
     summary = {
-        "total": total,
-        "scraped": scraped,
-        "manual": sum(1 for i in items if i.check_method == "manual"),
+        "total": len(items),
         "updates_detected": sum(1 for i in items if i.status == "update_detected"),
         "errors": sum(1 for i in items if i.status == "error"),
-        "coverage_pct": round(scraped / total * 100) if total else 0,
     }
 
     last_run = max((i.last_checked_at for i in items if i.last_checked_at), default=None)

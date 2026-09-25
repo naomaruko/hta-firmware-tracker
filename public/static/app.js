@@ -111,12 +111,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const rel = relativeTime(cell.dataset.utc);
     if (rel) {
       cell.title = pacificString(cell.dataset.utc);
-      // Only touch the date text span - the cell may also contain a sibling
-      // "manual" tag that must survive this update, not get wiped out by it.
       const textSpan = cell.querySelector(".time-text");
       if (textSpan) textSpan.textContent = rel;
     }
   });
+
+  // "Last checked" stat card: same relative phrasing as the table cells
+  // above, capitalised since it's a standalone value ("Just now", "2h
+  // ago"). Computed here rather than server-side so the static deployed
+  // page, which is only rebuilt once a day, doesn't freeze whatever the
+  // phrase happened to be at build time. Left as the server-rendered
+  // timestamp if there's no last-run time to convert.
+  const lastRun = document.getElementById("last-run");
+  if (lastRun && lastRun.dataset.utc) {
+    const rel = relativeTime(lastRun.dataset.utc);
+    if (rel) lastRun.textContent = rel.charAt(0).toUpperCase() + rel.slice(1);
+  }
 
   const checkAllBtn = document.getElementById("check-all-btn");
   if (checkAllBtn) {
@@ -173,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // "Updates found" KPI card: click through to just the currently-flagged
+  // "Updates" stat card: click through to just the currently-flagged
   // rows, by reusing the existing filter-chip logic rather than duplicating
   // it.
   const updatesKpi = document.getElementById("updates-kpi");
@@ -194,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Click-to-open info popovers (e.g. "what does 'update found' mean?").
   // Reusable for any future .info-icon/.info-popover pair, not just this
   // one. stopPropagation matters here specifically because this icon sits
-  // inside the clickable "Updates found" card above - without it, opening
+  // inside the clickable "Updates" card above - without it, opening
   // the popover would also fire that card's jump-to-filtered-view action.
   const closeAllInfoPopovers = () => {
     document.querySelectorAll(".info-popover").forEach((p) => { p.hidden = true; });

@@ -65,7 +65,6 @@ def main():
 
     html = template.render(
         now=dt.datetime.utcnow(),
-        check_interval_hours=24,
         interactive=False,
         **context,
     )

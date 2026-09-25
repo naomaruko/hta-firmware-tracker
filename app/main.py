@@ -14,7 +14,6 @@ from app.database import Base, engine, get_db, run_light_migrations
 from app.models import Equipment
 from app.runner import check_all, check_equipment
 from app.scheduler import (
-    CHECK_INTERVAL_HOURS,
     schedule_first_run,
     shutdown_scheduler,
     start_scheduler,
@@ -80,7 +79,6 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
         {
             "request": request,
             "now": dt.datetime.utcnow(),
-            "check_interval_hours": CHECK_INTERVAL_HOURS,
             "interactive": True,
             **context,
         },

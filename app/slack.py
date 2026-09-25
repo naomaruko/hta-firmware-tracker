@@ -47,7 +47,7 @@ def _group_changes(changes):
     checker_key were checked together and always carry the same new
     version, which is what makes collapsing them into one message correct
     rather than just convenient. Items with no checker_key (shouldn't
-    happen for scrape-method items, but not load-bearing to assume) fall
+    happen, but not load-bearing to assume) fall
     back to grouping by (manufacturer, model), i.e. their own singleton
     group."""
     groups = {}

@@ -25,11 +25,9 @@ class Equipment(Base):
     # e.g. "Consoles" vs "I/O Racks" - None means no sub-grouping for that item.
     category = Column(String, nullable=True)
 
-    # "scrape" -> handled automatically by a checker; "manual" -> flagged for a human
-    check_method = Column(String, nullable=False, default="manual")
     # dotted key a checker module understands, e.g. "digico:quantum", "yamaha:rivage_pm"
     checker_key = Column(String, nullable=True)
-    # human-facing link: either the page we scrape, or where to check manually
+    # human-facing link to the page we scrape
     source_url = Column(String, nullable=True)
     notes = Column(Text, nullable=True)
 
@@ -40,7 +38,7 @@ class Equipment(Base):
     # into one date type, which risks silently misreading an ambiguous
     # format like d&b's DD.MM.YYYY. None where no source publishes a date.
     release_date = Column(String, nullable=True)
-    # unchecked | ok | update_detected | manual | error
+    # unchecked | ok | update_detected | error
     status = Column(String, nullable=False, default="unchecked")
 
     last_checked_at = Column(DateTime, nullable=True)
@@ -57,7 +55,6 @@ class Equipment(Base):
             "manufacturer": self.manufacturer,
             "model": self.model,
             "category": self.category,
-            "check_method": self.check_method,
             "checker_key": self.checker_key,
             "source_url": self.source_url,
             "notes": self.notes,

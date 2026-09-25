@@ -46,7 +46,7 @@ def main():
             print(f"No {JSON_PATH.name} found - starting fresh (first-ever run)")
 
         checked = check_all(db)
-        print(f"Checked {checked} scrape-method items")
+        print(f"Checked {checked} items")
 
         changes = [
             {

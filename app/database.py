@@ -38,6 +38,13 @@ _EQUIPMENT_COLUMNS_ADDED_LATER = [
 ]
 
 
+# Columns dropped from Equipment after the table already existed in the wild.
+# The old NOT NULL check_method column has no default at the SQL level, so a
+# database that still has it would reject every new row seed() inserts - it
+# has to be removed, not just ignored.
+_EQUIPMENT_COLUMNS_REMOVED = ["check_method"]
+
+
 def run_light_migrations():
     from sqlalchemy import inspect, text
 
@@ -49,3 +56,7 @@ def run_light_migrations():
         if name not in existing_cols:
             with engine.begin() as conn:
                 conn.execute(text(f"ALTER TABLE equipment ADD COLUMN {name} {col_type}"))
+    for name in _EQUIPMENT_COLUMNS_REMOVED:
+        if name in existing_cols:
+            with engine.begin() as conn:
+                conn.execute(text(f"ALTER TABLE equipment DROP COLUMN {name}"))

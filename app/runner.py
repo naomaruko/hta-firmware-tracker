@@ -67,13 +67,12 @@ def _apply_result(db: Session, item: Equipment, result):
 
 
 def check_equipment(db: Session, equipment_items):
-    """Run checkers for the given list of Equipment rows (scrape-method only)."""
-    scrape_items = [e for e in equipment_items if e.check_method == "scrape"]
-    if not scrape_items:
+    """Run checkers for the given list of Equipment rows."""
+    if not equipment_items:
         return 0
 
     grouped = defaultdict(list)
-    for item in scrape_items:
+    for item in equipment_items:
         mod = module_for(item.checker_key)
         if mod is None:
             item.status = "error"

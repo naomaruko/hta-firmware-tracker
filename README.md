@@ -10,13 +10,17 @@ audio gear, so nobody has to manually check manufacturer sites.
 - **All 43 items are checked automatically** — most by scraping a static
   page, several manufacturers via a real headless browser where the site
   needs JavaScript or blocks plain requests (see
-  [What's automatic vs. manual](#whats-automatic-vs-manual)).
+  [How each manufacturer is checked](#how-each-manufacturer-is-checked)).
 - Re-checks everything once a day (via a scheduled GitHub Actions workflow -
   see [Deployment](#deployment) - or via a background job if you run it
   locally) and highlights anything whose version changed since the last
   check.
+- A stats panel at the top (Tracked / Updates / Errors / Last checked, the
+  last shown as a relative time like "2h ago"), with a search box and
+  Up to date / Update available / Check failed filters. Clicking the
+  Updates card jumps straight to the flagged rows.
 - Dashboard grouped by manufacturer, with status badges (Up to date / Update
-  available / Manual check / Check failed). A row with a new version gets a
+  available / Check failed). A row with a new version gets a
   soft amber highlight in place (it isn't reordered) that clears itself
   automatically 2 weeks after the change was first detected — no one needs
   to click anything to dismiss it. Installable as a PWA on a phone (Add to
@@ -39,7 +43,7 @@ seconds after startup. (The `playwright install chromium` step downloads a
 ~90MB headless browser used only by the Allen & Heath / SSL / d&b / Dante
 checkers — see below.)
 
-## What's automatic vs. manual
+## How each manufacturer is checked
 
 | Manufacturer | Method | Notes |
 |---|---|---|
@@ -51,9 +55,8 @@ checkers — see below.)
 | d&b audiotechnik | ✅ Scraped (headless) | Their Download Center is a JS-driven search box behind a cookie-consent overlay; D40/D90 share one firmware release, DN1 Switch has its own |
 | Shure | ✅ Scraped (headless) | Firmware versions come from `shure.com`'s searchable software/firmware archive listing |
 
-Every manufacturer is fully automated right now. If a new piece of gear gets
-added that has no scrapable version page, it'll show up here as "Manual
-check" with a direct link to where to look by hand instead.
+Every item is checked automatically. A piece of gear only gets added to the
+list once a checker can read its version.
 
 Yamaha, Allen & Heath, and Dante/Audinate don't publish a release date at
 all - their checkers have nothing to put there. For those manufacturers
@@ -176,7 +179,7 @@ data/equipment.json  Git-committed source of truth for the deployed site
 ## Adding equipment
 
 Add a row to the `EQUIPMENT` list in `app/seed.py` (manufacturer, model,
-`"scrape"` or `"manual"`, checker_key, source URL, optional notes), then
+category, checker_key, source URL, optional notes), then
 restart the app (or run `python3 -m app.seed`) — `seed()` fully syncs the
 database to match the list: new rows are added, changed rows are updated,
 and rows removed from the list are deleted.
