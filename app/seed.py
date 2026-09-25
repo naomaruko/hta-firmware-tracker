@@ -41,7 +41,8 @@ EQUIPMENT = [
     ("DiGiCo", "Quantum 225", "Consoles", "digico:quantum", DIGICO_QUANTUM_URL, None),
     ("DiGiCo", "SD10", "Consoles", "digico:sd", DIGICO_SD_URL, None),
     ("DiGiCo", "Orange Box", "Accessories", "digico:orangebox", DIGICO_ORANGEBOX_URL, None),
-    ("DiGiCo", "DMI-Dante / DMI-Dante2", "Cards & Modules", "digico:dmidante", DIGICO_DMI_URL, None),
+    ("DiGiCo", "DMI-Dante / DMI-Dante2 (Zynq HC)", "Cards & Modules", "digico:dmidante_zynq", DIGICO_DMI_URL, "The DMI-Dante64@96 card with the newer Zynq HC Dante module (cards built from March 2023 on)."),
+    ("DiGiCo", "DMI-Dante / DMI-Dante2 (Summit HC)", "Cards & Modules", "digico:dmidante_summit", DIGICO_DMI_URL, "The older DMI-Dante64@96 with the Summit HC Dante module (discontinued design; separate firmware line from Zynq)."),
 
     # --- Yamaha: static per-product firmware pages on usa.yamaha.com ---
     ("YAMAHA", "Rivage PM10", "Consoles", "yamaha:rivage_pm", YAMAHA_RIVAGE_URL, None),
@@ -151,6 +152,9 @@ def seed(reset: bool = False):
                 row.current_version = None
                 row.previous_version = None
                 row.last_error = None
+                row.platforms = None
+                row.content_hash = None
+                row.review_since = None
                 changed = True
             if category != row.category:
                 row.category = category

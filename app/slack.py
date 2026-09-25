@@ -11,6 +11,7 @@ value in step output automatically, so that's covered without this module
 needing its own redaction.
 """
 import logging
+import re
 
 import requests
 
@@ -131,6 +132,56 @@ def notify_updates(changes, webhook_url):
             failures.append(e.__class__.__name__)
 
     logger.info("Posted %d/%d Slack notification(s)", sent, len(groups))
+    if failures:
+        return f"sent {sent}/{len(groups)}, failed: {', '.join(failures)}"
+    return f"sent {sent}/{len(groups)}"
+
+
+# Slack member IDs look like U01ABC2DEF3 (or W... for some enterprise
+# accounts) - validated before going into a message so a malformed value
+# can't turn into some other kind of mention.
+_MEMBER_ID_RE = re.compile(r"^[UW][A-Z0-9]{6,}$")
+
+
+def _format_review_message(key, group, user_id):
+    label = _family_label(key, group)
+    mention = f"<@{user_id}> " if user_id else ""
+    url = group[0].get("source_url")
+    link = f" <{url}|Check the article>" if url else ""
+    return (
+        f"{mention}:mag: *Needs manual verification:* {label} - the source article's content changed, "
+        f"but its title/version didn't, so this may or may not be a real firmware change (it could just "
+        f"be an edit).{link}\n\n<{DASHBOARD_URL}|View dashboard>"
+    )
+
+
+def notify_needs_review(flags, webhook_url, user_id):
+    """One message per family of rows whose source article's content changed
+    without a version change. Deliberately worded as *unconfirmed* and
+    mentions only `user_id` (never @channel) - it's for one person to go
+    check, not an announcement like notify_updates. Same no-op / never-raise
+    contract as notify_updates; a missing or malformed user_id just means the
+    message posts without a mention."""
+    if not flags:
+        return "no flags"
+    if not webhook_url:
+        logger.info("SLACK_WEBHOOK_URL not set - skipping review notification for %d item(s)", len(flags))
+        return "skipped (no SLACK_WEBHOOK_URL)"
+    if user_id and not _MEMBER_ID_RE.match(user_id):
+        logger.warning("SLACK_ALERT_USER_ID isn't a Slack member ID - posting without a mention")
+        user_id = None
+
+    groups = _group_changes(flags)
+    sent = 0
+    failures = []
+    for key, group in groups:
+        try:
+            r = requests.post(webhook_url, json={"text": _format_review_message(key, group, user_id)}, timeout=10)
+            r.raise_for_status()
+            sent += 1
+        except Exception as e:  # noqa: BLE001
+            logger.exception("Failed to post Slack review notification for %r", key)
+            failures.append(e.__class__.__name__)
     if failures:
         return f"sent {sent}/{len(groups)}, failed: {', '.join(failures)}"
     return f"sent {sent}/{len(groups)}"

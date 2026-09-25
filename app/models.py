@@ -46,7 +46,14 @@ class Equipment(Base):
     # newest of them, and status is update_detected if *any* platform has a
     # pending update.
     platforms = Column(JSON, nullable=True)
-    # unchecked | ok | update_detected | error
+    # Only for article-based sources (DiGiCo, SSL - a help-centre article
+    # rather than a dedicated firmware page): fingerprint of the matched
+    # article's content, so an edit is noticed even when the title/version
+    # didn't change. A change puts the row in "needs_review" (review_since =
+    # when) rather than "update_detected", since it could just be a typo fix.
+    content_hash = Column(String, nullable=True)
+    review_since = Column(DateTime, nullable=True)
+    # unchecked | ok | update_detected | needs_review | error
     status = Column(String, nullable=False, default="unchecked")
 
     last_checked_at = Column(DateTime, nullable=True)
@@ -70,6 +77,8 @@ class Equipment(Base):
             "previous_version": self.previous_version,
             "release_date": self.release_date,
             "platforms": self.platforms,
+            "content_hash": self.content_hash,
+            "review_since": self.review_since.isoformat() if self.review_since else None,
             "status": self.status,
             "last_checked_at": self.last_checked_at.isoformat()
             if self.last_checked_at

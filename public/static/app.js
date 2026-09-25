@@ -78,7 +78,7 @@ function applyFilters() {
 
       group
         .querySelectorAll(
-          `tr.error-row[data-parent-id="${row.dataset.id}"], tr.platform-row[data-parent-id="${row.dataset.id}"]`
+          `tr.error-row[data-parent-id="${row.dataset.id}"], tr.platform-row[data-parent-id="${row.dataset.id}"], tr.review-row[data-parent-id="${row.dataset.id}"]`
         )
         .forEach((detailRow) => detailRow.classList.toggle("is-hidden", !visible));
 

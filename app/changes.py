@@ -45,3 +45,26 @@ def find_changes(items, old_versions, old_platforms):
         ):
             changes.append({**base, "previous_version": old_versions[key], "current_version": item.current_version})
     return changes
+
+
+def find_review_flags(items, previous_records):
+    """Items newly put into "needs_review" this run - i.e. review_since is
+    set and differs from what the previous export had (still-flagged rows
+    from an earlier run aren't re-reported). One dict per item, with the
+    source link, for the Slack ping (see app/slack.py)."""
+    before = {(r["manufacturer"], r["model"]): r.get("review_since") for r in previous_records}
+    flags = []
+    for item in items:
+        if item.status != "needs_review" or item.review_since is None:
+            continue
+        if before.get((item.manufacturer, item.model)) == item.review_since.isoformat():
+            continue
+        flags.append(
+            {
+                "manufacturer": item.manufacturer,
+                "model": item.model,
+                "checker_key": item.checker_key,
+                "source_url": item.source_url,
+            }
+        )
+    return flags

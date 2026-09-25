@@ -28,6 +28,11 @@
   --critical: #d03b3b;
   --critical-bg: #fbe4e4;
 
+  /* "Needs verification": a human should look, but it isn't a confirmed
+     update or a failure - its own colour so it doesn't read as either. */
+  --review: #5b4fc4;
+  --review-bg: #ece9fb;
+
   /* Non-status category (neutral - not a health severity) */
   --neutral: #6b6b74;
   --neutral-bg: #ececee;
@@ -62,6 +67,9 @@
     --serious-bg: #3a2416;
     --critical: #e66767;
     --critical-bg: #3a1b18;
+
+    --review: #b7a8ff;
+    --review-bg: #241f42;
 
     --neutral: #a3a3ab;
     --neutral-bg: #26272c;
@@ -438,6 +446,12 @@ tbody tr.is-hidden { display: none; }
    second line - the table already scrolls horizontally (.table-wrap) if a
    row runs wide, which reads better than a ragged multi-line grid. */
 .model-name { font-weight: 600; white-space: nowrap; }
+/* Every table except Shure's has a Model column that just takes whatever
+   width is left over (see the fixed-layout widths below), so a long name
+   (the DMI-Dante variants) can outgrow it at narrower window widths and run
+   into the Status column. Let those wrap instead; Shure has its own wide
+   column and keeps nowrap. */
+.manufacturer-group:not([data-manufacturer="shure"]) .model-name { white-space: normal; }
 .version-cell { font-variant-numeric: tabular-nums; }
 td.release-date-cell { white-space: nowrap; }
 .muted { color: var(--muted); }
@@ -504,6 +518,9 @@ th:nth-child(6), td:nth-child(6) { width: 160px; }
 tr.row-update_detected td {
   background: var(--warning-bg);
 }
+tr.row-needs_review td {
+  background: var(--review-bg);
+}
 
 .source-link {
   /* Deliberately quiet, not brand-colored - a link in every row would turn
@@ -532,6 +549,7 @@ tr.row-update_detected td {
 }
 .badge-warning { background: var(--warning-bg); color: var(--warning-text); }
 .badge-critical { background: var(--critical-bg); color: var(--critical); }
+.badge-review { background: var(--review-bg); color: var(--review); }
 /* Desktop keeps the original solid pill for "Up to date" - see
    .card-list .badge-good below for the phone-only quiet treatment. */
 .badge-good { background: var(--good-bg); color: var(--good); }
@@ -566,6 +584,18 @@ tr.row-update_detected td {
   padding-bottom: 8px;
 }
 .error-row.is-hidden { display: none; }
+
+/* Explanation under a flagged row - same shape as the error row, in the
+   "needs verification" colours. */
+.review-row td {
+  color: var(--review);
+  background: var(--review-bg);
+  font-size: 0.78rem;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.review-row.is-hidden { display: none; }
+.review-link { color: inherit; font-weight: 600; text-decoration: underline; }
 
 /* ---------- Per-platform versions (Dante Controller) ---------- */
 
@@ -648,6 +678,7 @@ tr.row-update_detected td {
 /* Same amber tint as the desktop table's tr.row-update_detected td rule -
    applied to the whole card here since there are no cells to target. */
 .item-card.row-update_detected { background: var(--warning-bg); }
+.item-card.row-needs_review { background: var(--review-bg); }
 .item-card.is-hidden { display: none; }
 
 .card-summary {
@@ -708,6 +739,15 @@ tr.row-update_detected td {
    instead of needing its own separate state to stay in sync. */
 .card-summary[aria-expanded="true"] .card-chevron { transform: rotate(180deg); }
 
+.card-review {
+  margin: 0 16px 14px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--review);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
 .card-error {
   margin: 0 16px 14px;
   padding: 8px 10px;

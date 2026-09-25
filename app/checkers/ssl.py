@@ -9,7 +9,7 @@ II Concentrator) ships firmware via a separate "Network I/O Update Package".
 """
 import re
 
-from app.checkers.base import CheckResult, http_get, iso_to_readable_date
+from app.checkers.base import CheckResult, content_fingerprint, http_get, iso_to_readable_date
 
 CATEGORIES = {
     "ssl:live": 360003462038,       # Live Consoles
@@ -42,7 +42,12 @@ def _fetch_article_body(checker_key):
                 # article per release) - so updated_at is the release date
                 # here, not created_at (which is just when the article was
                 # first written, back in 2022).
-                return m.group(1), a.get("html_url"), iso_to_readable_date(a.get("updated_at"))
+                return (
+                    m.group(1),
+                    a.get("html_url"),
+                    iso_to_readable_date(a.get("updated_at")),
+                    content_fingerprint(a.get("body")),
+                )
             raise ValueError(f"Article found but no version pattern matched: {a['title']!r}")
     raise ValueError("No matching article found")
 
@@ -55,8 +60,10 @@ def check_all(equipment_items):
             resolved[key] = CheckResult(None, False, "Unknown SSL checker key")
             continue
         try:
-            version, url, release_date = _fetch_article_body(key)
-            resolved[key] = CheckResult(version, True, source_url=url, release_date=release_date)
+            version, url, release_date, content_hash = _fetch_article_body(key)
+            resolved[key] = CheckResult(
+                version, True, source_url=url, release_date=release_date, content_hash=content_hash
+            )
         except Exception as e:  # noqa: BLE001
             resolved[key] = CheckResult(None, False, f"Fetch failed: {e}")
 

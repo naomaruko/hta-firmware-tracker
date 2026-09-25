@@ -63,6 +63,25 @@ def _apply_platforms(item: Equipment, result, now):
     item.status = "update_detected" if any(p["update_pending"] for p in platforms) else "ok"
 
 
+def _apply_content_check(item: Equipment, result, now, version_changed):
+    """Article-based sources only (result.content_hash set): if the matched
+    article's content changed but the version didn't, mark the row
+    "needs_review" - it might be a real firmware change published without a
+    new title/article, or just a typo fix, and we can't tell which, so it's
+    deliberately not treated with the confidence of an "update_detected".
+    The first fingerprint ever stored is just a baseline (nothing to compare
+    against), and a row already showing a pending update isn't overridden -
+    edits during an update's window are most likely part of that update."""
+    if result.content_hash is None:
+        return
+    previous = item.content_hash
+    item.content_hash = result.content_hash
+    if previous and previous != result.content_hash and not version_changed and item.status in ("ok", "needs_review"):
+        item.status = "needs_review"
+        item.review_since = now
+        logger.info("Content change (same version): %s %s", item.manufacturer, item.model)
+
+
 def _apply_result(db: Session, item: Equipment, result):
     now = dt.datetime.utcnow()
     item.last_checked_at = now
@@ -91,10 +110,12 @@ def _apply_result(db: Session, item: Equipment, result):
         item.release_date = result.release_date
         return
 
-    if item.current_version and result.version != item.current_version:
+    version_changed = bool(item.current_version and result.version != item.current_version)
+    if version_changed:
         item.previous_version = item.current_version
         item.last_changed_at = now
         item.status = "update_detected"
+        item.review_since = None
         logger.info(
             "Version change: %s %s  %s -> %s",
             item.manufacturer,
@@ -102,14 +123,24 @@ def _apply_result(db: Session, item: Equipment, result):
             item.current_version,
             result.version,
         )
-    elif item.status == "update_detected" and result.version == item.current_version:
+    elif item.status == "update_detected":
         # Same pending version reconfirmed, not a new change - last_changed_at
         # stays untouched. Auto-clear once the highlight window has elapsed
         # since it was *first* detected; otherwise stay flagged.
         if item.last_changed_at and now - item.last_changed_at >= UPDATE_HIGHLIGHT_WINDOW:
             item.status = "ok"
+    elif item.status == "needs_review":
+        # Same clock as update flags: clears itself after the window, no one
+        # has to acknowledge it (the deployed dashboard has no controls that
+        # write anything).
+        if item.review_since is None or now - item.review_since >= UPDATE_HIGHLIGHT_WINDOW:
+            item.status = "ok"
+            item.review_since = None
     else:
         item.status = "ok"
+        item.review_since = None
+
+    _apply_content_check(item, result, now, version_changed)
 
     item.current_version = result.version
     item.release_date = result.release_date

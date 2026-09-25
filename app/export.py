@@ -10,7 +10,7 @@ import json
 
 from app.models import Equipment
 
-_DT_FIELDS = ("last_checked_at", "last_changed_at")
+_DT_FIELDS = ("last_checked_at", "last_changed_at", "review_since")
 
 
 def equipment_to_json(db) -> list:
@@ -57,6 +57,7 @@ def restore_equipment_state(db, records: list):
         item.previous_version = r.get("previous_version")
         item.release_date = r.get("release_date")
         item.platforms = r.get("platforms")
+        item.content_hash = r.get("content_hash")
         item.status = r.get("status") or item.status
         item.last_error = r.get("last_error")
         for field in _DT_FIELDS:

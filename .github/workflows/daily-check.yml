@@ -29,6 +29,9 @@ jobs:
       - name: Run firmware checks
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          # Only used to @-mention one person on "needs manual verification"
+          # pings (see app/slack.py notify_needs_review).
+          SLACK_ALERT_USER_ID: ${{ secrets.SLACK_ALERT_USER_ID }}
         run: python scripts/ci_check.py
 
       - name: Build static site

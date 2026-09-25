@@ -50,6 +50,7 @@ def build_dashboard_context(items):
         "total": len(items),
         "updates_detected": sum(1 for i in items if i.status == "update_detected"),
         "errors": sum(1 for i in items if i.status == "error"),
+        "needs_review": sum(1 for i in items if i.status == "needs_review"),
     }
 
     last_run = max((i.last_checked_at for i in items if i.last_checked_at), default=None)

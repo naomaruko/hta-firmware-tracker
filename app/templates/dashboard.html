@@ -33,6 +33,11 @@
   {% endfor %}
 </ul>
 {% endmacro %}
+{# Shown under a row (table) / inside a card that's flagged "needs
+   verification": the source is a help-centre article whose content changed
+   without a new title/version, which could be a real firmware change or just
+   an edit, so it's flagged for a person to check rather than announced. #}
+{% macro review_note(item) %}Needs manual verification: the source article's content changed since the last check, but its title/version didn't. It may be a real firmware change or just an edit - please check it.{% if item.source_url %} <a class="review-link" href="{{ item.source_url }}" target="_blank" rel="noopener">Open the article</a>{% endif %}{% endmacro %}
 <section class="hero-banner" style="--hero-image: url('/static/img/hero-banner.webp?v={{ v }}');">
   <div class="hero-banner-content">
     <img class="hero-logo" src="/static/img/hero-logo.png?v={{ v }}" alt="Hi-Tech Audio">
@@ -109,6 +114,7 @@
       <button class="chip" data-filter="ok">Up to date</button>
       <button class="chip" data-filter="update_detected">Update available</button>
       <button class="chip" data-filter="error">Check failed</button>
+      {% if summary.needs_review %}<button class="chip" data-filter="needs_review">Needs verification</button>{% endif %}
     </div>
   </div>
 </section>
@@ -158,6 +164,7 @@
           {% if item.status == 'ok' %}<span class="badge badge-good">Up to date</span>
           {% elif item.status == 'update_detected' %}<span class="badge badge-warning">Update available</span>
           {% elif item.status == 'error' %}<span class="badge badge-critical">Check failed</span>
+          {% elif item.status == 'needs_review' %}<span class="badge badge-review">Needs verification</span>
           {% else %}<span class="badge badge-neutral">Not checked yet</span>
           {% endif %}
         </td>
@@ -183,6 +190,9 @@
       <tr class="platform-row row-{{ item.status }}" id="platforms-{{ item.id }}" data-parent-id="{{ item.id }}" hidden>
         <td colspan="7"><div class="platform-wrap">{{ platform_list(plats) }}</div></td>
       </tr>
+      {% endif %}
+      {% if item.status == 'needs_review' %}
+      <tr class="review-row" data-parent-id="{{ item.id }}"><td colspan="7">{{ review_note(item) }}</td></tr>
       {% endif %}
       {% if item.last_error %}
       <tr class="error-row" data-parent-id="{{ item.id }}"><td colspan="7">⚠ {{ item.last_error }}</td></tr>
@@ -219,6 +229,7 @@
           {% if item.status == 'ok' %}<span class="badge badge-good">Up to date</span>
           {% elif item.status == 'update_detected' %}<span class="badge badge-warning">Update available</span>
           {% elif item.status == 'error' %}<span class="badge badge-critical">Check failed</span>
+          {% elif item.status == 'needs_review' %}<span class="badge badge-review">Needs verification</span>
           {% else %}<span class="badge badge-neutral">Not checked yet</span>
           {% endif %}
         </div>
@@ -229,6 +240,7 @@
           </svg>
         </div>
       </div>
+      {% if item.status == 'needs_review' %}<div class="card-review">{{ review_note(item) }}</div>{% endif %}
       {% if item.last_error %}<div class="card-error">⚠ {{ item.last_error }}</div>{% endif %}
       <div class="card-details" hidden>
         {% if plats %}<div class="card-platforms">{{ platform_list(plats) }}</div>{% endif %}

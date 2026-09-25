@@ -13,13 +13,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app.changes import find_changes, snapshot_versions  # noqa: E402
+from app.changes import find_changes, find_review_flags, snapshot_versions  # noqa: E402
 from app.database import Base, SessionLocal, engine, run_light_migrations  # noqa: E402
 from app.export import load_json, restore_equipment_state, write_json  # noqa: E402
 from app.models import Equipment  # noqa: E402
 from app.runner import check_all  # noqa: E402
 from app.seed import seed  # noqa: E402
-from app.slack import notify_updates  # noqa: E402
+from app.slack import notify_needs_review, notify_updates  # noqa: E402
 
 JSON_PATH = Path(__file__).resolve().parent.parent / "data" / "equipment.json"
 
@@ -54,6 +54,14 @@ def main():
             print(f"{len(changes)} genuine version change(s) detected this run")
             status = notify_updates(changes, os.environ.get("SLACK_WEBHOOK_URL"))
             print(f"Slack notification: {status}")
+
+        flags = find_review_flags(db.query(Equipment).all(), previous)
+        if flags:
+            print(f"{len(flags)} item(s) newly need manual verification")
+            status = notify_needs_review(
+                flags, os.environ.get("SLACK_WEBHOOK_URL"), os.environ.get("SLACK_ALERT_USER_ID")
+            )
+            print(f"Slack review notification: {status}")
 
         JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
         write_json(db, JSON_PATH)

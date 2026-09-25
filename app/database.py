@@ -36,6 +36,8 @@ _EQUIPMENT_COLUMNS_ADDED_LATER = [
     ("release_date", "VARCHAR"),
     ("category", "VARCHAR"),
     ("platforms", "JSON"),
+    ("content_hash", "VARCHAR"),
+    ("review_since", "DATETIME"),
 ]
 
 

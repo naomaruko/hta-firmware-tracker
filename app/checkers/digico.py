@@ -10,7 +10,7 @@ matches each product family.
 """
 import re
 
-from app.checkers.base import CheckResult, http_get, iso_to_readable_date
+from app.checkers.base import CheckResult, content_fingerprint, http_get, iso_to_readable_date
 
 ARTICLES_URL = (
     "https://support.digico.biz/api/v2/help_center/en-gb/categories/"
@@ -24,7 +24,20 @@ PATTERNS = {
     "digico:quantum": [r"Quantum Console Software"],
     "digico:sd": [r"\bSD Console Software\b"],
     "digico:orangebox": [r"Orange Box Controller"],
-    "digico:dmidante": [r"DMI[- ]?Dante.*Firmware", r"DMI Dante.*firmware"],
+    # The DMI-Dante64@96 card exists in two hardware variants with separate
+    # firmware lines (Zynq HC 4.2.x, older Summit HC 4.0.x), so they're
+    # tracked as two rows - one shared pattern would flip back and forth
+    # between whichever line was published most recently.
+    "digico:dmidante_zynq": [r"DMI[- ]?Dante.*Zynq.*firmware"],
+    "digico:dmidante_summit": [r"DMI[- ]?Dante.*Summit.*firmware"],
+}
+
+# Keys whose titles don't carry a "V22"-style version - "...Firmware 4.2.8",
+# "...firmware to v4.2.11". Everything else uses VERSION_RE above.
+DMI_VERSION_RE = re.compile(r"(?:\bv|firmware\s+)(\d+(?:\.\d+)+)", re.IGNORECASE)
+TITLE_VERSION_PATTERNS = {
+    "digico:dmidante_zynq": DMI_VERSION_RE,
+    "digico:dmidante_summit": DMI_VERSION_RE,
 }
 
 
@@ -59,8 +72,12 @@ def check_all(equipment_items):
         for a in articles:
             title = a.get("title", "")
             if any(re.search(p, title, re.IGNORECASE) for p in patterns):
-                m = VERSION_RE.search(title)
-                version = m.group(0) if m else title
+                if key in TITLE_VERSION_PATTERNS:
+                    m = TITLE_VERSION_PATTERNS[key].search(title)
+                    version = m.group(1) if m else title
+                else:
+                    m = VERSION_RE.search(title)
+                    version = m.group(0) if m else title
                 # New article per release here, so created_at is the release date
                 # (unlike SSL's evergreen article, which needs updated_at instead).
                 match = CheckResult(
@@ -68,6 +85,7 @@ def check_all(equipment_items):
                     True,
                     source_url=a.get("html_url"),
                     release_date=iso_to_readable_date(a.get("created_at")),
+                    content_hash=content_fingerprint(a.get("body")),
                 )
                 break
         resolved[key] = match

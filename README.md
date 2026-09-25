@@ -67,6 +67,25 @@ highlight window (the expanded list tags which one). Slack alerts name the
 platform(s), e.g. "Dante Controller (Windows) → 4.18.1.3", and an update to
 just one platform is caught even if it doesn't change the headline version.
 
+**Article-based sources (DiGiCo, SSL) and "Needs verification".** These
+manufacturers announce firmware in a help-centre *article* rather than on a
+dedicated firmware page, so a new release normally shows up as a new
+article/title/version and is handled like any other update. But an article
+can also be edited in place. For these rows the checker keeps a fingerprint of
+the matched article's content (text plus link and image URLs, so a swapped
+download file counts). If the fingerprint changes while the title/version
+stay the same, the row is marked **Needs verification** (purple badge, a note
+with a link to the article, and a filter chip that only appears when something
+is flagged) instead of "Update available" - it might be a real firmware change
+or just a typo fix, and there's no way to tell automatically. A flag clears
+itself after the same 2-week window as update flags, or is replaced by a normal
+"Update available" if the version then really changes. The first fingerprint
+stored for a row is only a baseline and never flags. Slack posts a separate,
+non-@channel message for each newly flagged article that @-mentions the person
+in the `SLACK_ALERT_USER_ID` repo secret; it is never announced like a
+confirmed update. The DMI-Dante64@96 card is tracked as two rows (Zynq HC and
+the older Summit HC), since they have separate firmware lines.
+
 Yamaha, Allen & Heath, and Dante/Audinate don't publish a release date at
 all - their checkers have nothing to put there. For those manufacturers
 only, that column is labeled "Detected on" instead of "Release date" and

@@ -1,5 +1,6 @@
 """Shared types and HTTP helper for checkers."""
 import datetime as dt
+import hashlib
 import re
 from dataclasses import dataclass
 from typing import Optional
@@ -29,6 +30,26 @@ class CheckResult:
     # `version` is the newest of them (see newest_version) and the runner
     # tracks each platform's changes separately. None for everything else.
     platforms: Optional[dict] = None
+    # For sources that are a help-centre *article* rather than a dedicated
+    # firmware page (DiGiCo, SSL): a fingerprint of the article's content
+    # (see content_fingerprint), so an in-place edit is noticed even when
+    # the title/version didn't change. None for sources that aren't
+    # article-based.
+    content_hash: Optional[str] = None
+
+
+def content_fingerprint(html):
+    """Stable hash of an article body: its visible text (whitespace
+    collapsed) plus every link and image URL in order, so a replaced
+    download file or attachment counts as a change too, not just wording.
+    Markup-only differences don't change it."""
+    from bs4 import BeautifulSoup
+
+    soup = BeautifulSoup(html or "", "lxml")
+    text = " ".join(soup.get_text(" ").split())
+    urls = [t.get("href") or t.get("src") for t in soup.find_all(["a", "img"])]
+    payload = text + "\n" + "\n".join(u for u in urls if u)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:32]
 
 
 def version_key(version):
