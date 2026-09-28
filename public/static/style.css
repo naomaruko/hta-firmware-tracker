@@ -630,9 +630,10 @@ tr.row-update_detected td {
 /* ---------- Phone card list (hidden on desktop - see media query below) ---------- */
 
 /* Hidden by default (desktop shows .table-wrap instead); flipped in the
-   max-width:720px media query. Exists in the DOM at every width - only
-   visibility changes - so app.js's filtering logic can drive both layouts
-   without caring which one is actually on screen. */
+   max-width:767px media query below (see "Table <-> card breakpoint").
+   Exists in the DOM at every width - only visibility changes - so app.js's
+   filtering logic can drive both layouts without caring which one is
+   actually on screen. */
 .card-list { display: none; flex-direction: column; gap: 10px; }
 
 .card-category-row {
@@ -888,7 +889,16 @@ tr.row-update_detected td {
   .search-wrap { flex: 0 0 auto; }
   .filter-chips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .chip { width: 100%; text-align: center; padding: 9px 12px; }
+}
 
+/* Table <-> card breakpoint: kept deliberately separate from the phone
+   rules above (which target genuinely small/phone widths at 720px) - the
+   table itself is usable much wider than that, including tablet and
+   portrait-iPad widths (roughly 768px and up), thanks to .table-wrap's own
+   horizontal scroll (see min-width + overflow-x:auto above) rather than
+   ever squeezing/wrapping columns to force-fit. Cards only take over below
+   that, for widths too narrow for a scrolling table to be a good fit. */
+@media (max-width: 767px) {
   .table-wrap { display: none; }
   .card-list { display: flex; }
 }
