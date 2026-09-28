@@ -10,7 +10,7 @@ matches each product family.
 """
 import re
 
-from app.checkers.base import CheckResult, content_fingerprint, http_get, iso_to_readable_date
+from app.checkers.base import CheckResult, http_get, iso_to_readable_date
 
 ARTICLES_URL = (
     "https://support.digico.biz/api/v2/help_center/en-gb/categories/"
@@ -85,7 +85,6 @@ def check_all(equipment_items):
                     True,
                     source_url=a.get("html_url"),
                     release_date=iso_to_readable_date(a.get("created_at")),
-                    content_hash=content_fingerprint(a.get("body")),
                 )
                 break
         resolved[key] = match

@@ -36,16 +36,16 @@ _EQUIPMENT_COLUMNS_ADDED_LATER = [
     ("release_date", "VARCHAR"),
     ("category", "VARCHAR"),
     ("platforms", "JSON"),
-    ("content_hash", "VARCHAR"),
-    ("review_since", "DATETIME"),
 ]
 
 
 # Columns dropped from Equipment after the table already existed in the wild.
-# The old NOT NULL check_method column has no default at the SQL level, so a
-# database that still has it would reject every new row seed() inserts - it
-# has to be removed, not just ignored.
-_EQUIPMENT_COLUMNS_REMOVED = ["check_method"]
+# check_method: the old NOT NULL column has no default at the SQL level, so
+# a database that still has it would reject every new row seed() inserts.
+# content_hash/review_since: added for article-content-change detection,
+# then dropped when that feature was removed - no reason for a local DB to
+# keep carrying the columns around unused.
+_EQUIPMENT_COLUMNS_REMOVED = ["check_method", "content_hash", "review_since"]
 
 
 def run_light_migrations():
