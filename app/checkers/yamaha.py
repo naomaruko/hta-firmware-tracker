@@ -10,13 +10,16 @@ table (Yamaha reuses a "related downloads" block across product families -
 DM7's page, for instance, also lists the R-series I/O racks it's compatible
 with), so every table on a page is searched.
 
-Not every product we track has its own downloads page - DSP-R10/RX/RX-EX/
-RPio622/RPio222 share the console's own firmware (see below), and the
-smaller I/O accessories (HY144-D-SRC, Rio1608-D2, Rio3224-D2) have no
-dedicated product page of their own at all (checked against Yamaha's
-sitemap.xml). Their firmware still gets a real date, though: it's published
-as a "compatible downloads" row on the RIVAGE PM page, which is where those
-three keys are pointed below rather than at a page of their own.
+Not every product we track has its own downloads page. DSP-R10/RX/RX-EX/
+RPio622/RPio222 share the console's own firmware (see below). Rio1608-D2
+and Rio3224-D2 do have one, just not under a URL containing their own
+model name - Yamaha groups them under the family name "R Series (AD/DA):
+2nd-generation" instead (r_series_adda_2), which is easy to miss searching
+by product name alone. HY144-D-SRC genuinely has no page of its own though
+(checked every "interfaces" family downloads page against Yamaha's
+sitemap.xml, one by one) - its firmware only ever appears as a "compatible
+downloads" row on the RIVAGE PM page, which is where that key is pointed
+below instead.
 
 Per Yamaha's official RIVAGE PM/DM7/CL/QL/R/Tio compatibility chart
 (download.yamaha.com/files/tcm:39-1161321): DSP-R10, DSP-RX, DSP-RX-EX,
@@ -37,6 +40,7 @@ PAGES = {
     "rivage_pm": "https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html",
     "dm7": "https://usa.yamaha.com/products/proaudio/mixers/dm7/downloads.html",
     "swp1": "https://usa.yamaha.com/products/proaudio/network_switches/swp1/downloads.html",
+    "r_series_adda_2": "https://usa.yamaha.com/products/proaudio/interfaces/r_series_adda_2/downloads.html",
 }
 
 # checker_key -> (which page in PAGES to read, regex matching that row's
@@ -49,8 +53,8 @@ ROWS = {
     "yamaha:dm7": ("dm7", re.compile(r"^DM7 Firmware\b")),
     "yamaha:swp1": ("swp1", re.compile(r"^SWP1 Firmware\b")),
     "yamaha:hy144dsrc": ("rivage_pm", re.compile(r"^HY144-D-SRC Firmware\b")),
-    "yamaha:rio1608d2": ("rivage_pm", re.compile(r"^Rio1608-D2 Firmware\b")),
-    "yamaha:rio3224d2": ("rivage_pm", re.compile(r"^Rio3224-D2 Firmware\b")),
+    "yamaha:rio1608d2": ("r_series_adda_2", re.compile(r"^Rio1608-D2 Firmware\b")),
+    "yamaha:rio3224d2": ("r_series_adda_2", re.compile(r"^Rio3224-D2 Firmware\b")),
 }
 
 VERSION_RE = re.compile(r"V([\d]+(?:\.[\d]+)*)", re.IGNORECASE)
