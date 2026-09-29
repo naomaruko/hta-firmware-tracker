@@ -48,7 +48,7 @@ checkers — see below.)
 | Manufacturer | Method | Notes |
 |---|---|---|
 | DiGiCo | ✅ Scraped | `support.digico.biz`'s Zendesk help-center JSON API |
-| Yamaha | ✅ Scraped | Static per-product firmware pages on `usa.yamaha.com` |
+| Yamaha | ✅ Scraped | Each product's Downloads page on `usa.yamaha.com` (a `#firmware-table` with a genuine "Last Update" date per file, not just a version) |
 | Solid State Logic | ✅ Scraped | `support.solidstatelogic.com`'s Zendesk API too; tracked via SOLSA (versions 1:1 with SSL Live console software) and the Network I/O firmware bundle |
 | Allen & Heath | ✅ Scraped (headless) | Site returns HTTP 403 to plain requests (bot protection) — works fine in a real headless browser |
 | Dante/Audinate | ✅ Scraped (headless) | The version table is inside a click-to-expand accordion, so it's not in the page until JS runs. Dante Controller is published as separate Windows / macOS Apple Silicon / macOS Intel builds with their own versions, so all three are tracked (see below) |
@@ -76,14 +76,15 @@ older Summit HC), since they're separate hardware variants with their own
 firmware lines - one shared row used to flip between whichever line
 published most recently.
 
-Yamaha, Allen & Heath, and Dante/Audinate don't publish a release date at
-all - their checkers have nothing to put there. For those manufacturers
-only, that column is labeled "Detected on" instead of "Release date" and
-shows the day the tracker itself first caught a version change
-(`last_changed_at`), not a manufacturer-published date. It stays blank for
-anything that hasn't had a detected change - existing entries aren't
-backfilled, and it's determined per manufacturer from the data (any item
-with a real release date), not a hardcoded list.
+Allen & Heath and Dante/Audinate don't publish a release date at all - their
+checkers have nothing to put there. For those manufacturers only, that
+column is labeled "Detected on" instead of "Release date" and shows the day
+the tracker itself first caught a version change (`last_changed_at`), not a
+manufacturer-published date. It stays blank for anything that hasn't had a
+detected change - existing entries aren't backfilled, and it's determined
+per manufacturer from the data (any item with a real release date), not a
+hardcoded list. (Yamaha used to be in this list too, before its checker
+started reading the real published date - see above.)
 
 ### How the headless-browser checkers work
 

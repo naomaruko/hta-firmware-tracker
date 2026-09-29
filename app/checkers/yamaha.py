@@ -1,68 +1,118 @@
 """Yamaha checker.
 
-Source: usa.yamaha.com publishes a static page per firmware family at a
-stable URL of the form /support/updates/<slug>_firm.html, e.g.
-rivage_pm_firm.html, dm7_firm.html, swp1_firm.html, hy144-d-src_firm.html.
-The current version is in the page <title>/<h1>, e.g. "RIVAGE PM Firmware
-V7.10 - Yamaha USA".
+Source: each product's "Downloads" page (e.g.
+usa.yamaha.com/products/proaudio/mixers/dm7/downloads.html) has a
+`#firmware-table` listing every firmware/software file for sale, with a
+genuine manufacturer-published "Last Update" date per row - unlike the old
+approach (the standalone /support/updates/<slug>_firm.html release page),
+which only gave a version, not a date. A page can have more than one such
+table (Yamaha reuses a "related downloads" block across product families -
+DM7's page, for instance, also lists the R-series I/O racks it's compatible
+with), so every table on a page is searched.
+
+Not every product we track has its own downloads page - DSP-R10/RX/RX-EX/
+RPio622/RPio222 share the console's own firmware (see below), and the
+smaller I/O accessories (HY144-D-SRC, Rio1608-D2, Rio3224-D2) have no
+dedicated product page of their own at all (checked against Yamaha's
+sitemap.xml). Their firmware still gets a real date, though: it's published
+as a "compatible downloads" row on the RIVAGE PM page, which is where those
+three keys are pointed below rather than at a page of their own.
 
 Per Yamaha's official RIVAGE PM/DM7/CL/QL/R/Tio compatibility chart
 (download.yamaha.com/files/tcm:39-1161321): DSP-R10, DSP-RX, DSP-RX-EX,
 RPio622, and RPio222 genuinely share ONE firmware version with the console
 itself, so those stay bundled under the rivage_pm slug. Rio3224-D2 and
 Rio1608-D2 do NOT - they're on their own separate firmware track entirely
-(shown as a distinct column in that chart), so each gets its own slug here
+(shown as a distinct column in that chart), so each gets its own key here
 rather than being lumped in with the console version.
 """
 import re
+from urllib.parse import urljoin
 
-from app.checkers.base import CheckResult, http_get
+from app.checkers.base import CheckResult, http_get, iso_to_readable_date
 
-BASE_URL = "https://usa.yamaha.com/support/updates/{slug}_firm.html"
+# Downloads pages that carry a firmware-table for at least one checker_key
+# below - fetched once each, not once per checker_key that reads from them.
+PAGES = {
+    "rivage_pm": "https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html",
+    "dm7": "https://usa.yamaha.com/products/proaudio/mixers/dm7/downloads.html",
+    "swp1": "https://usa.yamaha.com/products/proaudio/network_switches/swp1/downloads.html",
+}
 
-# checker_key -> URL slug
-SLUGS = {
-    "yamaha:rivage_pm": "rivage_pm",
-    "yamaha:dm7": "dm7",
-    "yamaha:swp1": "swp1",
-    "yamaha:hy144dsrc": "hy144-d-src",
-    "yamaha:rio3224d2": "rio3224-d2",
-    "yamaha:rio1608d2": "rio1608-d2",
+# checker_key -> (which page in PAGES to read, regex matching that row's
+# exact link text). Anchored at the start and requiring "Firmware" right
+# after the model name so e.g. "HY144-D-SRC Firmware" can't accidentally
+# match the "HY144-D Firmware" row (a different, untracked product one
+# prefix short of it), and "Rio1608-D2 Firmware" can't match "Rio1608-D3".
+ROWS = {
+    "yamaha:rivage_pm": ("rivage_pm", re.compile(r"^RIVAGE PM Firmware\b")),
+    "yamaha:dm7": ("dm7", re.compile(r"^DM7 Firmware\b")),
+    "yamaha:swp1": ("swp1", re.compile(r"^SWP1 Firmware\b")),
+    "yamaha:hy144dsrc": ("rivage_pm", re.compile(r"^HY144-D-SRC Firmware\b")),
+    "yamaha:rio1608d2": ("rivage_pm", re.compile(r"^Rio1608-D2 Firmware\b")),
+    "yamaha:rio3224d2": ("rivage_pm", re.compile(r"^Rio3224-D2 Firmware\b")),
 }
 
 VERSION_RE = re.compile(r"V([\d]+(?:\.[\d]+)*)", re.IGNORECASE)
 
 
-def _fetch_one(slug):
-    url = BASE_URL.format(slug=slug)
+def _fetch_rows(url):
+    """Every (name, date, absolute_href) row from every #firmware-table on
+    a downloads page."""
+    from bs4 import BeautifulSoup
+
     r = http_get(url)
     r.raise_for_status()
-    # Cheap title extraction without pulling in a full parser twice.
-    m = re.search(r"<title>(.*?)</title>", r.text, re.IGNORECASE | re.DOTALL)
-    title = m.group(1).strip() if m else ""
-    vm = VERSION_RE.search(title)
-    version = vm.group(0) if vm else None
-    return version, url, title
+    soup = BeautifulSoup(r.text, "lxml")
+    rows = []
+    for table in soup.find_all("table", id="firmware-table"):
+        for tr in table.find_all("tr")[1:]:  # skip the header row
+            a = tr.find("a")
+            tds = tr.find_all("td")
+            if not a or not tds:
+                continue
+            name = a.get_text(strip=True)
+            date = tds[-1].get_text(strip=True)
+            href = urljoin(url, a.get("href", ""))
+            rows.append((name, date, href))
+    return rows
 
 
 def check_all(equipment_items):
-    # Fetch each distinct slug once, then fan out to matching equipment.
     needed_keys = {item.checker_key for item in equipment_items}
+    needed_pages = {ROWS[k][0] for k in needed_keys if k in ROWS}
+
+    page_rows = {}
+    page_errors = {}
+    for page_key in needed_pages:
+        try:
+            page_rows[page_key] = _fetch_rows(PAGES[page_key])
+        except Exception as e:  # noqa: BLE001
+            page_errors[page_key] = f"Fetch failed: {e}"
+
     resolved = {}
     for key in needed_keys:
-        slug = SLUGS.get(key)
-        if not slug:
+        if key not in ROWS:
             continue
-        try:
-            version, url, title = _fetch_one(slug)
-            if version:
-                resolved[key] = CheckResult(version, True, source_url=url)
-            else:
-                resolved[key] = CheckResult(
-                    None, False, f"Could not find version in page title: {title!r}", source_url=url
-                )
-        except Exception as e:  # noqa: BLE001
-            resolved[key] = CheckResult(None, False, f"Fetch failed: {e}")
+        page_key, pattern = ROWS[key]
+        if page_key in page_errors:
+            resolved[key] = CheckResult(None, False, page_errors[page_key])
+            continue
+        rows = page_rows.get(page_key, [])
+        match = next(((n, d, h) for n, d, h in rows if pattern.search(n)), None)
+        if not match:
+            resolved[key] = CheckResult(
+                None, False, f"No row matching {pattern.pattern!r} on {PAGES[page_key]}"
+            )
+            continue
+        name, date, href = match
+        vm = VERSION_RE.search(name)
+        if not vm:
+            resolved[key] = CheckResult(None, False, f"Could not find version in row text: {name!r}")
+            continue
+        resolved[key] = CheckResult(
+            vm.group(0), True, source_url=href, release_date=iso_to_readable_date(date)
+        )
 
     results = {}
     for item in equipment_items:
