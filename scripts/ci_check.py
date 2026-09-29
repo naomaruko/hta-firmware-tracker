@@ -35,7 +35,7 @@ def main():
         # Snapshot of each item's version *before* this run, for diffing
         # against after check_all() - what actually changed just now, not
         # just what's currently flagged (a still-pending update reconfirmed
-        # today, or one auto-clearing after its 2-week window, both leave
+        # today, or one auto-clearing after its 1-month window, both leave
         # current_version untouched, so neither shows up here). Empty on
         # the very first-ever run, which correctly means nothing counts as
         # "changed" yet - there's nothing to compare against.

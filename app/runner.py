@@ -13,11 +13,14 @@ logger = logging.getLogger("firmware_tracker.runner")
 
 # How long a genuinely new version stays flagged "Update available" (amber
 # row + badge) before it automatically reverts to "ok" with no one needing
-# to do anything. Re-confirming the *same* pending version on a later check
+# to do anything. Set to a month rather than the 2 weeks it started at,
+# since the team typically waits to see whether a new release has reported
+# bugs before applying it, and a shorter flag would clear before they're
+# done watching. Re-confirming the *same* pending version on a later check
 # does not restart this clock - only a fresh version change (current_version
 # actually changing again) does, since that's the only thing that sets
 # last_changed_at.
-UPDATE_HIGHLIGHT_WINDOW = dt.timedelta(days=14)
+UPDATE_HIGHLIGHT_WINDOW = dt.timedelta(days=30)
 
 
 def _apply_platforms(item: Equipment, result, now):

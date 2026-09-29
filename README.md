@@ -22,7 +22,7 @@ audio gear, so nobody has to manually check manufacturer sites.
 - Dashboard grouped by manufacturer, with status badges (Up to date / Update
   available / Check failed). A row with a new version gets a
   soft amber highlight in place (it isn't reordered) that clears itself
-  automatically 2 weeks after the change was first detected — no one needs
+  automatically 1 month after the change was first detected — no one needs
   to click anything to dismiss it. Installable as a PWA on a phone (Add to
   Home Screen) for a full-screen, app-like view.
 
@@ -62,7 +62,7 @@ list once a checker can read its version.
 status badge and the newest version, with a "3 platforms" note - and expands
 (chevron on desktop, tap on phone) to list each platform's own version. Each
 platform tracks its own previous version and change date, and the row's badge
-is "Update available" whenever *any* platform changed within the 2-week
+is "Update available" whenever *any* platform changed within the 1-month
 highlight window (the expanded list tags which one). Slack alerts name the
 platform(s), e.g. "Dante Controller (Windows) → 4.18.1.3", and an update to
 just one platform is caught even if it doesn't change the headline version.
@@ -127,7 +127,7 @@ The daily workflow posts to Slack (`app/slack.py`) whenever it finds a
 **genuinely new** firmware version - comparing each item's version before
 and after that day's run, not just whatever's currently flagged. A version
 that's still pending from a previous day, or one that just auto-cleared
-after its 2-week window, doesn't trigger a repeat message; only an actual
+after its 1-month window, doesn't trigger a repeat message; only an actual
 change does.
 
 Items are grouped by family before posting - e.g. all 5 DiGiCo Quantum
@@ -161,7 +161,7 @@ anyone's computer is on.
 
 When a version changes, the item gets an "Update available" badge and an
 amber row highlight, in its normal position - it isn't moved to the top.
-Both clear themselves automatically 2 weeks after the change was *first*
+Both clear themselves automatically 1 month after the change was *first*
 detected (`Equipment.last_changed_at`, see `app/runner.py`'s
 `UPDATE_HIGHLIGHT_WINDOW`) - re-confirming the same pending version on later
 daily checks doesn't restart that clock, only a genuinely new version change
