@@ -40,10 +40,10 @@ QUERIES = {
 
 
 def _fmt_ddmmyyyy(date_str):
-    """d&b dates are DD.MM.YYYY -> "March 20, 2026", or the raw string if
+    """d&b dates are DD.MM.YYYY -> "Mar 20, 2026", or the raw string if
     that assumption turns out wrong for some row."""
     try:
-        return dt.datetime.strptime(date_str, "%d.%m.%Y").strftime("%B %-d, %Y")
+        return dt.datetime.strptime(date_str, "%d.%m.%Y").strftime("%b %-d, %Y")
     except ValueError:
         return date_str
 

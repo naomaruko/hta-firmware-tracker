@@ -164,7 +164,7 @@
         <td class="version-cell">{{ item.current_version or '—' }}{% if plats %}<span class="platform-hint">{{ plats|length }} platforms</span>{% endif %}</td>
         <td class="muted release-date-cell">
           {% if has_release_dates %}{{ item.release_date or '—' }}
-          {% else %}{{ item.last_changed_at|pacific("%B %-d, %Y") if item.last_changed_at else '—' }}
+          {% else %}{{ item.last_changed_at|pacific("%b %-d, %Y") if item.last_changed_at else '—' }}
           {% endif %}
         </td>
         <td class="version-cell muted">{{ item.previous_version or '—' }}</td>
@@ -236,7 +236,7 @@
           <span class="card-detail-label">{{ 'Release date' if has_release_dates else 'Detected on' }}</span>
           <span class="card-detail-value">
             {% if has_release_dates %}{{ item.release_date or '—' }}
-            {% else %}{{ item.last_changed_at|pacific("%B %-d, %Y") if item.last_changed_at else '—' }}
+            {% else %}{{ item.last_changed_at|pacific("%b %-d, %Y") if item.last_changed_at else '—' }}
             {% endif %}
           </span>
         </div>

@@ -53,11 +53,30 @@ class CheckerError(Exception):
     pass
 
 
+_MONTH_ABBREVIATIONS = {
+    "January": "Jan", "February": "Feb", "March": "Mar", "April": "Apr",
+    "May": "May", "June": "Jun", "July": "Jul", "August": "Aug",
+    "September": "Sep", "October": "Oct", "November": "Nov", "December": "Dec",
+}
+_FULL_MONTH_RE = re.compile("|".join(_MONTH_ABBREVIATIONS))
+
+
+def abbreviate_month(date_str):
+    """"March 27, 2026" -> "Mar 27, 2026", for a date scraped as raw text
+    off a manufacturer's own page (Shure) rather than one we format
+    ourselves via strftime (everyone else, see iso_to_readable_date below) -
+    those just use %b directly. Leaves anything that isn't a recognized full
+    month name untouched, including None."""
+    if not date_str:
+        return date_str
+    return _FULL_MONTH_RE.sub(lambda m: _MONTH_ABBREVIATIONS[m.group(0)], date_str)
+
+
 def iso_to_readable_date(iso_str):
     """Zendesk-style ISO timestamp -> "March 20, 2026", or None if unparseable."""
     if not iso_str:
         return None
     try:
-        return dt.datetime.fromisoformat(iso_str.replace("Z", "+00:00")).strftime("%B %-d, %Y")
+        return dt.datetime.fromisoformat(iso_str.replace("Z", "+00:00")).strftime("%b %-d, %Y")
     except ValueError:
         return None
