@@ -50,7 +50,7 @@ checkers — see below.)
 | DiGiCo | ✅ Scraped | `support.digico.biz`'s Zendesk help-center JSON API |
 | Yamaha | ✅ Scraped | Each product's Downloads page on `usa.yamaha.com` (a `#firmware-table` with a genuine "Last Update" date per file, not just a version) |
 | Solid State Logic | ✅ Scraped | `support.solidstatelogic.com`'s Zendesk API too; tracked via SOLSA (versions 1:1 with SSL Live console software) and the Network I/O firmware bundle |
-| Allen & Heath | ✅ Scraped (headless) | Site returns HTTP 403 to plain requests (bot protection) — works fine in a real headless browser |
+| Allen & Heath | ✅ Scraped (headless) | Version: `www.allen-heath.com` returns HTTP 403 to plain requests (bot protection) — works fine in a real headless browser. Release date: a separate evergreen article on `support.allen-heath.com` (a Zendesk help centre, read via its public JSON API — even a real browser can't get past that subdomain's own Cloudflare challenge page), month/year only, no day |
 | Dante/Audinate | ✅ Scraped (headless) | The version table is inside a click-to-expand accordion, so it's not in the page until JS runs. Dante Controller is published as separate Windows / macOS Apple Silicon / macOS Intel builds with their own versions, so all three are tracked (see below) |
 | d&b audiotechnik | ✅ Scraped (headless) | Their Download Center is a JS-driven search box behind a cookie-consent overlay; D40/D90 share one firmware release, DN1 Switch has its own |
 | Shure | ✅ Scraped (headless) | Firmware versions come from `shure.com`'s searchable software/firmware archive listing |
@@ -76,15 +76,15 @@ older Summit HC), since they're separate hardware variants with their own
 firmware lines - one shared row used to flip between whichever line
 published most recently.
 
-Allen & Heath and Dante/Audinate don't publish a release date at all - their
-checkers have nothing to put there. For those manufacturers only, that
-column is labeled "Detected on" instead of "Release date" and shows the day
-the tracker itself first caught a version change (`last_changed_at`), not a
+Dante/Audinate doesn't publish a release date at all - its checker has
+nothing to put there. For that manufacturer only, the column is labeled
+"Detected on" instead of "Release date" and shows the day the tracker
+itself first caught a version change (`last_changed_at`), not a
 manufacturer-published date. It stays blank for anything that hasn't had a
 detected change - existing entries aren't backfilled, and it's determined
 per manufacturer from the data (any item with a real release date), not a
-hardcoded list. (Yamaha used to be in this list too, before its checker
-started reading the real published date - see above.)
+hardcoded list. (Yamaha and Allen & Heath used to be in this list too,
+before their checkers started reading a real published date - see above.)
 
 ### How the headless-browser checkers work
 
