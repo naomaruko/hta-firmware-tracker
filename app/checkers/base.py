@@ -29,6 +29,11 @@ class CheckResult:
     # `version` is the newest of them (see newest_version) and the runner
     # tracks each platform's changes separately. None for everything else.
     platforms: Optional[dict] = None
+    # Per-platform release dates for a platforms result above (name -> date
+    # string), independent of the single release_date field - Dante
+    # Controller's three builds each publish their own. None for anything
+    # that isn't a platforms result, or where none of them resolved.
+    platform_release_dates: Optional[dict] = None
 
 
 def version_key(version):

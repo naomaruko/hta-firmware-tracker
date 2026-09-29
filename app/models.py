@@ -42,9 +42,10 @@ class Equipment(Base):
     # Only for products published as separate per-platform builds with their
     # own versions (Dante Controller); None for everything else. A list of
     # {name, current_version, previous_version, last_changed_at (ISO string,
-    # naive UTC), update_pending} dicts. current_version above then holds the
-    # newest of them, and status is update_detected if *any* platform has a
-    # pending update.
+    # naive UTC), update_pending, release_date} dicts. current_version above
+    # then holds the newest of them, release_date above holds whichever
+    # platform's release date that is, and status is update_detected if
+    # *any* platform has a pending update.
     platforms = Column(JSON, nullable=True)
     # unchecked | ok | update_detected | error
     status = Column(String, nullable=False, default="unchecked")

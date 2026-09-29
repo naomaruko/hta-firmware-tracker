@@ -28,6 +28,7 @@
   <li class="platform-item">
     <span class="platform-name">{{ p.name }}</span>
     <span class="platform-version">{{ p.current_version }}</span>
+    {% if p.release_date %}<span class="platform-date">{{ p.release_date }}</span>{% endif %}
     {% if p.update_pending %}<span class="badge badge-warning platform-badge">Update</span>{% if p.previous_version %}<span class="platform-prev">was {{ p.previous_version }}</span>{% endif %}{% endif %}
   </li>
   {% endfor %}

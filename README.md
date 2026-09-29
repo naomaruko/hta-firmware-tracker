@@ -66,6 +66,11 @@ is "Update available" whenever *any* platform changed within the 1-month
 highlight window (the expanded list tags which one). Slack alerts name the
 platform(s), e.g. "Dante Controller (Windows) → 4.18.1.3", and an update to
 just one platform is caught even if it doesn't change the headline version.
+Each platform also has its own real release date - Audinate publishes a
+dedicated "Release Notes" page per platform build, linked right from the
+same accordion the version comes from - so the expanded list shows each
+platform's own date, and the row's own Release date column shows whichever
+platform's date matches the headline version.
 
 **Article-based sources (DiGiCo, SSL).** These manufacturers announce
 firmware in a help-centre *article* rather than on a dedicated firmware page,
@@ -76,15 +81,13 @@ older Summit HC), since they're separate hardware variants with their own
 firmware lines - one shared row used to flip between whichever line
 published most recently.
 
-Dante/Audinate doesn't publish a release date at all - its checker has
-nothing to put there. For that manufacturer only, the column is labeled
-"Detected on" instead of "Release date" and shows the day the tracker
-itself first caught a version change (`last_changed_at`), not a
-manufacturer-published date. It stays blank for anything that hasn't had a
-detected change - existing entries aren't backfilled, and it's determined
-per manufacturer from the data (any item with a real release date), not a
-hardcoded list. (Yamaha and Allen & Heath used to be in this list too,
-before their checkers started reading a real published date - see above.)
+Every manufacturer publishes a real release date now. The "Detected on"
+fallback (the day the tracker itself first caught a version change,
+`last_changed_at`, not a manufacturer-published date) is still there for
+whenever a future manufacturer's checker has nothing to put in
+release_date - it's determined per manufacturer from the data (any item
+with a real release date), not a hardcoded list, so nothing needs to
+change here if that happens again.
 
 ### How the headless-browser checkers work
 

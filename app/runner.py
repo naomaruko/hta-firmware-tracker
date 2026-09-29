@@ -32,6 +32,7 @@ def _apply_platforms(item: Equipment, result, now):
     still inside the highlight window - the same rule the single-version path
     applies, evaluated per platform."""
     old = {p["name"]: p for p in (item.platforms or [])}
+    platform_dates = result.platform_release_dates or {}
     platforms = []
     for name, version in result.platforms.items():
         prev = old.get(name)
@@ -40,6 +41,7 @@ def _apply_platforms(item: Equipment, result, now):
             "current_version": version,
             "previous_version": prev.get("previous_version") if prev else None,
             "last_changed_at": prev.get("last_changed_at") if prev else None,
+            "release_date": platform_dates.get(name),
         }
         if prev and prev.get("current_version") and prev["current_version"] != version:
             entry["previous_version"] = prev["current_version"]
