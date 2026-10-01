@@ -629,14 +629,16 @@ tr.row-update_detected td {
 .platform-prev { font-size: 0.75rem; color: var(--muted); }
 
 /* Expanded family row (several models consolidated into one row, sharing a
-   checker_key - see app/families.py): the member models as pill tags, plus
-   the release date/previous/last checked/source the collapsed row leaves
-   blank. Same sticky-left reasoning as .platform-wrap above. */
+   checker_key - see app/families.py): just the member models as pill tags -
+   every other field (status/version/release date/previous/last
+   checked/source) is already shown directly in the collapsed row on
+   desktop/tablet, since it's identical for every member. Same sticky-left
+   reasoning as .platform-wrap above. */
 .family-row td { padding-top: 10px; padding-bottom: 14px; }
 .family-row[hidden] { display: none; }
 .family-row.is-hidden { display: none; }
 .family-wrap { position: sticky; left: 14px; width: fit-content; max-width: calc(100vw - 100px); }
-.family-pill-list { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.family-pill-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .family-pill {
   background: var(--neutral-bg);
   color: var(--text);
@@ -646,8 +648,6 @@ tr.row-update_detected td {
   font-weight: 600;
   white-space: nowrap;
 }
-.family-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 0.85rem; }
-.family-meta-label { color: var(--muted); margin-right: 6px; }
 
 /* ---------- Phone card list (hidden on desktop - see media query below) ---------- */
 

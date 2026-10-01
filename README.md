@@ -5,9 +5,9 @@ audio gear, so nobody has to manually check manufacturer sites.
 
 ## What it does
 
-- Tracks 44 pieces of equipment across DiGiCo, Yamaha, Solid State Logic,
+- Tracks 43 pieces of equipment across DiGiCo, Yamaha, Solid State Logic,
   Allen & Heath, Shure, d&b audiotechnik, and Dante/Audinate.
-- **All 44 items are checked automatically** — most by scraping a static
+- **All 43 items are checked automatically** — most by scraping a static
   page, several manufacturers via a real headless browser where the site
   needs JavaScript or blocks plain requests (see
   [How each manufacturer is checked](#how-each-manufacturer-is-checked)).
@@ -114,13 +114,17 @@ DiGiCo's five Quantum consoles, Allen & Heath's two dLive models, Yamaha's
 eight Rivage PM components - and always report the identical version
 because they're assigned the same `CheckResult` from one `check_all()`
 call. Those collapse into a single dashboard row (e.g. "DiGiCo Quantum
-series") instead of five near-identical ones, with a chevron to expand it
-into the individual model names as pill tags plus the release date,
-previous version, last-checked time, and source link.
+series") instead of five near-identical ones. On desktop/tablet every
+field - status, version, release date, previous version, last checked,
+source - still shows directly in that one row, since it's identical for
+every member; only the individual model names (e.g. Quantum 225/326/338/
+5/7) sit behind the chevron, as pill tags. On phone, where the whole row's
+detail is already a tap away, the model pills join the rest of that
+existing reveal instead of getting their own control.
 
 This is deliberately **not** based on matching version-number strings -
 two unrelated products could coincidentally share a version number (Shure's
-AD610, SBC240, and ADTQUS are different product types and always stay as
+AD610, SBC240, and ADXR are different product types and always stay as
 separate rows even if that happens). The real signal is `checker_key`
 (assigned per actual firmware source in `app/seed.py`): items sharing one
 were checked together and are guaranteed to move together. `app/families.py`
@@ -221,7 +225,7 @@ app/
   runner.py          Runs checkers, diffs versions, writes history,
                      auto-expires update flags after UPDATE_HIGHLIGHT_WINDOW
   scheduler.py       Background interval job (local interactive use only)
-  seed.py            The 44-item equipment list + which checker covers each
+  seed.py            The 43-item equipment list + which checker covers each
   export.py          Equipment <-> data/equipment.json round-trip, used by
                      the CI pipeline
   checkers/

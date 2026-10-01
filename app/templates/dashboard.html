@@ -35,12 +35,12 @@
 </ul>
 {% endmacro %}
 {# A family row (several models sharing one checker_key, always reporting
-   the identical version - see app/families.py) stays to one line when
-   collapsed: just the group name, status and version, with a chevron.
-   Expanding reveals which models it covers as pill tags, plus the last
-   checked time and source link that a normal row already shows up front -
-   kept out of the collapsed line since they're identical for every member
-   and would just repeat what the row above already states. #}
+   the identical version - see app/families.py) shows every field a normal
+   row does - status, version, release date, previous version, last
+   checked, source - directly in the row on desktop/tablet, since they're
+   identical for every member by construction. The chevron only expands to
+   reveal which individual models the row covers, as pill tags - that's
+   the one thing with no room in a single line. #}
 {% macro family_pills(item) %}
 <ul class="family-pill-list">
   {% for m in item.family_models %}<li class="family-pill">{{ m }}</li>{% endfor %}
@@ -190,15 +190,6 @@
           {% endif %}
         </td>
         <td class="version-cell">{{ item.current_version or '—' }}{% if plats %}<span class="platform-hint">{{ plats|length }} platforms</span>{% endif %}</td>
-        {% if item.is_family %}
-        {# Release date/previous/last checked/source are identical for every
-           member (see _consolidate_families) - left blank here rather than
-           repeating them, since they're all one tap away via the chevron. #}
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="source-col"></td>
-        {% else %}
         <td class="muted release-date-cell">
           {% if has_release_dates %}{{ item.release_date or '—' }}
           {% else %}{{ item.last_changed_at|pacific("%b %-d, %Y") if item.last_changed_at else '—' }}
@@ -207,7 +198,6 @@
         <td class="version-cell muted">{{ item.previous_version or '—' }}</td>
         <td class="muted time-cell" data-utc="{{ item.last_checked_at.isoformat() if item.last_checked_at else '' }}"><span class="time-text">{{ item.last_checked_at|pacific if item.last_checked_at else '—' }}</span></td>
         <td class="source-col">{{ source_link(item) }}</td>
-        {% endif %}
       </tr>
       {% if plats %}
       <tr class="platform-row row-{{ item.status }}" id="platforms-{{ item.id }}" data-parent-id="{{ item.id }}" hidden>
@@ -216,19 +206,7 @@
       {% endif %}
       {% if item.is_family %}
       <tr class="family-row row-{{ item.status }}" id="family-{{ item.id }}" data-parent-id="{{ item.id }}" hidden>
-        <td colspan="7">
-          <div class="family-wrap">
-            {{ family_pills(item) }}
-            <div class="family-meta">
-              {% if has_release_dates %}<span><span class="family-meta-label">Release date</span> {{ item.release_date or '—' }}</span>
-              {% else %}<span><span class="family-meta-label">Detected on</span> {{ item.last_changed_at|pacific("%b %-d, %Y") if item.last_changed_at else '—' }}</span>
-              {% endif %}
-              <span><span class="family-meta-label">Previous</span> {{ item.previous_version or '—' }}</span>
-              <span><span class="family-meta-label">Last checked</span> {{ item.last_checked_at|pacific if item.last_checked_at else '—' }}</span>
-              <span><span class="family-meta-label">Source</span> {{ source_link(item) }}</span>
-            </div>
-          </div>
-        </td>
+        <td colspan="7"><div class="family-wrap">{{ family_pills(item) }}</div></td>
       </tr>
       {% endif %}
       {% if item.last_error %}

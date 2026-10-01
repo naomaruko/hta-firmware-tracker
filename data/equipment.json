@@ -229,23 +229,6 @@
     "last_error": null
   },
   {
-    "id": 30,
-    "manufacturer": "Shure",
-    "model": "AD1/AD2 \u2014 Axient Digital Bodypack/Handheld Transmitter",
-    "category": null,
-    "checker_key": "shure:ad_transmitters",
-    "source_url": "https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=AD1+AD2+ADX1+ADX2+transmitters&size=n_10_n&sort-field=versionreleasedate&sort-direction=desc",
-    "notes": null,
-    "current_version": "1.5.4",
-    "previous_version": null,
-    "release_date": "Mar 27, 2026",
-    "platforms": null,
-    "status": "ok",
-    "last_checked_at": "2026-10-01T13:11:20.451257",
-    "last_changed_at": null,
-    "last_error": null
-  },
-  {
     "id": 31,
     "manufacturer": "Shure",
     "model": "AD4Q \u2014 Axient Digital Four-Channel Receiver",

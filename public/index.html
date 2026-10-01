@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Firmware">
-<link rel="stylesheet" href="/static/style.css?v=20261001213145">
+<link rel="stylesheet" href="/static/style.css?v=20261001215333">
 </head>
 <body>
 
@@ -22,9 +22,9 @@
 
 
 
-<section class="hero-banner" style="--hero-image: url('/static/img/hero-banner.webp?v=20261001213145');">
+<section class="hero-banner" style="--hero-image: url('/static/img/hero-banner.webp?v=20261001215333');">
   <div class="hero-banner-content">
-    <img class="hero-logo" src="/static/img/hero-logo.png?v=20261001213145" alt="Hi-Tech Audio">
+    <img class="hero-logo" src="/static/img/hero-logo.png?v=20261001215333" alt="Hi-Tech Audio">
     <div class="hero-title-wrap">
       <h1 class="hero-title">Firmware Tracker</h1>
       
@@ -35,16 +35,16 @@
 <section class="stats-panel">
   <div class="stat-row">
     <div class="stat-card">
-      <img class="stat-icon" src="/static/img/stat-tracked.png?v=20261001213145" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-tracked.png?v=20261001215333" width="56" height="56" alt="">
       <div class="stat-text">
-        <span class="stat-value">44</span>
+        <span class="stat-value">43</span>
         <span class="stat-label">Tracked</span>
       </div>
     </div>
     <div
       class="stat-card stat-alert stat-clickable"
       id="updates-kpi" role="button" tabindex="0" aria-label="Show the 8 items with an update available">
-      <img class="stat-icon" src="/static/img/stat-updates.png?v=20261001213145" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-updates.png?v=20261001215333" width="56" height="56" alt="">
       <div class="stat-text">
         <span class="stat-value">8</span>
         <span class="stat-label">
@@ -57,14 +57,14 @@
       </div>
     </div>
     <div class="stat-card ">
-      <img class="stat-icon" src="/static/img/stat-errors.png?v=20261001213145" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-errors.png?v=20261001215333" width="56" height="56" alt="">
       <div class="stat-text">
         <span class="stat-value">0</span>
         <span class="stat-label">Errors</span>
       </div>
     </div>
     <div class="stat-card">
-      <img class="stat-icon" src="/static/img/stat-last-checked.png?v=20261001213145" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-last-checked.png?v=20261001215333" width="56" height="56" alt="">
       <div class="stat-text">
         
         <span class="stat-value stat-value-text" id="last-run" data-utc="2026-10-01T13:11:32.245723" title="Oct 1, 06:11 AM PDT">Oct 1, 06:11 AM PDT</span>
@@ -133,30 +133,13 @@
           
         </td>
         <td class="version-cell">V2.12</td>
-        
-        
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="source-col"></td>
-        
-      </tr>
-      
-      
-      <tr class="family-row row-ok" id="family-29" data-parent-id="29" hidden>
-        <td colspan="7">
-          <div class="family-wrap">
-            
-<ul class="family-pill-list">
-  <li class="family-pill">dLive DM64 MixRack</li><li class="family-pill">dLive S5000</li>
-</ul>
-
-            <div class="family-meta">
-              <span><span class="family-meta-label">Release date</span> Jan 2026</span>
-              
-              <span><span class="family-meta-label">Previous</span> —</span>
-              <span><span class="family-meta-label">Last checked</span> Oct 1, 06:10 AM PDT</span>
-              <span><span class="family-meta-label">Source</span> 
+        <td class="muted release-date-cell">
+          Jan 2026
+          
+        </td>
+        <td class="version-cell muted">—</td>
+        <td class="muted time-cell" data-utc="2026-10-01T13:10:55.686787"><span class="time-text">Oct 1, 06:10 AM PDT</span></td>
+        <td class="source-col">
 <a class="source-link" href="https://www.allen-heath.com/hardware/dlive-series/all-models/resources/" target="_blank" rel="noopener" title="www.allen-heath.com" aria-label="Open source (www.allen-heath.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -164,10 +147,16 @@
     <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 </a>
-</span>
-            </div>
-          </div>
-        </td>
+</td>
+      </tr>
+      
+      
+      <tr class="family-row row-ok" id="family-29" data-parent-id="29" hidden>
+        <td colspan="7"><div class="family-wrap">
+<ul class="family-pill-list">
+  <li class="family-pill">dLive DM64 MixRack</li><li class="family-pill">dLive S5000</li>
+</ul>
+</div></td>
       </tr>
       
       
@@ -276,7 +265,6 @@
           
         </td>
         <td class="version-cell">4.18.1.2<span class="platform-hint">3 platforms</span></td>
-        
         <td class="muted release-date-cell">
           Jul 15, 2026
           
@@ -292,7 +280,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       <tr class="platform-row row-ok" id="platforms-44" data-parent-id="44" hidden>
@@ -452,30 +439,13 @@
           
         </td>
         <td class="version-cell">2.18.01</td>
-        
-        
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="source-col"></td>
-        
-      </tr>
-      
-      
-      <tr class="family-row row-ok" id="family-41" data-parent-id="41" hidden>
-        <td colspan="7">
-          <div class="family-wrap">
-            
-<ul class="family-pill-list">
-  <li class="family-pill">D40</li><li class="family-pill">D90</li>
-</ul>
-
-            <div class="family-meta">
-              <span><span class="family-meta-label">Release date</span> May 27, 2026</span>
-              
-              <span><span class="family-meta-label">Previous</span> —</span>
-              <span><span class="family-meta-label">Last checked</span> Oct 1, 06:11 AM PDT</span>
-              <span><span class="family-meta-label">Source</span> 
+        <td class="muted release-date-cell">
+          May 27, 2026
+          
+        </td>
+        <td class="version-cell muted">—</td>
+        <td class="muted time-cell" data-utc="2026-10-01T13:11:27.212747"><span class="time-text">Oct 1, 06:11 AM PDT</span></td>
+        <td class="source-col">
 <a class="source-link" href="https://www.dbaudio.com/global/en/service-and-support/downloads/?searchTerm=D40%2520Firmware%2520Release%2520notes" target="_blank" rel="noopener" title="www.dbaudio.com" aria-label="Open source (www.dbaudio.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -483,10 +453,16 @@
     <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 </a>
-</span>
-            </div>
-          </div>
-        </td>
+</td>
+      </tr>
+      
+      
+      <tr class="family-row row-ok" id="family-41" data-parent-id="41" hidden>
+        <td colspan="7"><div class="family-wrap">
+<ul class="family-pill-list">
+  <li class="family-pill">D40</li><li class="family-pill">D90</li>
+</ul>
+</div></td>
       </tr>
       
       
@@ -506,7 +482,6 @@
           
         </td>
         <td class="version-cell">1.02.07</td>
-        
         <td class="muted release-date-cell">
           Aug 18, 2026
           
@@ -522,7 +497,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -680,30 +654,13 @@
           
         </td>
         <td class="version-cell">V22</td>
-        
-        
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="source-col"></td>
-        
-      </tr>
-      
-      
-      <tr class="family-row row-ok" id="family-5" data-parent-id="5" hidden>
-        <td colspan="7">
-          <div class="family-wrap">
-            
-<ul class="family-pill-list">
-  <li class="family-pill">Quantum 225</li><li class="family-pill">Quantum 326</li><li class="family-pill">Quantum 338</li><li class="family-pill">Quantum 5</li><li class="family-pill">Quantum 7</li>
-</ul>
-
-            <div class="family-meta">
-              <span><span class="family-meta-label">Release date</span> Mar 20, 2026</span>
-              
-              <span><span class="family-meta-label">Previous</span> —</span>
-              <span><span class="family-meta-label">Last checked</span> Oct 1, 06:10 AM PDT</span>
-              <span><span class="family-meta-label">Source</span> 
+        <td class="muted release-date-cell">
+          Mar 20, 2026
+          
+        </td>
+        <td class="version-cell muted">—</td>
+        <td class="muted time-cell" data-utc="2026-10-01T13:10:47.172039"><span class="time-text">Oct 1, 06:10 AM PDT</span></td>
+        <td class="source-col">
 <a class="source-link" href="https://support.digico.biz/hc/en-gb/articles/44972387714449-V22-Quantum-Console-Software" target="_blank" rel="noopener" title="support.digico.biz" aria-label="Open source (support.digico.biz) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -711,10 +668,16 @@
     <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 </a>
-</span>
-            </div>
-          </div>
-        </td>
+</td>
+      </tr>
+      
+      
+      <tr class="family-row row-ok" id="family-5" data-parent-id="5" hidden>
+        <td colspan="7"><div class="family-wrap">
+<ul class="family-pill-list">
+  <li class="family-pill">Quantum 225</li><li class="family-pill">Quantum 326</li><li class="family-pill">Quantum 338</li><li class="family-pill">Quantum 5</li><li class="family-pill">Quantum 7</li>
+</ul>
+</div></td>
       </tr>
       
       
@@ -734,7 +697,6 @@
           
         </td>
         <td class="version-cell">V22</td>
-        
         <td class="muted release-date-cell">
           Mar 20, 2026
           
@@ -750,7 +712,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -776,7 +737,6 @@
           
         </td>
         <td class="version-cell">4.0.20</td>
-        
         <td class="muted release-date-cell">
           Feb 16, 2024
           
@@ -792,7 +752,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -813,7 +772,6 @@
           
         </td>
         <td class="version-cell">4.2.11</td>
-        
         <td class="muted release-date-cell">
           Aug 14, 2025
           
@@ -829,7 +787,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -855,7 +812,6 @@
           
         </td>
         <td class="version-cell">V3.0.0.88</td>
-        
         <td class="muted release-date-cell">
           Apr 1, 2025
           
@@ -871,7 +827,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -1162,62 +1117,6 @@
       
       
       
-      <tr data-id="30"
-          data-status="ok"
-          data-category=""
-          data-search="shure shure ad/adx transmitters ad1/ad2 — axient digital bodypack/handheld transmitter adx1/adx2 — axient digital bodypack/handheld transmitter"
-          class="row-ok">
-        <td class="model-col">
-          <div class="model-name">Shure AD/ADX transmitters<button type="button" class="row-toggle" aria-expanded="false" aria-controls="family-30" aria-label="Show the 2 models in Shure AD/ADX transmitters">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button></div>
-        </td>
-        <td>
-          <span class="badge badge-good">Up to date</span>
-          
-        </td>
-        <td class="version-cell">1.5.4</td>
-        
-        
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="source-col"></td>
-        
-      </tr>
-      
-      
-      <tr class="family-row row-ok" id="family-30" data-parent-id="30" hidden>
-        <td colspan="7">
-          <div class="family-wrap">
-            
-<ul class="family-pill-list">
-  <li class="family-pill">AD1/AD2 — Axient Digital Bodypack/Handheld Transmitter</li><li class="family-pill">ADX1/ADX2 — Axient Digital Bodypack/Handheld Transmitter</li>
-</ul>
-
-            <div class="family-meta">
-              <span><span class="family-meta-label">Release date</span> Mar 27, 2026</span>
-              
-              <span><span class="family-meta-label">Previous</span> —</span>
-              <span><span class="family-meta-label">Last checked</span> Oct 1, 06:11 AM PDT</span>
-              <span><span class="family-meta-label">Source</span> 
-<a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=AD1+AD2+ADX1+ADX2+transmitters&size=n_10_n&sort-field=versionreleasedate&sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M15 3H21V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-</a>
-</span>
-            </div>
-          </div>
-        </td>
-      </tr>
-      
-      
-      
-      
-      
       <tr data-id="31"
           data-status="ok"
           data-category=""
@@ -1231,7 +1130,6 @@
           
         </td>
         <td class="version-cell">1.5.4</td>
-        
         <td class="muted release-date-cell">
           Mar 27, 2026
           
@@ -1247,7 +1145,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -1268,7 +1165,6 @@
           
         </td>
         <td class="version-cell">1.3.4</td>
-        
         <td class="muted release-date-cell">
           Jul 23, 2026
           
@@ -1284,7 +1180,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -1305,7 +1200,6 @@
           
         </td>
         <td class="version-cell">1.5.4</td>
-        
         <td class="muted release-date-cell">
           Mar 27, 2026
           
@@ -1321,7 +1215,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -1342,7 +1235,6 @@
           
         </td>
         <td class="version-cell">1.3.8</td>
-        
         <td class="muted release-date-cell">
           May 27, 2026
           
@@ -1358,7 +1250,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -1379,7 +1270,6 @@
           
         </td>
         <td class="version-cell">1.3.6</td>
-        
         <td class="muted release-date-cell">
           May 15, 2026
           
@@ -1395,7 +1285,41 @@
   </svg>
 </a>
 </td>
-        
+      </tr>
+      
+      
+      
+      
+      
+      
+      <tr data-id="36"
+          data-status="ok"
+          data-category=""
+          data-search="shure adx1/adx2 — axient digital bodypack/handheld transmitter "
+          class="row-ok">
+        <td class="model-col">
+          <div class="model-name">ADX1/ADX2 — Axient Digital Bodypack/Handheld Transmitter</div>
+        </td>
+        <td>
+          <span class="badge badge-good">Up to date</span>
+          
+        </td>
+        <td class="version-cell">1.5.4</td>
+        <td class="muted release-date-cell">
+          Mar 27, 2026
+          
+        </td>
+        <td class="version-cell muted">—</td>
+        <td class="muted time-cell" data-utc="2026-10-01T13:11:20.451537"><span class="time-text">Oct 1, 06:11 AM PDT</span></td>
+        <td class="source-col">
+<a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=AD1+AD2+ADX1+ADX2+transmitters&size=n_10_n&sort-field=versionreleasedate&sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M15 3H21V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</a>
+</td>
       </tr>
       
       
@@ -1416,7 +1340,6 @@
           
         </td>
         <td class="version-cell">1.3.6</td>
-        
         <td class="muted release-date-cell">
           May 15, 2026
           
@@ -1432,7 +1355,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -1453,7 +1375,6 @@
           
         </td>
         <td class="version-cell">1.5.4</td>
-        
         <td class="muted release-date-cell">
           Mar 27, 2026
           
@@ -1469,7 +1390,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -1490,7 +1410,6 @@
           
         </td>
         <td class="version-cell">1.3.6</td>
-        
         <td class="muted release-date-cell">
           May 15, 2026
           
@@ -1506,7 +1425,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -1527,7 +1445,6 @@
           
         </td>
         <td class="version-cell">1.1.7</td>
-        
         <td class="muted release-date-cell">
           Apr 02, 2025
           
@@ -1543,7 +1460,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -1558,56 +1474,6 @@
   <div class="card-list">
     
     
-    
-    
-    
-    <div class="item-card row-ok"
-         data-id="30"
-         data-status="ok"
-         data-category=""
-         data-search="shure shure ad/adx transmitters ad1/ad2 — axient digital bodypack/handheld transmitter adx1/adx2 — axient digital bodypack/handheld transmitter">
-      <div class="card-summary" role="button" tabindex="0" aria-expanded="false">
-        <div class="card-summary-top">
-          <h3 class="card-model">Shure AD/ADX transmitters</h3>
-          <span class="badge badge-good">Up to date</span>
-          
-        </div>
-        <div class="card-summary-bottom">
-          <span class="card-version">1.5.4</span>
-          <svg class="card-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-      </div>
-      
-      <div class="card-details" hidden>
-        
-        <div class="card-family-pills">
-<ul class="family-pill-list">
-  <li class="family-pill">AD1/AD2 — Axient Digital Bodypack/Handheld Transmitter</li><li class="family-pill">ADX1/ADX2 — Axient Digital Bodypack/Handheld Transmitter</li>
-</ul>
-</div>
-        <div class="card-detail-row">
-          <span class="card-detail-label">Release date</span>
-          <span class="card-detail-value">
-            Mar 27, 2026
-            
-          </span>
-        </div>
-        <div class="card-detail-row">
-          <span class="card-detail-label">Previous</span>
-          <span class="card-detail-value">—</span>
-        </div>
-        <div class="card-detail-row">
-          <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-10-01T13:11:20.451257"><span class="time-text">Oct 1, 06:11 AM PDT</span></span>
-        </div>
-        <div class="card-detail-row">
-          <span class="card-detail-label">Source</span>
-          <span class="card-detail-value"><a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=AD1+AD2+ADX1+ADX2+transmitters&size=n_10_n&sort-field=versionreleasedate&sort-direction=desc" target="_blank" rel="noopener">www.shure.com</a></span>
-        </div>
-      </div>
-    </div>
     
     
     
@@ -1842,6 +1708,52 @@
     
     
     <div class="item-card row-ok"
+         data-id="36"
+         data-status="ok"
+         data-category=""
+         data-search="shure adx1/adx2 — axient digital bodypack/handheld transmitter ">
+      <div class="card-summary" role="button" tabindex="0" aria-expanded="false">
+        <div class="card-summary-top">
+          <h3 class="card-model">ADX1/ADX2 — Axient Digital Bodypack/Handheld Transmitter</h3>
+          <span class="badge badge-good">Up to date</span>
+          
+        </div>
+        <div class="card-summary-bottom">
+          <span class="card-version">1.5.4</span>
+          <svg class="card-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="card-details" hidden>
+        
+        
+        <div class="card-detail-row">
+          <span class="card-detail-label">Release date</span>
+          <span class="card-detail-value">
+            Mar 27, 2026
+            
+          </span>
+        </div>
+        <div class="card-detail-row">
+          <span class="card-detail-label">Previous</span>
+          <span class="card-detail-value">—</span>
+        </div>
+        <div class="card-detail-row">
+          <span class="card-detail-label">Last checked</span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-10-01T13:11:20.451537"><span class="time-text">Oct 1, 06:11 AM PDT</span></span>
+        </div>
+        <div class="card-detail-row">
+          <span class="card-detail-label">Source</span>
+          <span class="card-detail-value"><a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=AD1+AD2+ADX1+ADX2+transmitters&size=n_10_n&sort-field=versionreleasedate&sort-direction=desc" target="_blank" rel="noopener">www.shure.com</a></span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    <div class="item-card row-ok"
          data-id="37"
          data-status="ok"
          data-category=""
@@ -2069,30 +1981,13 @@
           
         </td>
         <td class="version-cell">6.2.14</td>
-        
-        
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="source-col"></td>
-        
-      </tr>
-      
-      
-      <tr class="family-row row-ok" id="family-25" data-parent-id="25" hidden>
-        <td colspan="7">
-          <div class="family-wrap">
-            
-<ul class="family-pill-list">
-  <li class="family-pill">L350+</li><li class="family-pill">L550+</li><li class="family-pill">L650</li>
-</ul>
-
-            <div class="family-meta">
-              <span><span class="family-meta-label">Release date</span> Apr 29, 2026</span>
-              
-              <span><span class="family-meta-label">Previous</span> —</span>
-              <span><span class="family-meta-label">Last checked</span> Oct 1, 06:10 AM PDT</span>
-              <span><span class="family-meta-label">Source</span> 
+        <td class="muted release-date-cell">
+          Apr 29, 2026
+          
+        </td>
+        <td class="version-cell muted">—</td>
+        <td class="muted time-cell" data-utc="2026-10-01T13:10:52.281400"><span class="time-text">Oct 1, 06:10 AM PDT</span></td>
+        <td class="source-col">
 <a class="source-link" href="https://support.solidstatelogic.com/hc/en-gb/articles/4455968923293-Live-SOLSA-Downloads" target="_blank" rel="noopener" title="support.solidstatelogic.com" aria-label="Open source (support.solidstatelogic.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2100,10 +1995,16 @@
     <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 </a>
-</span>
-            </div>
-          </div>
-        </td>
+</td>
+      </tr>
+      
+      
+      <tr class="family-row row-ok" id="family-25" data-parent-id="25" hidden>
+        <td colspan="7"><div class="family-wrap">
+<ul class="family-pill-list">
+  <li class="family-pill">L350+</li><li class="family-pill">L550+</li><li class="family-pill">L650</li>
+</ul>
+</div></td>
       </tr>
       
       
@@ -2130,30 +2031,13 @@
           
         </td>
         <td class="version-cell">4.6</td>
-        
-        
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="source-col"></td>
-        
-      </tr>
-      
-      
-      <tr class="family-row row-ok" id="family-27" data-parent-id="27" hidden>
-        <td colspan="7">
-          <div class="family-wrap">
-            
-<ul class="family-pill-list">
-  <li class="family-pill">Blacklight II Concentrator</li><li class="family-pill">ML 32.32</li>
-</ul>
-
-            <div class="family-meta">
-              <span><span class="family-meta-label">Release date</span> Jul 2, 2026</span>
-              
-              <span><span class="family-meta-label">Previous</span> —</span>
-              <span><span class="family-meta-label">Last checked</span> Oct 1, 06:10 AM PDT</span>
-              <span><span class="family-meta-label">Source</span> 
+        <td class="muted release-date-cell">
+          Jul 2, 2026
+          
+        </td>
+        <td class="version-cell muted">—</td>
+        <td class="muted time-cell" data-utc="2026-10-01T13:10:52.281455"><span class="time-text">Oct 1, 06:10 AM PDT</span></td>
+        <td class="source-col">
 <a class="source-link" href="https://support.solidstatelogic.com/hc/en-gb/articles/4405815205021-Network-I-O-Downloads" target="_blank" rel="noopener" title="support.solidstatelogic.com" aria-label="Open source (support.solidstatelogic.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2161,10 +2045,16 @@
     <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 </a>
-</span>
-            </div>
-          </div>
-        </td>
+</td>
+      </tr>
+      
+      
+      <tr class="family-row row-ok" id="family-27" data-parent-id="27" hidden>
+        <td colspan="7"><div class="family-wrap">
+<ul class="family-pill-list">
+  <li class="family-pill">Blacklight II Concentrator</li><li class="family-pill">ML 32.32</li>
+</ul>
+</div></td>
       </tr>
       
       
@@ -2330,7 +2220,6 @@
           
         </td>
         <td class="version-cell">V2.00</td>
-        
         <td class="muted release-date-cell">
           Sep 10, 2026
           
@@ -2346,7 +2235,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -2372,7 +2260,6 @@
           
         </td>
         <td class="version-cell">V1.91</td>
-        
         <td class="muted release-date-cell">
           Sep 16, 2026
           
@@ -2388,7 +2275,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -2409,7 +2295,6 @@
           
         </td>
         <td class="version-cell">V1.91</td>
-        
         <td class="muted release-date-cell">
           Sep 16, 2026
           
@@ -2425,7 +2310,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -2451,7 +2335,6 @@
           
         </td>
         <td class="version-cell">V4.2.3.2</td>
-        
         <td class="muted release-date-cell">
           May 19, 2022
           
@@ -2467,7 +2350,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -2488,7 +2370,6 @@
           
         </td>
         <td class="version-cell">V2.01.11</td>
-        
         <td class="muted release-date-cell">
           Jan 17, 2024
           
@@ -2504,7 +2385,6 @@
   </svg>
 </a>
 </td>
-        
       </tr>
       
       
@@ -2530,30 +2410,13 @@
           
         </td>
         <td class="version-cell">V7.20</td>
-        
-        
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="source-col"></td>
-        
-      </tr>
-      
-      
-      <tr class="family-row row-update_detected" id="family-14" data-parent-id="14" hidden>
-        <td colspan="7">
-          <div class="family-wrap">
-            
-<ul class="family-pill-list">
-  <li class="family-pill">DSP-R10</li><li class="family-pill">DSP-RX</li><li class="family-pill">DSP-RX-EX</li><li class="family-pill">RPio222</li><li class="family-pill">RPio622</li><li class="family-pill">Rivage PM10</li><li class="family-pill">Rivage PM5</li><li class="family-pill">Rivage PM7</li>
-</ul>
-
-            <div class="family-meta">
-              <span><span class="family-meta-label">Release date</span> Sep 30, 2026</span>
-              
-              <span><span class="family-meta-label">Previous</span> V7.10</span>
-              <span><span class="family-meta-label">Last checked</span> Oct 1, 06:10 AM PDT</span>
-              <span><span class="family-meta-label">Source</span> 
+        <td class="muted release-date-cell">
+          Sep 30, 2026
+          
+        </td>
+        <td class="version-cell muted">V7.10</td>
+        <td class="muted time-cell" data-utc="2026-10-01T13:10:51.500783"><span class="time-text">Oct 1, 06:10 AM PDT</span></td>
+        <td class="source-col">
 <a class="source-link" href="https://usa.yamaha.com/support/updates/rivage_pm_firm.html" target="_blank" rel="noopener" title="usa.yamaha.com" aria-label="Open source (usa.yamaha.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2561,10 +2424,16 @@
     <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 </a>
-</span>
-            </div>
-          </div>
-        </td>
+</td>
+      </tr>
+      
+      
+      <tr class="family-row row-update_detected" id="family-14" data-parent-id="14" hidden>
+        <td colspan="7"><div class="family-wrap">
+<ul class="family-pill-list">
+  <li class="family-pill">DSP-R10</li><li class="family-pill">DSP-RX</li><li class="family-pill">DSP-RX-EX</li><li class="family-pill">RPio222</li><li class="family-pill">RPio622</li><li class="family-pill">Rivage PM10</li><li class="family-pill">Rivage PM5</li><li class="family-pill">Rivage PM7</li>
+</ul>
+</div></td>
       </tr>
       
       
@@ -2892,6 +2761,6 @@
   </div>
 </div>
 
-<script src="/static/app.js?v=20261001213145"></script>
+<script src="/static/app.js?v=20261001215333"></script>
 </body>
 </html>

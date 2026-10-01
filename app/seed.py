@@ -74,9 +74,8 @@ EQUIPMENT = [
     ("Allen & Heath", "dLive DM64 MixRack", "I/O Racks", "ah:dlive", AH_DLIVE_URL, None),
 
     # --- Shure: most have a static per-product firmware archive page.
-    # AD221, AD651B, P9HW, and SBC-200 were dropped at HTA's request (not
-    # gear they're tracking).
-    ("Shure", "AD1/AD2 — Axient Digital Bodypack/Handheld Transmitter", None, "shure:ad_transmitters", None, None),
+    # AD221, AD651B, P9HW, SBC-200, and AD1/AD2 were dropped at HTA's
+    # request (not gear they're tracking).
     ("Shure", "AD4Q — Axient Digital Four-Channel Receiver", None, "shure:ad4q", None, None),
     ("Shure", "AD600 — Axient Digital Spectrum Manager", None, "shure:ad600", None, None),
     ("Shure", "AD610 — Axient Digital Diversity ShowLink Access Point", None, "shure:ad610", None, "Confirmed via Shure Update Utility (1.5.4.0, Mar 27 2026)."),

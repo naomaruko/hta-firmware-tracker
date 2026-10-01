@@ -22,7 +22,6 @@ FAMILY_NAMES = {
     "db:d40d90": "d&b D40/D90",
     "digico:quantum": "DiGiCo Quantum series",
     "digico:sd": "DiGiCo SD series",
-    "shure:ad_transmitters": "Shure AD/ADX transmitters",
     "ssl:live": "Solid State Logic Live console series",
     "ssl:networkio": "Solid State Logic Network I/O series",
     "yamaha:rivage_pm": "Yamaha Rivage PM series",
