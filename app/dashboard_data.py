@@ -7,17 +7,20 @@ lives.
 import types
 from collections import defaultdict
 
-from app.families import FAMILY_CATEGORIES, family_label
+from app.families import FAMILY_CATEGORIES, FAMILY_NO_EXPAND, family_label
 
 # Sub-category display order within a manufacturer's section. Categories not
 # listed here (or None, for manufacturers with no sub-grouping) sort last,
-# in the order encountered. "Rivage PM Series" is a family's own dedicated
-# heading (see FAMILY_CATEGORIES in app/families.py), not a real equipment
-# type like the rest of this list - placed right after "Consoles" since
-# that's the closest thing to it product-wise.
+# in the order encountered. "Rivage PM Series" and "DiGiCo SD Series" are
+# each one product line's own dedicated subsection (the former a family's
+# heading - see FAMILY_CATEGORIES in app/families.py, the latter a plain
+# category on DiGiCo's singleton SD10 row), not a real equipment type like
+# the rest of this list - placed right after "Consoles" since that's the
+# closest thing to them product-wise.
 CATEGORY_ORDER = [
     "Consoles",
     "Rivage PM Series",
+    "DiGiCo SD Series",
     "DSP Engines",
     "I/O Racks",
     "I/O & Network",
@@ -42,13 +45,16 @@ def _consolidate_families(items):
     Equipment row (status/current_version/.../source_url, all identical
     across members by construction, so the first member's values stand in
     for the group) plus `is_family` and `family_models` for the template's
-    expand-to-pills treatment. Its `category` is the one all members share;
-    if they don't (e.g. Yamaha's RIVAGE PM family spans Consoles/DSP
-    Engines/I/O Racks), it's FAMILY_CATEGORIES.get(key) instead - a
-    dedicated heading for that family, rather than attributing a
-    multi-component system to one of its parts arbitrarily - or None if
-    that's not set either, which renders with no sub-heading at all, same
-    as how a manufacturer with no sub-grouping already renders.
+    expand-to-pills treatment, and `expandable` - False for the rare family
+    (see FAMILY_NO_EXPAND in app/families.py) whose collective name already
+    spells out every member, so there's nothing left for a chevron to
+    reveal. Its `category` is the one all members share; if they don't
+    (e.g. Yamaha's RIVAGE PM family spans Consoles/DSP Engines/I/O Racks),
+    it's FAMILY_CATEGORIES.get(key) instead - a dedicated heading for that
+    family, rather than attributing a multi-component system to one of its
+    parts arbitrarily - or None if that's not set either, which renders
+    with no sub-heading at all, same as how a manufacturer with no
+    sub-grouping already renders.
     """
     by_key = defaultdict(list)
     for item in items:
@@ -86,6 +92,7 @@ def _consolidate_families(items):
                     platforms=None,
                     is_family=True,
                     family_models=[m.model for m in members],
+                    expandable=key not in FAMILY_NO_EXPAND,
                 )
             )
         else:

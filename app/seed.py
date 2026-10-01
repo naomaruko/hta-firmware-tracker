@@ -38,7 +38,12 @@ EQUIPMENT = [
     ("DiGiCo", "Quantum 338", "Consoles", "digico:quantum", DIGICO_QUANTUM_URL, None),
     ("DiGiCo", "Quantum 326", "Consoles", "digico:quantum", DIGICO_QUANTUM_URL, None),
     ("DiGiCo", "Quantum 225", "Consoles", "digico:quantum", DIGICO_QUANTUM_URL, None),
-    ("DiGiCo", "SD10", "Consoles", "digico:sd", DIGICO_SD_URL, None),
+    ("DiGiCo", "Quantum 112", "Consoles", "digico:quantum", DIGICO_QUANTUM_URL, None),
+    # Its own "DiGiCo SD Series" subsection rather than lumped in with
+    # Consoles - same one-subsection-per-product-line approach as Yamaha's
+    # Rivage PM Series (see FAMILY_CATEGORIES in app/families.py), even
+    # though SD10 is the only SD-series console currently tracked.
+    ("DiGiCo", "SD10", "DiGiCo SD Series", "digico:sd", DIGICO_SD_URL, None),
     ("DiGiCo", "Orange Box", "Accessories", "digico:orangebox", DIGICO_ORANGEBOX_URL, None),
     ("DiGiCo", "DMI-Dante / DMI-Dante2 (Zynq HC)", "Cards & Modules", "digico:dmidante_zynq", DIGICO_DMI_URL, "The DMI-Dante64@96 card with the newer Zynq HC Dante module (cards built from March 2023 on)."),
     ("DiGiCo", "DMI-Dante / DMI-Dante2 (Summit HC)", "Cards & Modules", "digico:dmidante_summit", DIGICO_DMI_URL, "The older DMI-Dante64@96 with the Summit HC Dante module (discontinued design; separate firmware line from Zynq)."),
@@ -71,9 +76,14 @@ EQUIPMENT = [
     ("Solid State Logic", "Blacklight II Concentrator", "I/O & Network", "ssl:networkio", SSL_DOWNLOADS_URL, None),
 
     # --- Allen & Heath: site returns HTTP 403 to plain requests (bot
-    # protection) but loads fine in a real (headless) browser. ---
+    # protection) but loads fine in a real (headless) browser. The one
+    # version check covers the whole dLive family regardless of which
+    # specific model asks (see app/checkers/allenheath.py), so every dLive
+    # surface/MixRack tracked here shares checker_key "ah:dlive". ---
     ("Allen & Heath", "dLive S5000", "Consoles", "ah:dlive", AH_DLIVE_URL, None),
     ("Allen & Heath", "dLive DM64 MixRack", "I/O Racks", "ah:dlive", AH_DLIVE_URL, None),
+    ("Allen & Heath", "dLive CTi1500", "Consoles", "ah:dlive", AH_DLIVE_URL, None),
+    ("Allen & Heath", "dLive DM0 MixRack", "I/O Racks", "ah:dlive", AH_DLIVE_URL, None),
 
     # --- Shure: most have a static per-product firmware archive page.
     # AD221, AD651B, P9HW, SBC-200, and AD1/AD2 were dropped at HTA's
@@ -90,11 +100,13 @@ EQUIPMENT = [
     ("Shure", "SBRC-US — Shure Battery Rack Charger", None, "shure:sbrc", None, None),
 
     # --- d&b audiotechnik: the Download Center's search is JS-rendered and
-    # sits behind a cookie-consent overlay, so it needs a real browser. D40
-    # and D90 share one combined firmware release; DN1 Switch has its own
-    # separate release ("DN1 Firmware Release notes").
-    ("d&b", "D40", None, "db:d40d90", DB_DOWNLOADS_URL, "Shares a firmware release with D90 (\"D90/D40/D25/40D/25D Firmware Release notes\")."),
-    ("d&b", "D90", None, "db:d40d90", DB_DOWNLOADS_URL, "Shares a firmware release with D40."),
+    # sits behind a cookie-consent overlay, so it needs a real browser. D25,
+    # D40, and D90 share one combined firmware release ("D90/D40/D25/40D/
+    # 25D Firmware Release notes"); DN1 Switch has its own separate release
+    # ("DN1 Firmware Release notes").
+    ("d&b", "D25", None, "db:d40d90", DB_DOWNLOADS_URL, "Shares a firmware release with D40/D90 (\"D90/D40/D25/40D/25D Firmware Release notes\")."),
+    ("d&b", "D40", None, "db:d40d90", DB_DOWNLOADS_URL, "Shares a firmware release with D25/D90."),
+    ("d&b", "D90", None, "db:d40d90", DB_DOWNLOADS_URL, "Shares a firmware release with D25/D40."),
     ("d&b", "DN1 Switch", None, "db:dn1", DB_DOWNLOADS_URL, None),
 
     # --- Dante/Audinate: the software-downloads page is an accordion -

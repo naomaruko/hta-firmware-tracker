@@ -5,9 +5,9 @@ audio gear, so nobody has to manually check manufacturer sites.
 
 ## What it does
 
-- Tracks 43 pieces of equipment across DiGiCo, Yamaha, Solid State Logic,
+- Tracks 47 pieces of equipment across DiGiCo, Yamaha, Solid State Logic,
   Allen & Heath, Shure, d&b audiotechnik, and Dante/Audinate.
-- **All 43 items are checked automatically** — most by scraping a static
+- **All 47 items are checked automatically** — most by scraping a static
   page, several manufacturers via a real headless browser where the site
   needs JavaScript or blocks plain requests (see
   [How each manufacturer is checked](#how-each-manufacturer-is-checked)).
@@ -26,7 +26,7 @@ audio gear, so nobody has to manually check manufacturer sites.
   to click anything to dismiss it. Installable as a PWA on a phone (Add to
   Home Screen) for a full-screen, app-like view.
 - Items that are genuinely the same underlying platform tracked from one
-  source — e.g. DiGiCo's five Quantum consoles — collapse into a single
+  source — e.g. DiGiCo's six Quantum consoles — collapse into a single
   family row ("DiGiCo Quantum series") instead of listing near-duplicate
   rows that always move together. See
   [Firmware families](#firmware-families) for how that grouping is
@@ -110,18 +110,24 @@ point the relevant `app/seed.py` rows at it with `"scrape"` + a `checker_key`.
 ## Firmware families
 
 Some rows track the same underlying platform from one firmware source -
-DiGiCo's five Quantum consoles, Allen & Heath's two dLive models, Yamaha's
-two Rio-D2 I/O racks, Yamaha's eight Rivage PM components - and always
-report the identical version
-because they're assigned the same `CheckResult` from one `check_all()`
-call. Those collapse into a single dashboard row (e.g. "DiGiCo Quantum
-series") instead of five near-identical ones. On desktop/tablet every
-field - status, version, release date, previous version, last checked,
-source - still shows directly in that one row, since it's identical for
-every member; only the individual model names (e.g. Quantum 225/326/338/
-5/7) sit behind the chevron, as pill tags. On phone, where the whole row's
-detail is already a tap away, the model pills join the rest of that
-existing reveal instead of getting their own control.
+DiGiCo's six Quantum consoles, Allen & Heath's four dLive surfaces/
+MixRacks, Yamaha's two Rio-D2 I/O racks, Yamaha's eight Rivage PM
+components, d&b's three D-series amps - and always report the identical
+version because they're assigned the same `CheckResult` from one
+`check_all()` call. Those collapse into a single dashboard row (e.g.
+"DiGiCo Quantum series") instead of six near-identical ones. On
+desktop/tablet every field - status, version, release date, previous
+version, last checked, source - still shows directly in that one row,
+since it's identical for every member; only the individual model names
+(e.g. Quantum 112/225/326/338/5/7) sit behind the chevron, as pill tags.
+On phone, where the whole row's detail is already a tap away, the model
+pills join the rest of that existing reveal instead of getting their own
+control. A family whose collective name already spells out every member -
+d&b's amp group is named "d&b D25/D40/D90", not a generic "series" label,
+because unlike the others it has no shorter collective name that wouldn't
+also fit some other d&b product - skips the chevron/expand entirely on
+both desktop and phone, in `FAMILY_NO_EXPAND` (`app/families.py`): there's
+nothing left for it to reveal.
 
 This is deliberately **not** based on matching version-number strings -
 two unrelated products could coincidentally share a version number (Shure's
@@ -233,7 +239,7 @@ app/
   runner.py          Runs checkers, diffs versions, writes history,
                      auto-expires update flags after UPDATE_HIGHLIGHT_WINDOW
   scheduler.py       Background interval job (local interactive use only)
-  seed.py            The 43-item equipment list + which checker covers each
+  seed.py            The 47-item equipment list + which checker covers each
   export.py          Equipment <-> data/equipment.json round-trip, used by
                      the CI pipeline
   checkers/

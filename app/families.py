@@ -19,7 +19,7 @@ from ever disagreeing about what counts as "the same family."
 # the model name(s) in family_label() below.
 FAMILY_NAMES = {
     "ah:dlive": "Allen & Heath dLive series",
-    "db:d40d90": "d&b D40/D90",
+    "db:d40d90": "d&b D25/D40/D90",
     "digico:quantum": "DiGiCo Quantum series",
     "digico:sd": "DiGiCo SD series",
     "ssl:live": "Solid State Logic Live console series",
@@ -27,6 +27,16 @@ FAMILY_NAMES = {
     "yamaha:rio_d2": "Yamaha Rio-D2 series",
     "yamaha:rivage_pm": "Yamaha Rivage PM series",
 }
+
+# checker_key -> True for a family whose FAMILY_NAMES entry already spells
+# out every member model by name (e.g. "d&b D25/D40/D90" names all three),
+# unlike the generic "<product line> series" names used everywhere else
+# (e.g. "DiGiCo Quantum series", which doesn't say "225/326/338/5/7/112").
+# There's nothing left for a model-pills expand to add in that case, so
+# that row skips the chevron/expand UI entirely - on both desktop and
+# phone - rather than offering an expand control with nothing new behind
+# it.
+FAMILY_NO_EXPAND = {"db:d40d90"}
 
 # checker_key -> a dedicated dashboard category heading for a family whose
 # members span more than one of a manufacturer's existing type-based
