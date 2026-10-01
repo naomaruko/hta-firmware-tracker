@@ -27,8 +27,8 @@ audio gear, so nobody has to manually check manufacturer sites.
   Home Screen) for a full-screen, app-like view.
 - Items that are genuinely the same underlying platform tracked from one
   source — e.g. DiGiCo's six Quantum consoles — collapse into a single
-  family row ("DiGiCo Quantum series") instead of listing near-duplicate
-  rows that always move together. See
+  family row ("Quantum series", under DiGiCo's own section heading)
+  instead of listing near-duplicate rows that always move together. See
   [Firmware families](#firmware-families) for how that grouping is
   decided and kept in sync with Slack notifications.
 
@@ -115,19 +115,19 @@ MixRacks, Yamaha's two Rio-D2 I/O racks, Yamaha's eight Rivage PM
 components, d&b's three D-series amps - and always report the identical
 version because they're assigned the same `CheckResult` from one
 `check_all()` call. Those collapse into a single dashboard row (e.g.
-"DiGiCo Quantum series") instead of six near-identical ones. On
-desktop/tablet every field - status, version, release date, previous
-version, last checked, source - still shows directly in that one row,
-since it's identical for every member; only the individual model names
-(e.g. Quantum 112/225/326/338/5/7) sit behind the chevron, as pill tags.
-On phone, where the whole row's detail is already a tap away, the model
-pills join the rest of that existing reveal instead of getting their own
-control. A family whose collective name already spells out every member -
-d&b's amp group is named "d&b D25/D40/D90", not a generic "series" label,
-because unlike the others it has no shorter collective name that wouldn't
-also fit some other d&b product - skips the chevron/expand entirely on
-both desktop and phone, in `FAMILY_NO_EXPAND` (`app/families.py`): there's
-nothing left for it to reveal.
+"Quantum series", under DiGiCo's own section heading) instead of six
+near-identical ones. On desktop/tablet every field - status, version,
+release date, previous version, last checked, source - still shows
+directly in that one row, since it's identical for every member; only the
+individual model names (e.g. Quantum 112/225/326/338/5/7) sit behind the
+chevron, as pill tags. On phone, where the whole row's detail is already a
+tap away, the model pills join the rest of that existing reveal instead of
+getting their own control. A family whose collective name already spells
+out every member - d&b's amp group is named "D25/D40/D90", not a generic
+"series" label, because unlike the others it has no shorter collective
+name that wouldn't also fit some other d&b product - skips the
+chevron/expand entirely on both desktop and phone, in `FAMILY_NO_EXPAND`
+(`app/families.py`): there's nothing left for it to reveal.
 
 This is deliberately **not** based on matching version-number strings -
 two unrelated products could coincidentally share a version number (Shure's
@@ -139,20 +139,36 @@ holds the one `FAMILY_NAMES` mapping (checker_key → friendly collective
 name) that both `app/dashboard_data.py` (row consolidation) and
 `app/slack.py` (notification grouping, see
 [Slack notifications](#slack-notifications)) import, so the two can never
-disagree about what counts as "the same family." A family whose members
-all share one dashboard category (Yamaha's two Rio-D2 racks are both
-"I/O Racks") is filed under it normally, same as any other row. One
-spanning several categories (Yamaha's Rivage PM components live under
-Consoles, DSP Engines, and I/O Racks) isn't attributed to any one of them
-arbitrarily - it instead gets its own dedicated subsection, named in
-`FAMILY_CATEGORIES` (also in `app/families.py`), e.g. "Rivage PM Series".
-That's only set for families where it's actually useful - one that's the
-only thing tracked under its manufacturer (Allen & Heath's dLive series)
-stays without a heading instead, since a heading identical to the one row
-underneath it would just be noise. The stats panel's counts
-(Tracked / Updates / Errors) always reflect the real, individually-tracked
-equipment count, unaffected by how many rows that collapses into on
-screen.
+disagree about what counts as "the same family." Those names are
+deliberately brand-free ("Quantum series", not "DiGiCo Quantum series") -
+on the dashboard the row already sits under its manufacturer's own section
+heading, so repeating the brand on every row under it would be redundant.
+Slack messages have no such heading, so `app/slack.py` prepends the
+manufacturer back on when it builds the notification text (correcting
+Yamaha's all-caps `YAMAHA` field to "Yamaha" through `MANUFACTURER_LABELS`
+along the way) - a Slack message still reads "DiGiCo Quantum series" even
+though the stored name is just "Quantum series".
+
+A family whose members all share one dashboard category (Yamaha's two
+Rio-D2 racks are both "I/O Racks") is filed under it normally, same as any
+other row. One spanning several categories (Yamaha's Rivage PM components
+live under Consoles, DSP Engines, and I/O Racks) isn't attributed to any
+one of them arbitrarily - it instead gets its own dedicated subsection,
+named in `FAMILY_CATEGORIES` (also in `app/families.py`), e.g. "Rivage PM
+Series". That's only set for families where it's actually useful - one
+that's the only thing tracked under its manufacturer (Allen & Heath's
+dLive series) stays without a heading instead, since a heading identical
+to the one row underneath it would just be noise. A manufacturer's
+subsections don't have to sort alphabetically or by equipment type either:
+Yamaha's "Rivage PM Series" is pinned ahead of "Consoles" in
+`CATEGORY_ORDER` (`app/dashboard_data.py`) since it's their flagship line,
+not because any general ordering rule would put it first. DiGiCo's SD10
+gets the same one-subsection-per-product-line treatment ("SD Series",
+right after "Consoles") even though it's a singleton, not a consolidated
+family - a plain `category` value on its own row, nothing to do with
+`FAMILY_CATEGORIES`. The stats panel's counts (Tracked / Updates / Errors)
+always reflect the real, individually-tracked equipment count, unaffected
+by how many rows that collapses into on screen.
 
 ## Deployment
 
@@ -187,9 +203,9 @@ that's still pending from a previous day, or one that just auto-cleared
 after its 1-month window, doesn't trigger a repeat message; only an actual
 change does.
 
-Items are grouped by family before posting - e.g. all 5 DiGiCo Quantum
+Items are grouped by family before posting - e.g. all 6 DiGiCo Quantum
 consoles updating together becomes one message ("New firmware available
-for *DiGiCo Quantum series* → V23"), not five. Grouped by `checker_key`
+for *DiGiCo Quantum series* → V23"), not six. Grouped by `checker_key`
 (items that share one get checked together and always report the same new
 version, by construction - a more reliable "these are really the same
 family" signal than just matching version-number strings, which could
@@ -233,8 +249,9 @@ app/
   dashboard_data.py  Grouping/sorting/summary logic shared by the live app
                      and the static-site builder, incl. family row
                      consolidation (see Firmware families)
-  families.py        FAMILY_NAMES: checker_key -> friendly family name,
-                     shared by dashboard_data.py and slack.py
+  families.py        FAMILY_NAMES: checker_key -> brand-free family name,
+                     shared by dashboard_data.py and slack.py (the latter
+                     prepends the manufacturer back on)
   models.py          Equipment / CheckLog tables (SQLAlchemy)
   runner.py          Runs checkers, diffs versions, writes history,
                      auto-expires update flags after UPDATE_HIGHLIGHT_WINDOW

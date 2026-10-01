@@ -11,16 +11,21 @@ from app.families import FAMILY_CATEGORIES, FAMILY_NO_EXPAND, family_label
 
 # Sub-category display order within a manufacturer's section. Categories not
 # listed here (or None, for manufacturers with no sub-grouping) sort last,
-# in the order encountered. "Rivage PM Series" and "DiGiCo SD Series" are
-# each one product line's own dedicated subsection (the former a family's
-# heading - see FAMILY_CATEGORIES in app/families.py, the latter a plain
-# category on DiGiCo's singleton SD10 row), not a real equipment type like
-# the rest of this list - placed right after "Consoles" since that's the
-# closest thing to them product-wise.
+# in the order encountered. "Rivage PM Series" and "SD Series" are each one
+# product line's own dedicated subsection (the former a family's heading -
+# see FAMILY_CATEGORIES in app/families.py, the latter a plain category on
+# DiGiCo's singleton SD10 row), not a real equipment type like the rest of
+# this list. "Rivage PM Series" sorts first, ahead of "Consoles" - it's
+# Yamaha's flagship line, not an equipment type a generic ordering would
+# otherwise place up front - while "SD Series" sits right after "Consoles",
+# the closest thing to it product-wise. This list is shared across every
+# manufacturer, but since no one else ever has a "Rivage PM Series" or "SD
+# Series" category, pinning them here only affects Yamaha's and DiGiCo's
+# own sections respectively.
 CATEGORY_ORDER = [
-    "Consoles",
     "Rivage PM Series",
-    "DiGiCo SD Series",
+    "Consoles",
+    "SD Series",
     "DSP Engines",
     "I/O Racks",
     "I/O & Network",
@@ -77,7 +82,7 @@ def _consolidate_families(items):
                 types.SimpleNamespace(
                     id=first.id,
                     manufacturer=first.manufacturer,
-                    model=family_label(key, first.manufacturer, [m.model for m in members]),
+                    model=family_label(key, [m.model for m in members]),
                     category=shared_category,
                     checker_key=key,
                     source_url=first.source_url,
@@ -104,8 +109,8 @@ def _consolidate_families(items):
 def build_dashboard_context(items):
     # Stats (below) and manufacturer_has_release_dates reflect every real,
     # individually-tracked piece of equipment, unaffected by how rows are
-    # grouped for display - "43 Tracked" means 43 physical devices whether
-    # 5 of them currently share one row or not.
+    # grouped for display - "47 Tracked" means 47 physical devices whether
+    # several of them currently share one row or not.
     display_items = _consolidate_families(items)
 
     # manufacturer -> category -> [items]. category is None for manufacturers

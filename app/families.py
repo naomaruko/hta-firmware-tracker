@@ -17,25 +17,44 @@ from ever disagreeing about what counts as "the same family."
 # more than one item, or that stand for a whole product family even though
 # only some of it is tracked (DiGiCo SD) - everything else falls back to
 # the model name(s) in family_label() below.
+#
+# Deliberately brand-free (e.g. "Quantum series", not "DiGiCo Quantum
+# series") - on the dashboard this sits inside a manufacturer's own
+# section, directly under its "DiGiCo"/"Allen & Heath"/... heading, so
+# repeating the brand in every row under it would just be noise. Slack
+# notifications don't have that heading for context, so slack.py prepends
+# the manufacturer itself (via MANUFACTURER_LABELS below) rather than
+# using these names bare - still reads as "DiGiCo Quantum series" there,
+# just assembled instead of stored twice.
 FAMILY_NAMES = {
-    "ah:dlive": "Allen & Heath dLive series",
-    "db:d40d90": "d&b D25/D40/D90",
-    "digico:quantum": "DiGiCo Quantum series",
-    "digico:sd": "DiGiCo SD series",
-    "ssl:live": "Solid State Logic Live console series",
-    "ssl:networkio": "Solid State Logic Network I/O series",
-    "yamaha:rio_d2": "Yamaha Rio-D2 series",
-    "yamaha:rivage_pm": "Yamaha Rivage PM series",
+    "ah:dlive": "dLive series",
+    "db:d40d90": "D25/D40/D90",
+    "digico:quantum": "Quantum series",
+    "digico:sd": "SD series",
+    "ssl:live": "Live console series",
+    "ssl:networkio": "Network I/O series",
+    "yamaha:rio_d2": "Rio-D2 series",
+    "yamaha:rivage_pm": "Rivage PM series",
+}
+
+# manufacturer (as stored on Equipment.manufacturer) -> how it should read
+# in a sentence. Every manufacturer's raw field is already proper-cased
+# except Yamaha's, which is kept ALL CAPS for the dashboard's own section
+# heading (matching Yamaha's own logo styling) - "YAMAHA Rivage PM series"
+# would look shouty next to it in a Slack message, so slack.py corrects it
+# through this map rather than changing the stored field everywhere else
+# that reads it (the dashboard heading included).
+MANUFACTURER_LABELS = {
+    "YAMAHA": "Yamaha",
 }
 
 # checker_key -> True for a family whose FAMILY_NAMES entry already spells
-# out every member model by name (e.g. "d&b D25/D40/D90" names all three),
+# out every member model by name (e.g. "D25/D40/D90" names all three),
 # unlike the generic "<product line> series" names used everywhere else
-# (e.g. "DiGiCo Quantum series", which doesn't say "225/326/338/5/7/112").
-# There's nothing left for a model-pills expand to add in that case, so
-# that row skips the chevron/expand UI entirely - on both desktop and
-# phone - rather than offering an expand control with nothing new behind
-# it.
+# (e.g. "Quantum series", which doesn't say "112/225/326/338/5/7"). There's
+# nothing left for a model-pills expand to add in that case, so that row
+# skips the chevron/expand UI entirely - on both desktop and phone - rather
+# than offering an expand control with nothing new behind it.
 FAMILY_NO_EXPAND = {"db:d40d90"}
 
 # checker_key -> a dedicated dashboard category heading for a family whose
@@ -55,16 +74,20 @@ FAMILY_CATEGORIES = {
 }
 
 
-def family_label(checker_key, manufacturer, models):
+def family_label(checker_key, models):
     """models: every model name sharing checker_key, in display order.
     Prefers the FAMILY_NAMES friendly name; falls back to the plain model
-    name for a genuine singleton, or "<manufacturer> <model1>/<model2>" for
-    an unnamed multi-item group - so a newly added shared checker_key still
-    reads sensibly before anyone gets round to adding it above."""
+    name for a genuine singleton, or "<model1>/<model2>" for an unnamed
+    multi-item group - so a newly added shared checker_key still reads
+    sensibly on the dashboard before anyone gets round to naming it above.
+    No manufacturer in that fallback either, for the same reason FAMILY_NAMES
+    itself is brand-free - the dashboard already shows it as the section
+    heading. (Slack's equivalent lives in slack.py, not here, since Slack
+    messages have no such heading to lean on.)"""
     if checker_key:
         name = FAMILY_NAMES.get(checker_key)
         if name:
             return name
     if len(models) == 1:
         return models[0]
-    return f"{manufacturer} {'/'.join(models)}" if manufacturer else "/".join(models)
+    return "/".join(models)

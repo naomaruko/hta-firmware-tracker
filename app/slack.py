@@ -14,7 +14,7 @@ import logging
 
 import requests
 
-from app.families import FAMILY_NAMES
+from app.families import FAMILY_NAMES, MANUFACTURER_LABELS
 
 logger = logging.getLogger("firmware_tracker.slack")
 
@@ -47,7 +47,15 @@ def _family_label(key, group):
     if isinstance(key, str):
         name = FAMILY_NAMES.get(key)
         if name:
-            return name
+            # FAMILY_NAMES itself is brand-free (see app/families.py) since
+            # the dashboard already shows the manufacturer as a section
+            # heading - a Slack message has no such heading, so it's
+            # prepended here instead (correcting Yamaha's all-caps raw
+            # field through MANUFACTURER_LABELS, the one manufacturer whose
+            # stored casing doesn't already read naturally in a sentence).
+            manufacturer = group[0]["manufacturer"]
+            manufacturer = MANUFACTURER_LABELS.get(manufacturer, manufacturer)
+            return f"{manufacturer} {name}"
     # Several entries can be the same *item* (one per changed platform), not
     # several items - count distinct models.
     models = list(dict.fromkeys(c["model"] for c in group))
