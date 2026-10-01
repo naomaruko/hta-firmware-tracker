@@ -5,9 +5,9 @@ audio gear, so nobody has to manually check manufacturer sites.
 
 ## What it does
 
-- Tracks 43 pieces of equipment across DiGiCo, Yamaha, Solid State Logic,
+- Tracks 44 pieces of equipment across DiGiCo, Yamaha, Solid State Logic,
   Allen & Heath, Shure, d&b audiotechnik, and Dante/Audinate.
-- **All 43 items are checked automatically** — most by scraping a static
+- **All 44 items are checked automatically** — most by scraping a static
   page, several manufacturers via a real headless browser where the site
   needs JavaScript or blocks plain requests (see
   [How each manufacturer is checked](#how-each-manufacturer-is-checked)).
@@ -25,6 +25,12 @@ audio gear, so nobody has to manually check manufacturer sites.
   automatically 1 month after the change was first detected — no one needs
   to click anything to dismiss it. Installable as a PWA on a phone (Add to
   Home Screen) for a full-screen, app-like view.
+- Items that are genuinely the same underlying platform tracked from one
+  source — e.g. DiGiCo's five Quantum consoles — collapse into a single
+  family row ("DiGiCo Quantum series") instead of listing near-duplicate
+  rows that always move together. See
+  [Firmware families](#firmware-families) for how that grouping is
+  decided and kept in sync with Slack notifications.
 
 ## Quick start
 
@@ -101,6 +107,35 @@ fine as part of the once-a-day background check. To add another one, copy
 the shape of `dante.py`, then register it in `app/checkers/registry.py` and
 point the relevant `app/seed.py` rows at it with `"scrape"` + a `checker_key`.
 
+## Firmware families
+
+Some rows track the same underlying platform from one firmware source -
+DiGiCo's five Quantum consoles, Allen & Heath's two dLive models, Yamaha's
+eight Rivage PM components - and always report the identical version
+because they're assigned the same `CheckResult` from one `check_all()`
+call. Those collapse into a single dashboard row (e.g. "DiGiCo Quantum
+series") instead of five near-identical ones, with a chevron to expand it
+into the individual model names as pill tags plus the release date,
+previous version, last-checked time, and source link.
+
+This is deliberately **not** based on matching version-number strings -
+two unrelated products could coincidentally share a version number (Shure's
+AD610, SBC240, and ADTQUS are different product types and always stay as
+separate rows even if that happens). The real signal is `checker_key`
+(assigned per actual firmware source in `app/seed.py`): items sharing one
+were checked together and are guaranteed to move together. `app/families.py`
+holds the one `FAMILY_NAMES` mapping (checker_key → friendly collective
+name) that both `app/dashboard_data.py` (row consolidation) and
+`app/slack.py` (notification grouping, see
+[Slack notifications](#slack-notifications)) import, so the two can never
+disagree about what counts as "the same family." A family spanning more
+than one dashboard category (Yamaha's Rivage PM components live under
+Consoles, DSP Engines, and I/O Racks) renders with no sub-category heading
+rather than being attributed to one arbitrarily. The stats panel's counts
+(Tracked / Updates / Errors) always reflect the real, individually-tracked
+equipment count, unaffected by how many rows that collapses into on
+screen.
+
 ## Deployment
 
 The published site (on Vercel) is a **static build**, not the live FastAPI
@@ -140,11 +175,12 @@ for *DiGiCo Quantum series* → V23"), not five. Grouped by `checker_key`
 (items that share one get checked together and always report the same new
 version, by construction - a more reliable "these are really the same
 family" signal than just matching version-number strings, which could
-coincidentally collide between two unrelated manufacturers), with a
-hand-curated `FAMILY_NAMES` mapping in `app/slack.py` for the friendly
-name shown. A genuinely unrelated update detected the same day (different
-`checker_key`) always gets its own separate message, `@channel` and all -
-never bundled into someone else's.
+coincidentally collide between two unrelated manufacturers), using the
+same `FAMILY_NAMES` mapping in `app/families.py` that the dashboard uses to
+consolidate rows - see [Firmware families](#firmware-families) - so the two
+never disagree about what counts as one family. A genuinely unrelated
+update detected the same day (different `checker_key`) always gets its own
+separate message, `@channel` and all - never bundled into someone else's.
 
 Reads the webhook URL from the `SLACK_WEBHOOK_URL` repository secret (GitHub
 → Settings → Secrets and variables → Actions), passed to the workflow step
@@ -177,12 +213,15 @@ does. No manual acknowledgment involved anywhere.
 app/
   main.py            FastAPI routes + dashboard
   dashboard_data.py  Grouping/sorting/summary logic shared by the live app
-                     and the static-site builder
+                     and the static-site builder, incl. family row
+                     consolidation (see Firmware families)
+  families.py        FAMILY_NAMES: checker_key -> friendly family name,
+                     shared by dashboard_data.py and slack.py
   models.py          Equipment / CheckLog tables (SQLAlchemy)
   runner.py          Runs checkers, diffs versions, writes history,
                      auto-expires update flags after UPDATE_HIGHLIGHT_WINDOW
   scheduler.py       Background interval job (local interactive use only)
-  seed.py            The 43-item equipment list + which checker covers each
+  seed.py            The 44-item equipment list + which checker covers each
   export.py          Equipment <-> data/equipment.json round-trip, used by
                      the CI pipeline
   checkers/

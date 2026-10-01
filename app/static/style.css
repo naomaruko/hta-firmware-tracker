@@ -628,6 +628,27 @@ tr.row-update_detected td {
 .platform-badge { font-size: 0.68rem; padding: 2px 8px; }
 .platform-prev { font-size: 0.75rem; color: var(--muted); }
 
+/* Expanded family row (several models consolidated into one row, sharing a
+   checker_key - see app/families.py): the member models as pill tags, plus
+   the release date/previous/last checked/source the collapsed row leaves
+   blank. Same sticky-left reasoning as .platform-wrap above. */
+.family-row td { padding-top: 10px; padding-bottom: 14px; }
+.family-row[hidden] { display: none; }
+.family-row.is-hidden { display: none; }
+.family-wrap { position: sticky; left: 14px; width: fit-content; max-width: calc(100vw - 100px); }
+.family-pill-list { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.family-pill {
+  background: var(--neutral-bg);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.family-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 0.85rem; }
+.family-meta-label { color: var(--muted); margin-right: 6px; }
+
 /* ---------- Phone card list (hidden on desktop - see media query below) ---------- */
 
 /* Hidden by default (desktop shows .table-wrap instead); flipped in the
@@ -750,6 +771,10 @@ tr.row-update_detected td {
 .card-platforms .platform-name { min-width: 0; flex: 1 1 auto; }
 .card-platforms .platform-item { flex-wrap: nowrap; gap: 8px; }
 .card-platforms .platform-version { margin-left: auto; }
+/* Same pill tags as the desktop family row (see .family-pill-list above),
+   same "sits above the usual detail rows" placement as .card-platforms. */
+.card-family-pills { padding-bottom: 10px; border-bottom: 1px solid var(--gridline); }
+.card-family-pills .family-pill-list { margin-bottom: 0; }
 .card-detail-label { color: var(--muted); flex-shrink: 0; }
 .card-detail-value { text-align: right; }
 

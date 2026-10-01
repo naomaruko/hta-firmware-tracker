@@ -34,6 +34,27 @@
   {% endfor %}
 </ul>
 {% endmacro %}
+{# A family row (several models sharing one checker_key, always reporting
+   the identical version - see app/families.py) stays to one line when
+   collapsed: just the group name, status and version, with a chevron.
+   Expanding reveals which models it covers as pill tags, plus the last
+   checked time and source link that a normal row already shows up front -
+   kept out of the collapsed line since they're identical for every member
+   and would just repeat what the row above already states. #}
+{% macro family_pills(item) %}
+<ul class="family-pill-list">
+  {% for m in item.family_models %}<li class="family-pill">{{ m }}</li>{% endfor %}
+</ul>
+{% endmacro %}
+{% macro source_link(item) %}
+{% if item.source_url %}<a class="source-link" href="{{ item.source_url }}" target="_blank" rel="noopener" title="{{ item.source_url.split('/')[2] }}" aria-label="Open source ({{ item.source_url.split('/')[2] }}) in a new tab">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M15 3H21V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</a>{% else %}—{% endif %}
+{% endmacro %}
 <section class="hero-banner" style="--hero-image: url('/static/img/hero-banner.webp?v={{ v }}');">
   <div class="hero-banner-content">
     <img class="hero-logo" src="/static/img/hero-logo.png?v={{ v }}" alt="Hi-Tech Audio">
@@ -145,15 +166,21 @@
       {% endif %}
       {% for item in items %}
       {% set plats = item.platforms or [] %}
+      {% set search_terms = (manufacturer ~ ' ' ~ item.model ~ ' ' ~ (item.family_models|join(' ') if item.is_family else ''))|lower %}
       <tr data-id="{{ item.id }}"
           data-status="{{ item.status }}"
           data-category="{{ category or '' }}"
-          data-search="{{ (manufacturer ~ ' ' ~ item.model)|lower }}"
+          data-search="{{ search_terms }}"
           class="row-{{ item.status }}">
         <td class="model-col">
-          <div class="model-name">{{ item.model }}{% if plats %}<button type="button" class="row-toggle" aria-expanded="false" aria-controls="platforms-{{ item.id }}" aria-label="Show versions by platform for {{ item.model }}">
+          <div class="model-name">{{ item.model }}
+            {%- if plats %}<button type="button" class="row-toggle" aria-expanded="false" aria-controls="platforms-{{ item.id }}" aria-label="Show versions by platform for {{ item.model }}">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>{% endif %}</div>
+          </button>{% endif -%}
+            {%- if item.is_family %}<button type="button" class="row-toggle" aria-expanded="false" aria-controls="family-{{ item.id }}" aria-label="Show the {{ item.family_models|length }} models in {{ item.model }}">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>{% endif -%}
+          </div>
         </td>
         <td>
           {% if item.status == 'ok' %}<span class="badge badge-good">Up to date</span>
@@ -163,6 +190,15 @@
           {% endif %}
         </td>
         <td class="version-cell">{{ item.current_version or '—' }}{% if plats %}<span class="platform-hint">{{ plats|length }} platforms</span>{% endif %}</td>
+        {% if item.is_family %}
+        {# Release date/previous/last checked/source are identical for every
+           member (see _consolidate_families) - left blank here rather than
+           repeating them, since they're all one tap away via the chevron. #}
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="source-col"></td>
+        {% else %}
         <td class="muted release-date-cell">
           {% if has_release_dates %}{{ item.release_date or '—' }}
           {% else %}{{ item.last_changed_at|pacific("%b %-d, %Y") if item.last_changed_at else '—' }}
@@ -170,19 +206,29 @@
         </td>
         <td class="version-cell muted">{{ item.previous_version or '—' }}</td>
         <td class="muted time-cell" data-utc="{{ item.last_checked_at.isoformat() if item.last_checked_at else '' }}"><span class="time-text">{{ item.last_checked_at|pacific if item.last_checked_at else '—' }}</span></td>
-        <td class="source-col">
-          {% if item.source_url %}<a class="source-link" href="{{ item.source_url }}" target="_blank" rel="noopener" title="{{ item.source_url.split('/')[2] }}" aria-label="Open source ({{ item.source_url.split('/')[2] }}) in a new tab">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M15 3H21V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>{% else %}—{% endif %}
-        </td>
+        <td class="source-col">{{ source_link(item) }}</td>
+        {% endif %}
       </tr>
       {% if plats %}
       <tr class="platform-row row-{{ item.status }}" id="platforms-{{ item.id }}" data-parent-id="{{ item.id }}" hidden>
         <td colspan="7"><div class="platform-wrap">{{ platform_list(plats) }}</div></td>
+      </tr>
+      {% endif %}
+      {% if item.is_family %}
+      <tr class="family-row row-{{ item.status }}" id="family-{{ item.id }}" data-parent-id="{{ item.id }}" hidden>
+        <td colspan="7">
+          <div class="family-wrap">
+            {{ family_pills(item) }}
+            <div class="family-meta">
+              {% if has_release_dates %}<span><span class="family-meta-label">Release date</span> {{ item.release_date or '—' }}</span>
+              {% else %}<span><span class="family-meta-label">Detected on</span> {{ item.last_changed_at|pacific("%b %-d, %Y") if item.last_changed_at else '—' }}</span>
+              {% endif %}
+              <span><span class="family-meta-label">Previous</span> {{ item.previous_version or '—' }}</span>
+              <span><span class="family-meta-label">Last checked</span> {{ item.last_checked_at|pacific if item.last_checked_at else '—' }}</span>
+              <span><span class="family-meta-label">Source</span> {{ source_link(item) }}</span>
+            </div>
+          </div>
+        </td>
       </tr>
       {% endif %}
       {% if item.last_error %}
@@ -209,11 +255,12 @@
     {% endif %}
     {% for item in items %}
     {% set plats = item.platforms or [] %}
+    {% set search_terms = (manufacturer ~ ' ' ~ item.model ~ ' ' ~ (item.family_models|join(' ') if item.is_family else ''))|lower %}
     <div class="item-card row-{{ item.status }}"
          data-id="{{ item.id }}"
          data-status="{{ item.status }}"
          data-category="{{ category or '' }}"
-         data-search="{{ (manufacturer ~ ' ' ~ item.model)|lower }}">
+         data-search="{{ search_terms }}">
       <div class="card-summary" role="button" tabindex="0" aria-expanded="false">
         <div class="card-summary-top">
           <h3 class="card-model">{{ item.model }}</h3>
@@ -233,6 +280,7 @@
       {% if item.last_error %}<div class="card-error">⚠ {{ item.last_error }}</div>{% endif %}
       <div class="card-details" hidden>
         {% if plats %}<div class="card-platforms">{{ platform_list(plats) }}</div>{% endif %}
+        {% if item.is_family %}<div class="card-family-pills">{{ family_pills(item) }}</div>{% endif %}
         <div class="card-detail-row">
           <span class="card-detail-label">{{ 'Release date' if has_release_dates else 'Detected on' }}</span>
           <span class="card-detail-value">

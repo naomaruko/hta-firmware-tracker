@@ -14,32 +14,13 @@ import logging
 
 import requests
 
+from app.families import FAMILY_NAMES
+
 logger = logging.getLogger("firmware_tracker.slack")
 
 # Not a secret - just where the dashboard happens to be hosted right now.
 # Update if that ever moves to a custom domain (see TODO.md).
 DASHBOARD_URL = "https://hta-firmware-tracker.vercel.app/"
-
-# checker_key -> a human-readable name for the family of items it covers,
-# used instead of listing every model when several share one firmware
-# release (e.g. all 5 DiGiCo Quantum consoles are one release, one
-# checker_key, and always report the identical version - that's exactly
-# why they share a checker_key in the first place, so it's a more reliable
-# "these are really the same family" signal than just matching version
-# strings, which could coincidentally collide between two unrelated
-# manufacturers). Worth naming here for keys that cover more than one item,
-# or that stand for a whole product family even though only some of it is
-# tracked (SD) - see _family_label for the fallback for everything else.
-FAMILY_NAMES = {
-    "ah:dlive": "Allen & Heath dLive series",
-    "db:d40d90": "d&b D40/D90",
-    "digico:quantum": "DiGiCo Quantum series",
-    "digico:sd": "DiGiCo SD series",
-    "shure:ad_transmitters": "Shure AD/ADX transmitters",
-    "ssl:live": "Solid State Logic Live console series",
-    "ssl:networkio": "Solid State Logic Network I/O series",
-    "yamaha:rivage_pm": "Yamaha Rivage PM series",
-}
 
 
 def _group_changes(changes):
