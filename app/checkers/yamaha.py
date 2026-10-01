@@ -25,9 +25,11 @@ Per Yamaha's official RIVAGE PM/DM7/CL/QL/R/Tio compatibility chart
 (download.yamaha.com/files/tcm:39-1161321): DSP-R10, DSP-RX, DSP-RX-EX,
 RPio622, and RPio222 genuinely share ONE firmware version with the console
 itself, so those stay bundled under the rivage_pm slug. Rio3224-D2 and
-Rio1608-D2 do NOT - they're on their own separate firmware track entirely
-(shown as a distinct column in that chart), so each gets its own key here
-rather than being lumped in with the console version.
+Rio1608-D2 are on their own separate firmware track entirely from the
+console (shown as a distinct column in that chart) - but HTA has confirmed
+the two of them ship one identical release between each other (same
+version, same changelog, every time), so they're bundled together under
+their own rio_d2 slug rather than each getting a separate key.
 """
 import re
 from urllib.parse import urljoin
@@ -48,13 +50,15 @@ PAGES = {
 # after the model name so e.g. "HY144-D-SRC Firmware" can't accidentally
 # match the "HY144-D Firmware" row (a different, untracked product one
 # prefix short of it), and "Rio1608-D2 Firmware" can't match "Rio1608-D3".
+# rio_d2 matches whichever of the two model names' rows comes first on the
+# page - Rio1608-D2 and Rio3224-D2 ship one identical release (confirmed by
+# HTA), so either row carries the version that applies to both.
 ROWS = {
     "yamaha:rivage_pm": ("rivage_pm", re.compile(r"^RIVAGE PM Firmware\b")),
     "yamaha:dm7": ("dm7", re.compile(r"^DM7 Firmware\b")),
     "yamaha:swp1": ("swp1", re.compile(r"^SWP1 Firmware\b")),
     "yamaha:hy144dsrc": ("rivage_pm", re.compile(r"^HY144-D-SRC Firmware\b")),
-    "yamaha:rio1608d2": ("r_series_adda_2", re.compile(r"^Rio1608-D2 Firmware\b")),
-    "yamaha:rio3224d2": ("r_series_adda_2", re.compile(r"^Rio3224-D2 Firmware\b")),
+    "yamaha:rio_d2": ("r_series_adda_2", re.compile(r"^Rio(?:1608|3224)-D2 Firmware\b")),
 }
 
 VERSION_RE = re.compile(r"V([\d]+(?:\.[\d]+)*)", re.IGNORECASE)

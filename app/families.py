@@ -24,7 +24,24 @@ FAMILY_NAMES = {
     "digico:sd": "DiGiCo SD series",
     "ssl:live": "Solid State Logic Live console series",
     "ssl:networkio": "Solid State Logic Network I/O series",
+    "yamaha:rio_d2": "Yamaha Rio-D2 series",
     "yamaha:rivage_pm": "Yamaha Rivage PM series",
+}
+
+# checker_key -> a dedicated dashboard category heading for a family whose
+# members span more than one of a manufacturer's existing type-based
+# subsections (Consoles / DSP Engines / I/O Racks / ...) and so don't
+# cleanly sort into any single one of them - RIVAGE PM is a multi-component
+# system (console surfaces, DSP engines, I/O racks) tracked as one firmware
+# release, not a console alone, so trying to file it under "Consoles" would
+# misrepresent the other two-thirds of what it covers. Only worth setting
+# here when the manufacturer already uses category sub-grouping for its
+# other equipment - a family that's the only thing tracked under a
+# manufacturer (e.g. Allen & Heath's dLive series) is left out of this map
+# and stays uncategorized instead (see dashboard_data.py), since a heading
+# identical to the one row underneath it would be pure noise.
+FAMILY_CATEGORIES = {
+    "yamaha:rivage_pm": "Rivage PM Series",
 }
 
 

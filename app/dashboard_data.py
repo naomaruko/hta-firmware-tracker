@@ -7,13 +7,17 @@ lives.
 import types
 from collections import defaultdict
 
-from app.families import family_label
+from app.families import FAMILY_CATEGORIES, family_label
 
 # Sub-category display order within a manufacturer's section. Categories not
 # listed here (or None, for manufacturers with no sub-grouping) sort last,
-# in the order encountered.
+# in the order encountered. "Rivage PM Series" is a family's own dedicated
+# heading (see FAMILY_CATEGORIES in app/families.py), not a real equipment
+# type like the rest of this list - placed right after "Consoles" since
+# that's the closest thing to it product-wise.
 CATEGORY_ORDER = [
     "Consoles",
+    "Rivage PM Series",
     "DSP Engines",
     "I/O Racks",
     "I/O & Network",
@@ -38,11 +42,13 @@ def _consolidate_families(items):
     Equipment row (status/current_version/.../source_url, all identical
     across members by construction, so the first member's values stand in
     for the group) plus `is_family` and `family_models` for the template's
-    expand-to-pills treatment. Its `category` is the one all members share,
-    or None if they don't (e.g. Yamaha's RIVAGE PM family spans Consoles/
-    DSP Engines/I/O Racks) - None renders with no sub-heading rather than
-    attributing a cross-category family to one category arbitrarily, same
-    as how a manufacturer with no sub-grouping at all already renders.
+    expand-to-pills treatment. Its `category` is the one all members share;
+    if they don't (e.g. Yamaha's RIVAGE PM family spans Consoles/DSP
+    Engines/I/O Racks), it's FAMILY_CATEGORIES.get(key) instead - a
+    dedicated heading for that family, rather than attributing a
+    multi-component system to one of its parts arbitrarily - or None if
+    that's not set either, which renders with no sub-heading at all, same
+    as how a manufacturer with no sub-grouping already renders.
     """
     by_key = defaultdict(list)
     for item in items:
@@ -59,7 +65,7 @@ def _consolidate_families(items):
             seen_keys.add(key)
             members = by_key[key]
             categories = {m.category for m in members}
-            shared_category = members[0].category if len(categories) == 1 else None
+            shared_category = members[0].category if len(categories) == 1 else FAMILY_CATEGORIES.get(key)
             first = members[0]
             result.append(
                 types.SimpleNamespace(

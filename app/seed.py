@@ -21,8 +21,7 @@ YAMAHA_RIVAGE_URL = "https://usa.yamaha.com/support/updates/rivage_pm_firm.html"
 YAMAHA_DM7_URL = "https://usa.yamaha.com/support/updates/dm7_firm.html"
 YAMAHA_SWP1_URL = "https://usa.yamaha.com/support/updates/swp1_firm.html"
 YAMAHA_HY144_URL = "https://usa.yamaha.com/support/updates/hy144-d-src_firm.html"
-YAMAHA_RIO3224D2_URL = "https://usa.yamaha.com/support/updates/rio3224-d2_firm.html"
-YAMAHA_RIO1608D2_URL = "https://usa.yamaha.com/support/updates/rio1608-d2_firm.html"
+YAMAHA_RIO_D2_URL = "https://usa.yamaha.com/products/proaudio/interfaces/r_series_adda_2/downloads.html"
 
 SHURE_ARCHIVE_INDEX = "https://www.shure.com/en-US/support/downloads/software-firmware-archive"
 
@@ -54,8 +53,11 @@ EQUIPMENT = [
     ("YAMAHA", "DSP-RX-EX", "DSP Engines", "yamaha:rivage_pm", YAMAHA_RIVAGE_URL, "Shares the RIVAGE PM console firmware version (confirmed via Yamaha's official compatibility chart)."),
     ("YAMAHA", "RPio622", "I/O Racks", "yamaha:rivage_pm", YAMAHA_RIVAGE_URL, "Shares the RIVAGE PM console firmware version (confirmed via Yamaha's official compatibility chart)."),
     ("YAMAHA", "RPio222", "I/O Racks", "yamaha:rivage_pm", YAMAHA_RIVAGE_URL, "Shares the RIVAGE PM console firmware version (confirmed via Yamaha's official compatibility chart)."),
-    ("YAMAHA", "Rio3224-D2", "I/O Racks", "yamaha:rio3224d2", YAMAHA_RIO3224D2_URL, None),
-    ("YAMAHA", "Rio1608-D2", "I/O Racks", "yamaha:rio1608d2", YAMAHA_RIO1608D2_URL, None),
+    # Rio3224-D2 and Rio1608-D2 ship one identical firmware release between
+    # each other (confirmed by HTA: same version, same changelog, every
+    # time) - tracked as one family, same as DiGiCo's Quantum consoles.
+    ("YAMAHA", "Rio3224-D2", "I/O Racks", "yamaha:rio_d2", YAMAHA_RIO_D2_URL, None),
+    ("YAMAHA", "Rio1608-D2", "I/O Racks", "yamaha:rio_d2", YAMAHA_RIO_D2_URL, None),
     ("YAMAHA", "SWP1-8", "Network & Cards", "yamaha:swp1", YAMAHA_SWP1_URL, None),
     ("YAMAHA", "HY144-D-SRC", "Network & Cards", "yamaha:hy144dsrc", YAMAHA_HY144_URL, None),
 

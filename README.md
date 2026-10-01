@@ -111,7 +111,8 @@ point the relevant `app/seed.py` rows at it with `"scrape"` + a `checker_key`.
 
 Some rows track the same underlying platform from one firmware source -
 DiGiCo's five Quantum consoles, Allen & Heath's two dLive models, Yamaha's
-eight Rivage PM components - and always report the identical version
+two Rio-D2 I/O racks, Yamaha's eight Rivage PM components - and always
+report the identical version
 because they're assigned the same `CheckResult` from one `check_all()`
 call. Those collapse into a single dashboard row (e.g. "DiGiCo Quantum
 series") instead of five near-identical ones. On desktop/tablet every
@@ -132,10 +133,17 @@ holds the one `FAMILY_NAMES` mapping (checker_key → friendly collective
 name) that both `app/dashboard_data.py` (row consolidation) and
 `app/slack.py` (notification grouping, see
 [Slack notifications](#slack-notifications)) import, so the two can never
-disagree about what counts as "the same family." A family spanning more
-than one dashboard category (Yamaha's Rivage PM components live under
-Consoles, DSP Engines, and I/O Racks) renders with no sub-category heading
-rather than being attributed to one arbitrarily. The stats panel's counts
+disagree about what counts as "the same family." A family whose members
+all share one dashboard category (Yamaha's two Rio-D2 racks are both
+"I/O Racks") is filed under it normally, same as any other row. One
+spanning several categories (Yamaha's Rivage PM components live under
+Consoles, DSP Engines, and I/O Racks) isn't attributed to any one of them
+arbitrarily - it instead gets its own dedicated subsection, named in
+`FAMILY_CATEGORIES` (also in `app/families.py`), e.g. "Rivage PM Series".
+That's only set for families where it's actually useful - one that's the
+only thing tracked under its manufacturer (Allen & Heath's dLive series)
+stays without a heading instead, since a heading identical to the one row
+underneath it would just be noise. The stats panel's counts
 (Tracked / Updates / Errors) always reflect the real, individually-tracked
 equipment count, unaffected by how many rows that collapses into on
 screen.
