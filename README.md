@@ -162,13 +162,21 @@ to the one row underneath it would just be noise. A manufacturer's
 subsections don't have to sort alphabetically or by equipment type either:
 Yamaha's "Rivage PM Series" is pinned ahead of "Consoles" in
 `CATEGORY_ORDER` (`app/dashboard_data.py`) since it's their flagship line,
-not because any general ordering rule would put it first. DiGiCo's SD10
-gets the same one-subsection-per-product-line treatment ("SD Series",
-right after "Consoles") even though it's a singleton, not a consolidated
-family - a plain `category` value on its own row, nothing to do with
-`FAMILY_CATEGORIES`. The stats panel's counts (Tracked / Updates / Errors)
-always reflect the real, individually-tracked equipment count, unaffected
-by how many rows that collapses into on screen.
+not because any general ordering rule would put it first.
+
+DiGiCo's SD10 is a genuine singleton (no other SD-series console is
+tracked), but it still renders as a family-style row - "SD series", with a
+chevron expanding to a lone "SD10" pill - rather than falling back to a
+plain, non-expandable row the way every other singleton does. That's
+`FAMILY_FORCE` in `app/families.py`: a checker_key can opt into the family
+treatment even with one current member, when (like DiGiCo SD) its
+FAMILY_NAMES entry represents a whole product line rather than describing
+one specific model. Its dashboard category is just "Consoles" though, same
+as the Quantum family right above it - no dedicated subsection, since both
+are genuinely the same equipment type. The stats panel's counts
+(Tracked / Updates / Errors) always reflect the real, individually-tracked
+equipment count, unaffected by how many rows that collapses into on
+screen.
 
 ## Deployment
 

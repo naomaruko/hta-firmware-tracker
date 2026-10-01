@@ -73,6 +73,17 @@ FAMILY_CATEGORIES = {
     "yamaha:rivage_pm": "Rivage PM Series",
 }
 
+# checker_key -> True to render as a family row (collective name, chevron,
+# model-pills expand) even though it currently has only one tracked member
+# - DiGiCo SD stands for the whole SD console line, of which only SD10 is
+# tracked today, same as how FAMILY_NAMES already names it "SD series"
+# rather than leaving it to fall back to the bare model name. Without this,
+# a lone member is indistinguishable from "a single oddly-named item" and
+# renders as a plain row instead - this says that's not the case here, and
+# a second SD-series console added later would join this family exactly
+# like it already would any other.
+FAMILY_FORCE = {"digico:sd"}
+
 
 def family_label(checker_key, models):
     """models: every model name sharing checker_key, in display order.

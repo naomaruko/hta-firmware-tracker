@@ -266,7 +266,7 @@
     "id": 6,
     "manufacturer": "DiGiCo",
     "model": "SD10",
-    "category": "SD Series",
+    "category": "Consoles",
     "checker_key": "digico:sd",
     "source_url": "https://support.digico.biz/hc/en-gb/articles/44972633026065-V22-SD-Console-Software",
     "notes": null,

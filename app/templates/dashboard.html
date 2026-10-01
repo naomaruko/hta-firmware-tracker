@@ -180,7 +180,7 @@
             {%- if plats %}<button type="button" class="row-toggle" aria-expanded="false" aria-controls="platforms-{{ item.id }}" aria-label="Show versions by platform for {{ item.model }}">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>{% endif -%}
-            {%- if item.is_family and item.expandable %}<button type="button" class="row-toggle" aria-expanded="false" aria-controls="family-{{ item.id }}" aria-label="Show the {{ item.family_models|length }} models in {{ item.model }}">
+            {%- if item.is_family and item.expandable %}<button type="button" class="row-toggle" aria-expanded="false" aria-controls="family-{{ item.id }}" aria-label="Show the {{ item.family_models|length }} model{{ 's' if item.family_models|length != 1 else '' }} in {{ item.model }}">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>{% endif -%}
           </div>

@@ -7,25 +7,20 @@ lives.
 import types
 from collections import defaultdict
 
-from app.families import FAMILY_CATEGORIES, FAMILY_NO_EXPAND, family_label
+from app.families import FAMILY_CATEGORIES, FAMILY_FORCE, FAMILY_NO_EXPAND, family_label
 
 # Sub-category display order within a manufacturer's section. Categories not
 # listed here (or None, for manufacturers with no sub-grouping) sort last,
-# in the order encountered. "Rivage PM Series" and "SD Series" are each one
-# product line's own dedicated subsection (the former a family's heading -
-# see FAMILY_CATEGORIES in app/families.py, the latter a plain category on
-# DiGiCo's singleton SD10 row), not a real equipment type like the rest of
-# this list. "Rivage PM Series" sorts first, ahead of "Consoles" - it's
-# Yamaha's flagship line, not an equipment type a generic ordering would
-# otherwise place up front - while "SD Series" sits right after "Consoles",
-# the closest thing to it product-wise. This list is shared across every
-# manufacturer, but since no one else ever has a "Rivage PM Series" or "SD
-# Series" category, pinning them here only affects Yamaha's and DiGiCo's
-# own sections respectively.
+# in the order encountered. "Rivage PM Series" is a family's own dedicated
+# heading (see FAMILY_CATEGORIES in app/families.py), not a real equipment
+# type like the rest of this list - pinned first, ahead of "Consoles", since
+# it's Yamaha's flagship line rather than an equipment type a generic
+# ordering would put up front. DiGiCo's SD series (see FAMILY_FORCE in
+# app/families.py) isn't in this list at all: it's filed under "Consoles"
+# like any other console, alongside the Quantum family row.
 CATEGORY_ORDER = [
     "Rivage PM Series",
     "Consoles",
-    "SD Series",
     "DSP Engines",
     "I/O Racks",
     "I/O & Network",
@@ -42,9 +37,11 @@ def _consolidate_families(items):
     gets assigned the identical CheckResult from one check_all() call), not
     just items that happen to report matching version numbers, which are
     never grouped (no shared checker_key means no consolidation, full stop).
-    Singletons (a checker_key with exactly one item, or no checker_key at
-    all) pass through untouched - this only changes anything for the keys
-    that actually have 2+ items under them.
+    A checker_key with exactly one current item renders as a plain row
+    (its own model name, no chevron) unless it's in FAMILY_FORCE (see
+    app/families.py) - a product line tracked today through only one
+    model, but still genuinely a line rather than a one-off. No checker_key
+    at all always passes through untouched.
 
     A pseudo-item keeps every attribute the template expects from a real
     Equipment row (status/current_version/.../source_url, all identical
@@ -70,7 +67,7 @@ def _consolidate_families(items):
     result = []
     for item in items:
         key = item.checker_key
-        if key and len(by_key[key]) > 1:
+        if key and (len(by_key[key]) > 1 or key in FAMILY_FORCE):
             if key in seen_keys:
                 continue
             seen_keys.add(key)

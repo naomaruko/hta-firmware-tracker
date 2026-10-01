@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Firmware">
-<link rel="stylesheet" href="/static/style.css?v=20261001222643">
+<link rel="stylesheet" href="/static/style.css?v=20261001223611">
 </head>
 <body>
 
@@ -22,9 +22,9 @@
 
 
 
-<section class="hero-banner" style="--hero-image: url('/static/img/hero-banner.webp?v=20261001222643');">
+<section class="hero-banner" style="--hero-image: url('/static/img/hero-banner.webp?v=20261001223611');">
   <div class="hero-banner-content">
-    <img class="hero-logo" src="/static/img/hero-logo.png?v=20261001222643" alt="Hi-Tech Audio">
+    <img class="hero-logo" src="/static/img/hero-logo.png?v=20261001223611" alt="Hi-Tech Audio">
     <div class="hero-title-wrap">
       <h1 class="hero-title">Firmware Tracker</h1>
       
@@ -35,7 +35,7 @@
 <section class="stats-panel">
   <div class="stat-row">
     <div class="stat-card">
-      <img class="stat-icon" src="/static/img/stat-tracked.png?v=20261001222643" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-tracked.png?v=20261001223611" width="56" height="56" alt="">
       <div class="stat-text">
         <span class="stat-value">47</span>
         <span class="stat-label">Tracked</span>
@@ -44,7 +44,7 @@
     <div
       class="stat-card stat-alert stat-clickable"
       id="updates-kpi" role="button" tabindex="0" aria-label="Show the 8 items with an update available">
-      <img class="stat-icon" src="/static/img/stat-updates.png?v=20261001222643" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-updates.png?v=20261001223611" width="56" height="56" alt="">
       <div class="stat-text">
         <span class="stat-value">8</span>
         <span class="stat-label">
@@ -57,14 +57,14 @@
       </div>
     </div>
     <div class="stat-card ">
-      <img class="stat-icon" src="/static/img/stat-errors.png?v=20261001222643" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-errors.png?v=20261001223611" width="56" height="56" alt="">
       <div class="stat-text">
         <span class="stat-value">0</span>
         <span class="stat-label">Errors</span>
       </div>
     </div>
     <div class="stat-card">
-      <img class="stat-icon" src="/static/img/stat-last-checked.png?v=20261001222643" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-last-checked.png?v=20261001223611" width="56" height="56" alt="">
       <div class="stat-text">
         
         <span class="stat-value stat-value-text" id="last-run" data-utc="2026-10-01T13:11:32.245723" title="Oct 1, 06:11 AM PDT">Oct 1, 06:11 AM PDT</span>
@@ -670,18 +670,15 @@
       
       
       
-      <tr class="category-row" data-category="SD Series"><td colspan="7">SD Series</td></tr>
-      
-      
-      
-      
       <tr data-id="6"
           data-status="ok"
-          data-category="SD Series"
-          data-search="digico sd10 "
+          data-category="Consoles"
+          data-search="digico sd series sd10"
           class="row-ok">
         <td class="model-col">
-          <div class="model-name">SD10</div>
+          <div class="model-name">SD series<button type="button" class="row-toggle" aria-expanded="false" aria-controls="family-6" aria-label="Show the 1 model in SD series">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button></div>
         </td>
         <td>
           <span class="badge badge-good">Up to date</span>
@@ -705,6 +702,14 @@
 </td>
       </tr>
       
+      
+      <tr class="family-row row-ok" id="family-6" data-parent-id="6" hidden>
+        <td colspan="7"><div class="family-wrap">
+<ul class="family-pill-list">
+  <li class="family-pill">SD10</li>
+</ul>
+</div></td>
+      </tr>
       
       
       
@@ -887,19 +892,14 @@
     
     
     
-    <div class="card-category-row" data-category="SD Series">SD Series</div>
-    
-    
-    
-    
     <div class="item-card row-ok"
          data-id="6"
          data-status="ok"
-         data-category="SD Series"
-         data-search="digico sd10 ">
+         data-category="Consoles"
+         data-search="digico sd series sd10">
       <div class="card-summary" role="button" tabindex="0" aria-expanded="false">
         <div class="card-summary-top">
-          <h3 class="card-model">SD10</h3>
+          <h3 class="card-model">SD series</h3>
           <span class="badge badge-good">Up to date</span>
           
         </div>
@@ -913,7 +913,11 @@
       
       <div class="card-details" hidden>
         
-        
+        <div class="card-family-pills">
+<ul class="family-pill-list">
+  <li class="family-pill">SD10</li>
+</ul>
+</div>
         <div class="card-detail-row">
           <span class="card-detail-label">Release date</span>
           <span class="card-detail-value">
@@ -2694,6 +2698,6 @@
   </div>
 </div>
 
-<script src="/static/app.js?v=20261001222643"></script>
+<script src="/static/app.js?v=20261001223611"></script>
 </body>
 </html>
