@@ -88,7 +88,7 @@
     </div>
     <div
       class="stat-card {% if summary.updates_detected %}stat-alert stat-clickable{% endif %}"
-      {% if summary.updates_detected %}id="updates-kpi" role="button" tabindex="0" aria-label="Show the {{ summary.updates_detected }} item{{ 's' if summary.updates_detected != 1 else '' }} with an update available"{% endif %}>
+      {% if summary.updates_detected %}id="updates-kpi" role="button" tabindex="0" aria-label="Show the {{ summary.updates_detected }} row{{ 's' if summary.updates_detected != 1 else '' }} with an update available"{% endif %}>
       <img class="stat-icon" src="/static/img/stat-updates.png?v={{ v }}" width="56" height="56" alt="">
       <div class="stat-text">
         <span class="stat-value">{{ summary.updates_detected }}</span>

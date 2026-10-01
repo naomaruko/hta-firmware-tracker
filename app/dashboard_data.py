@@ -104,10 +104,10 @@ def _consolidate_families(items):
 
 
 def build_dashboard_context(items):
-    # Stats (below) and manufacturer_has_release_dates reflect every real,
-    # individually-tracked piece of equipment, unaffected by how rows are
-    # grouped for display - "47 Tracked" means 47 physical devices whether
-    # several of them currently share one row or not.
+    # manufacturer_has_release_dates reflects every real, individually-
+    # tracked piece of equipment, unaffected by how rows are grouped for
+    # display. The two stat counts below deliberately read from different
+    # lists, for different reasons - see the summary dict.
     display_items = _consolidate_families(items)
 
     # manufacturer -> category -> [items]. category is None for manufacturers
@@ -137,8 +137,18 @@ def build_dashboard_context(items):
     by_manufacturer = dict(sorted(by_manufacturer.items(), key=lambda kv: kv[0].lower()))
 
     summary = {
+        # Real physical units, from the unconsolidated list - "47 Tracked"
+        # means 47 devices whether several of them currently share one row
+        # or not. This is a coverage/scope number, so it shouldn't shrink
+        # just because some of what it covers happens to report through
+        # one firmware source.
         "total": len(items),
-        "updates_detected": sum(1 for i in items if i.status == "update_detected"),
+        # Rows, not units, from display_items - counts what's actually
+        # visible on the dashboard. A family sharing one CheckResult (e.g.
+        # Rivage PM's 8 components) reports one new version as one row, so
+        # it shows "1 update available" rather than inflating to 8 for
+        # what's genuinely a single thing to go look at.
+        "updates_detected": sum(1 for i in display_items if i.status == "update_detected"),
         "errors": sum(1 for i in items if i.status == "error"),
     }
 

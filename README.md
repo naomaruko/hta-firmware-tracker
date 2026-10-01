@@ -173,10 +173,19 @@ treatment even with one current member, when (like DiGiCo SD) its
 FAMILY_NAMES entry represents a whole product line rather than describing
 one specific model. Its dashboard category is just "Consoles" though, same
 as the Quantum family right above it - no dedicated subsection, since both
-are genuinely the same equipment type. The stats panel's counts
-(Tracked / Updates / Errors) always reflect the real, individually-tracked
-equipment count, unaffected by how many rows that collapses into on
-screen.
+are genuinely the same equipment type.
+
+The stats panel's two counts deliberately mean different things. "Tracked"
+is a coverage number - every real, individually-tracked piece of
+equipment, unaffected by how many rows that collapses into on screen, so
+it doesn't shrink just because some of what it covers shares one firmware
+source. "Updates" counts rows instead, not units - if Rivage PM's 8
+components all pick up a new version at once, that's genuinely one thing
+to go look at, so it shows "1 update available," not 8. Clicking the
+Updates card filters straight to those rows, so the number it shows always
+matches what you'd actually see land on screen. "Errors" still counts
+units (unchanged) - see `build_dashboard_context` in
+`app/dashboard_data.py` for exactly which list each one sums over.
 
 ## Deployment
 
