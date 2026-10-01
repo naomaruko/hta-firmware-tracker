@@ -175,6 +175,25 @@ one specific model. Its dashboard category is just "Consoles" though, same
 as the Quantum family right above it - no dedicated subsection, since both
 are genuinely the same equipment type.
 
+A family's members are supposed to always report identically (same
+`CheckResult`, one `check_all()` call), but that premise can still be
+violated by something outside any single check run - a member added to
+the family mid-session before its first real check, stale state left over
+from before it joined, a future checker bug. `_consolidate_families`
+doesn't just trust the first member for the row's displayed status in
+that case: it picks whichever member's status is most urgent (error beats
+a pending update beats "ok"), so one failing member can never get quietly
+absorbed into a row that otherwise looks fine. A family with any failing
+member shows "Check failed" even if the rest are "Up to date", names
+exactly which model(s) failed and why in the error line underneath (same
+`⚠ <text>` row a normal failing item gets), and - critically - gets its
+chevron back even if it's normally a `FAMILY_NO_EXPAND` family with no
+expand control at all, since "the name already says everything" stops
+being true the moment there's a failure to point at. In the expanded
+pills, the specific failing model's pill gets a red border and a ⚠ (with
+the actual error as a tooltip), so it's clear which one broke, not just
+that something in the group did.
+
 The stats panel's two counts deliberately mean different things. "Tracked"
 is a coverage number - every real, individually-tracked piece of
 equipment, unaffected by how many rows that collapses into on screen, so

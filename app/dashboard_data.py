@@ -9,6 +9,17 @@ from collections import defaultdict
 
 from app.families import FAMILY_CATEGORIES, FAMILY_FORCE, FAMILY_NO_EXPAND, family_label
 
+# Status precedence for a family's rolled-up display. Every checker
+# assigns one identical CheckResult to every member of a checker_key in a
+# given run, so this should never actually have to pick a "winner" from
+# genuinely conflicting data - it exists for when members nonetheless
+# disagree (a newly added member not yet checked, stale state left over
+# from before it joined the family, ...), so a real failure on any one of
+# them can't get silently absorbed into the group just because another
+# member happens to report fine. Lower number wins: a check failure is the
+# most urgent thing to surface, ahead of even a pending update.
+_STATUS_PRIORITY = {"error": 0, "update_detected": 1, "ok": 2}
+
 # Sub-category display order within a manufacturer's section. Categories not
 # listed here (or None, for manufacturers with no sub-grouping) sort last,
 # in the order encountered. "Rivage PM Series" is a family's own dedicated
@@ -44,19 +55,27 @@ def _consolidate_families(items):
     at all always passes through untouched.
 
     A pseudo-item keeps every attribute the template expects from a real
-    Equipment row (status/current_version/.../source_url, all identical
-    across members by construction, so the first member's values stand in
-    for the group) plus `is_family` and `family_models` for the template's
-    expand-to-pills treatment, and `expandable` - False for the rare family
-    (see FAMILY_NO_EXPAND in app/families.py) whose collective name already
+    Equipment row (status/current_version/.../source_url/last_error) plus
+    `is_family` and `family_models` for the template's expand-to-pills
+    treatment, and `expandable` - False for the rare family (see
+    FAMILY_NO_EXPAND in app/families.py) whose collective name already
     spells out every member, so there's nothing left for a chevron to
-    reveal. Its `category` is the one all members share; if they don't
-    (e.g. Yamaha's RIVAGE PM family spans Consoles/DSP Engines/I/O Racks),
-    it's FAMILY_CATEGORIES.get(key) instead - a dedicated heading for that
-    family, rather than attributing a multi-component system to one of its
-    parts arbitrarily - or None if that's not set either, which renders
-    with no sub-heading at all, same as how a manufacturer with no
-    sub-grouping already renders.
+    reveal. Those row-level fields come from whichever member has the
+    most urgent status per _STATUS_PRIORITY above - normally every member
+    agrees anyway, so this is just "the first member" in practice, but it
+    means a genuinely failing member can never be masked by an 'ok' one:
+    the row shows "Check failed", and last_error names exactly which
+    model(s) broke and why, rather than reusing some other member's
+    (irrelevant) error text. family_models carries each member's own
+    status/last_error too (not just its name), so the expanded pills can
+    flag the specific model(s) at fault instead of leaving every pill
+    looking equally fine. Its `category` is the one all members share; if
+    they don't (e.g. Yamaha's RIVAGE PM family spans Consoles/DSP
+    Engines/I/O Racks), it's FAMILY_CATEGORIES.get(key) instead - a
+    dedicated heading for that family, rather than attributing a
+    multi-component system to one of its parts arbitrarily - or None if
+    that's not set either, which renders with no sub-heading at all, same
+    as how a manufacturer with no sub-grouping already renders.
     """
     by_key = defaultdict(list)
     for item in items:
@@ -75,6 +94,8 @@ def _consolidate_families(items):
             categories = {m.category for m in members}
             shared_category = members[0].category if len(categories) == 1 else FAMILY_CATEGORIES.get(key)
             first = members[0]
+            representative = min(members, key=lambda m: _STATUS_PRIORITY.get(m.status, 3))
+            failing = [m for m in members if m.status == "error"]
             result.append(
                 types.SimpleNamespace(
                     id=first.id,
@@ -82,19 +103,32 @@ def _consolidate_families(items):
                     model=family_label(key, [m.model for m in members]),
                     category=shared_category,
                     checker_key=key,
-                    source_url=first.source_url,
-                    current_version=first.current_version,
-                    previous_version=first.previous_version,
-                    release_date=first.release_date,
-                    status=first.status,
-                    last_checked_at=first.last_checked_at,
-                    last_changed_at=first.last_changed_at,
-                    last_error=first.last_error,
+                    source_url=representative.source_url,
+                    current_version=representative.current_version,
+                    previous_version=representative.previous_version,
+                    release_date=representative.release_date,
+                    status=representative.status,
+                    last_checked_at=representative.last_checked_at,
+                    last_changed_at=representative.last_changed_at,
+                    last_error=(
+                        "; ".join(f"{m.model}: {m.last_error}" if m.last_error else f"{m.model}: check failed" for m in failing)
+                        if failing
+                        else None
+                    ),
                     notes=None,
                     platforms=None,
                     is_family=True,
-                    family_models=[m.model for m in members],
-                    expandable=key not in FAMILY_NO_EXPAND,
+                    family_models=[
+                        types.SimpleNamespace(model=m.model, status=m.status, last_error=m.last_error)
+                        for m in members
+                    ],
+                    # Even a FAMILY_NO_EXPAND family (nothing to add, its
+                    # name already spells out every member) gets its
+                    # chevron back the moment one member starts failing -
+                    # that premise only holds while every member is fine,
+                    # and a failure is exactly the kind of thing worth a
+                    # pill to point at.
+                    expandable=(key not in FAMILY_NO_EXPAND) or bool(failing),
                 )
             )
         else:
