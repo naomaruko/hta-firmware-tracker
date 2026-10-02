@@ -32,6 +32,45 @@ audio gear, so nobody has to manually check manufacturer sites.
   [Firmware families](#firmware-families) for how that grouping is
   decided and kept in sync with Slack notifications.
 
+## Architecture at a glance
+
+One flow, run in two places (a daily GitHub Actions job, and locally on
+demand):
+
+```
+app/seed.py ──► SQLite (throwaway in CI) ◄── data/equipment.json
+ (what we track)         │                    (last known state, in git)
+                         ▼
+           app/runner.py  ─►  checker module per manufacturer
+           (diff + persist)    (check_all(items) -> {item.id: CheckResult})
+                         │
+                         ├─►  app/slack.py       (only genuinely new versions)
+                         ▼
+           data/equipment.json  ─►  scripts/build_static.py  ─►  public/index.html
+           (committed back)          (shared app/dashboard_data.py)   (Vercel)
+```
+
+- **`seed.py` is the list of what's tracked**; each row names a
+  `checker_key` (e.g. `digico:quantum`), whose prefix `registry.py` routes
+  to a manufacturer module. A checker gets all of its items at once and
+  returns one `CheckResult` per item - it fetches each *source* once, not
+  once per model.
+- **State lives in git, not a database server.** CI starts from nothing
+  each run: it re-seeds a throwaway SQLite DB, overlays the last known
+  versions/timestamps from `data/equipment.json` (matched on
+  manufacturer + model), checks, and writes the result back. So history
+  persists as commits, and "what changed" is a before/after diff of two
+  JSON snapshots (`app/changes.py`) rather than anything stored.
+- **The deployed site is static HTML.** `build_static.py` renders the same
+  Jinja template and calls the same `build_dashboard_context()` as the
+  live FastAPI app, so the two can't drift on grouping/sorting/stats.
+  There's no server in production - and so nothing that writes: flags
+  clear themselves after a month instead of needing an "acknowledge".
+- **Failures degrade, they don't cascade.** A checker that raises marks
+  only its own items "Check failed"; a Slack outage or missing webhook
+  never blocks the daily commit; a release-date lookup failing doesn't
+  fail the version check it rode along with.
+
 ## Quick start
 
 ```bash
@@ -46,7 +85,7 @@ uvicorn app.main:app --reload
 Open http://127.0.0.1:8000 — the database (SQLite, at `data/tracker.db`) is
 created and seeded automatically on first run, and a check kicks off ~5
 seconds after startup. (The `playwright install chromium` step downloads a
-~90MB headless browser used only by the Allen & Heath / SSL / d&b / Dante
+~90MB headless browser used only by the Allen & Heath / Shure / d&b / Dante
 checkers — see below.)
 
 ## How each manufacturer is checked
@@ -99,8 +138,8 @@ change here if that happens again.
 
 `app/checkers/browser_base.py` holds a small Playwright helper
 (`browser_page()` launches a headless Chromium tab, `dismiss_cookie_banner()`
-clicks past consent overlays). `allenheath.py`, `dante.py`, and `dbaudio.py`
-use it to load a page, interact with it if needed (click an accordion, type
+clicks past consent overlays). `allenheath.py`, `dante.py`, `dbaudio.py`, and
+`shure.py` use it to load a page, interact with it if needed (click an accordion, type
 into a search box), and pull the version out of the rendered text. They're
 slower than the plain-HTTP checkers (each spins up a real browser) but run
 fine as part of the once-a-day background check. To add another one, copy
@@ -293,9 +332,12 @@ app/
   seed.py            The 47-item equipment list + which checker covers each
   export.py          Equipment <-> data/equipment.json round-trip, used by
                      the CI pipeline
+  changes.py         Before/after diff of two JSON snapshots -> the genuine
+                     version changes Slack is told about
+  slack.py           Webhook notifications, one message per family
   checkers/
-    digico.py, yamaha.py, shure.py, ssl.py             Static-page scrapers
-    allenheath.py, dante.py, dbaudio.py                Headless-browser scrapers
+    digico.py, yamaha.py, ssl.py                       Plain-HTTP (HTML / Zendesk JSON API)
+    allenheath.py, dante.py, dbaudio.py, shure.py      Headless-browser (Playwright)
     browser_base.py    Shared Playwright helper
     registry.py         Routes a checker_key to its module
   templates/, static/  Dashboard UI
