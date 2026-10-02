@@ -13,13 +13,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app.changes import find_changes, snapshot_versions  # noqa: E402
+from app.changes import find_changes, find_new_errors, snapshot_statuses, snapshot_versions  # noqa: E402
 from app.database import Base, SessionLocal, engine, run_light_migrations  # noqa: E402
 from app.export import load_json, restore_equipment_state, write_json  # noqa: E402
 from app.models import Equipment  # noqa: E402
 from app.runner import check_all  # noqa: E402
 from app.seed import seed  # noqa: E402
-from app.slack import notify_updates  # noqa: E402
+from app.slack import notify_errors, notify_updates  # noqa: E402
 
 JSON_PATH = Path(__file__).resolve().parent.parent / "data" / "equipment.json"
 
@@ -40,6 +40,7 @@ def main():
         # the very first-ever run, which correctly means nothing counts as
         # "changed" yet - there's nothing to compare against.
         old_versions, old_platforms = snapshot_versions(previous)
+        old_statuses = snapshot_statuses(previous)
         if previous:
             restore_equipment_state(db, previous)
             print(f"Restored check history for {len(previous)} items from {JSON_PATH.name}")
@@ -54,6 +55,17 @@ def main():
             print(f"{len(changes)} genuine version change(s) detected this run")
             status = notify_updates(changes, os.environ.get("SLACK_WEBHOOK_URL"))
             print(f"Slack notification: {status}")
+
+        # A check that newly *failed* this run (not one still failing from
+        # before) - the run itself still succeeds, so the workflow's own
+        # "daily run failed" alert never fires for a single broken scraper.
+        new_errors = find_new_errors(db.query(Equipment).all(), old_statuses)
+        if new_errors:
+            print(f"{len(new_errors)} item(s) newly failing their check")
+            status = notify_errors(
+                new_errors, os.environ.get("SLACK_WEBHOOK_URL"), os.environ.get("SLACK_ALERT_USER_ID")
+            )
+            print(f"Slack error notification: {status}")
 
         JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
         write_json(db, JSON_PATH)

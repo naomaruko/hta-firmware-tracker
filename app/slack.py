@@ -11,6 +11,7 @@ value in step output automatically, so that's covered without this module
 needing its own redaction.
 """
 import logging
+import re
 
 import requests
 
@@ -83,6 +84,29 @@ def _format_message(key, group):
     return f"<!channel> New firmware available for *{label}* → {version}\n\n<{DASHBOARD_URL}|View dashboard>"
 
 
+def _post_all(groups, format_group, webhook_url, what):
+    """Posts one Slack message per (key, group), never raising - a Slack
+    outage must never break the daily commit. Returns a short status string
+    so the caller can print a clear outcome (ci_check.py doesn't configure
+    Python logging, so this module's own log calls aren't visible in the
+    GitHub Actions log by default)."""
+    sent = 0
+    failures = []
+    for key, group in groups:
+        try:
+            r = requests.post(webhook_url, json={"text": format_group(key, group)}, timeout=10)
+            r.raise_for_status()
+            sent += 1
+        except Exception as e:  # noqa: BLE001
+            logger.exception("Failed to post Slack %s notification for %r", what, key)
+            failures.append(e.__class__.__name__)
+
+    logger.info("Posted %d/%d Slack %s notification(s)", sent, len(groups), what)
+    if failures:
+        return f"sent {sent}/{len(groups)}, failed: {', '.join(failures)}"
+    return f"sent {sent}/{len(groups)}"
+
+
 def notify_updates(changes, webhook_url):
     """changes: list of {manufacturer, model, checker_key, previous_version,
     current_version} dicts, one per item that genuinely changed version this
@@ -94,33 +118,46 @@ def notify_updates(changes, webhook_url):
     No-ops (never raises) if there's nothing to say or nowhere to say it -
     a Slack outage or a missing webhook_url (e.g. running this locally,
     where the secret isn't set) must never break the daily commit.
-
-    Returns a short status string (not just True/False) so the caller can
-    print a clear outcome - ci_check.py doesn't configure Python logging, so
-    this module's own log calls aren't visible in the GitHub Actions log by
-    default, and "why didn't a message show up" is exactly the kind of thing
-    worth being able to see at a glance in CI output.
     """
     if not changes:
         return "no changes"
     if not webhook_url:
         logger.info("SLACK_WEBHOOK_URL not set - skipping notification for %d update(s)", len(changes))
         return "skipped (no SLACK_WEBHOOK_URL)"
+    return _post_all(_group_changes(changes), _format_message, webhook_url, "update")
 
-    groups = _group_changes(changes)
-    sent = 0
-    failures = []
-    for key, group in groups:
-        try:
-            r = requests.post(webhook_url, json={"text": _format_message(key, group)}, timeout=10)
-            r.raise_for_status()
-            sent += 1
-        except Exception as e:  # noqa: BLE001
-            logger.exception("Failed to post Slack notification for %r", key)
-            failures.append(e.__class__.__name__)
 
-    logger.info("Posted %d/%d Slack notification(s)", sent, len(groups))
-    if failures:
-        return f"sent {sent}/{len(groups)}, failed: {', '.join(failures)}"
-    return f"sent {sent}/{len(groups)}"
+def _format_error_message(key, group, mention=""):
+    label = _family_label(key, group)
+    # One shared fetch failing gives every member of a family the identical
+    # message - say it once. Name models only if the messages differ.
+    by_message = {}
+    for c in group:
+        by_message.setdefault(c["error"], []).append(c["model"])
+    if len(by_message) == 1:
+        detail = next(iter(by_message))
+    else:
+        detail = "; ".join(f"{', '.join(models)}: {msg}" for msg, models in by_message.items())
+    return f"{mention}:warning: Firmware check failed for *{label}*: {detail}\n\n<{DASHBOARD_URL}|View dashboard>"
 
+
+def notify_errors(errors, webhook_url, alert_user_id=None):
+    """errors: list of {manufacturer, model, checker_key, error} dicts, one
+    per item whose check newly failed this run (see changes.find_new_errors).
+    Grouped by family exactly like version updates, so a shared fetch failing
+    is one message, not one per model. Pings just one person (alert_user_id,
+    the same Slack member ID the "daily run failed" alert uses) rather than
+    @channel - a broken scraper needs one person to look, not everyone
+    informed. Same never-raises guarantee as notify_updates."""
+    if not errors:
+        return "no new errors"
+    if not webhook_url:
+        logger.info("SLACK_WEBHOOK_URL not set - skipping notification for %d error(s)", len(errors))
+        return "skipped (no SLACK_WEBHOOK_URL)"
+    mention = f"<@{alert_user_id}> " if alert_user_id and re.match(r"^[UW][A-Z0-9]{6,}$", alert_user_id) else ""
+    return _post_all(
+        _group_changes(errors),
+        lambda key, group: _format_error_message(key, group, mention),
+        webhook_url,
+        "error",
+    )

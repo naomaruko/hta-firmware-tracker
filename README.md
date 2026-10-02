@@ -289,6 +289,19 @@ never disagree about what counts as one family. A genuinely unrelated
 update detected the same day (different `checker_key`) always gets its own
 separate message, `@channel` and all - never bundled into someone else's.
 
+**Check-failure alerts.** A separate message goes out when an item's check
+*newly* fails (`find_new_errors` in `app/changes.py` compares each item's
+status before and after the run): "⚠️ Firmware check failed for *Yamaha
+Rivage PM series*: <error>". It fires once when the failure starts, not
+every morning while it stays broken, and a brand-new item failing its very
+first check counts too. Family members that share one fetch are one
+message with the error stated once. Unlike version alerts it pings one
+person, not `@channel` - the same `SLACK_ALERT_USER_ID` member ID the "daily
+run failed" alert uses. This matters because a single broken scraper
+doesn't fail the workflow (the runner records it and carries on), so the
+workflow-level alert would never fire for it. Not covered: a failed Vercel
+deploy, and a failure that is already present the first time this runs.
+
 Reads the webhook URL from the `SLACK_WEBHOOK_URL` repository secret (GitHub
 → Settings → Secrets and variables → Actions), passed to the workflow step
 as an env var - never hardcoded, and not logged anywhere (GitHub also masks

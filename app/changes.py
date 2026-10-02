@@ -45,3 +45,32 @@ def find_changes(items, old_versions, old_platforms):
         ):
             changes.append({**base, "previous_version": old_versions[key], "current_version": item.current_version})
     return changes
+
+
+def snapshot_statuses(records):
+    """{(manufacturer, model): status} from a previously exported
+    equipment.json - the before-the-run half of find_new_errors."""
+    return {(r["manufacturer"], r["model"]): r.get("status") for r in records}
+
+
+def find_new_errors(items, old_statuses):
+    """One dict per item whose check *newly* failed this run: status is
+    "error" now and wasn't before. A failure that's merely still failing
+    from a previous day is not reported again, so a broken scraper pings
+    once rather than every morning until someone fixes it. An item that
+    wasn't in the snapshot at all counts as new (a freshly added item that
+    fails its very first check is worth knowing about) - except when the
+    snapshot is empty, i.e. the first-ever run, where there's nothing to
+    compare against and everything would look new."""
+    if not old_statuses:
+        return []
+    return [
+        {
+            "manufacturer": item.manufacturer,
+            "model": item.model,
+            "checker_key": item.checker_key,
+            "error": item.last_error or "check failed",
+        }
+        for item in items
+        if item.status == "error" and old_statuses.get((item.manufacturer, item.model)) != "error"
+    ]
