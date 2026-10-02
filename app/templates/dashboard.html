@@ -43,19 +43,10 @@
    the one thing with no room in a single line. A family whose collective
    name already spells out every member (e.g. "D25/D40/D90" - see
    FAMILY_NO_EXPAND in app/families.py) has nothing left for that chevron
-   to add, so item.expandable is False and it's skipped entirely.
-
-   item.family_models is a list of {model, status, last_error} (see
-   _consolidate_families in app/dashboard_data.py), not plain strings -
-   members are supposed to always report identically, but if one has
-   genuinely failed its own check (stale/partial data, a newly added
-   member not yet checked, ...) that shouldn't be invisible just because
-   the row as a whole rolled up to some other status. Its pill gets a red
-   border and a ⚠ so it's clear which specific model is the problem, not
-   just that something in the group is. #}
+   to add, so item.expandable is False and it's skipped entirely. #}
 {% macro family_pills(item) %}
 <ul class="family-pill-list">
-  {% for m in item.family_models %}<li class="family-pill{{ ' family-pill-error' if m.status == 'error' else '' }}"{% if m.status == 'error' %} title="{{ m.last_error or 'Check failed' }}" aria-label="{{ m.model }} - check failed{% if m.last_error %}: {{ m.last_error }}{% endif %}"{% endif %}>{{ m.model }}{% if m.status == 'error' %} <span aria-hidden="true">⚠</span>{% endif %}</li>{% endfor %}
+  {% for m in item.family_models %}<li class="family-pill">{{ m }}</li>{% endfor %}
 </ul>
 {% endmacro %}
 {% macro source_link(item) %}
@@ -178,7 +169,7 @@
       {% endif %}
       {% for item in items %}
       {% set plats = item.platforms or [] %}
-      {% set search_terms = (manufacturer ~ ' ' ~ item.model ~ ' ' ~ (item.family_models|map(attribute='model')|join(' ') if item.is_family else ''))|lower %}
+      {% set search_terms = (manufacturer ~ ' ' ~ item.model ~ ' ' ~ (item.family_models|join(' ') if item.is_family else ''))|lower %}
       <tr data-id="{{ item.id }}"
           data-status="{{ item.status }}"
           data-category="{{ category or '' }}"
@@ -245,7 +236,7 @@
     {% endif %}
     {% for item in items %}
     {% set plats = item.platforms or [] %}
-    {% set search_terms = (manufacturer ~ ' ' ~ item.model ~ ' ' ~ (item.family_models|map(attribute='model')|join(' ') if item.is_family else ''))|lower %}
+    {% set search_terms = (manufacturer ~ ' ' ~ item.model ~ ' ' ~ (item.family_models|join(' ') if item.is_family else ''))|lower %}
     <div class="item-card row-{{ item.status }}"
          data-id="{{ item.id }}"
          data-status="{{ item.status }}"

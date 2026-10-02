@@ -64,18 +64,15 @@ def _consolidate_families(items):
     most urgent status per _STATUS_PRIORITY above - normally every member
     agrees anyway, so this is just "the first member" in practice, but it
     means a genuinely failing member can never be masked by an 'ok' one:
-    the row shows "Check failed", and last_error names exactly which
-    model(s) broke and why, rather than reusing some other member's
-    (irrelevant) error text. family_models carries each member's own
-    status/last_error too (not just its name), so the expanded pills can
-    flag the specific model(s) at fault instead of leaving every pill
-    looking equally fine. Its `category` is the one all members share; if
-    they don't (e.g. Yamaha's RIVAGE PM family spans Consoles/DSP
-    Engines/I/O Racks), it's FAMILY_CATEGORIES.get(key) instead - a
-    dedicated heading for that family, rather than attributing a
-    multi-component system to one of its parts arbitrarily - or None if
-    that's not set either, which renders with no sub-heading at all, same
-    as how a manufacturer with no sub-grouping already renders.
+    the row shows "Check failed", and last_error names which model(s)
+    broke and why, rather than reusing some other member's (irrelevant)
+    error text. Its `category` is the one all members share; if they don't
+    (e.g. Yamaha's RIVAGE PM family spans Consoles/DSP Engines/I/O Racks),
+    it's FAMILY_CATEGORIES.get(key) instead - a dedicated heading for that
+    family, rather than attributing a multi-component system to one of its
+    parts arbitrarily - or None if that's not set either, which renders
+    with no sub-heading at all, same as how a manufacturer with no
+    sub-grouping already renders.
     """
     by_key = defaultdict(list)
     for item in items:
@@ -118,17 +115,8 @@ def _consolidate_families(items):
                     notes=None,
                     platforms=None,
                     is_family=True,
-                    family_models=[
-                        types.SimpleNamespace(model=m.model, status=m.status, last_error=m.last_error)
-                        for m in members
-                    ],
-                    # Even a FAMILY_NO_EXPAND family (nothing to add, its
-                    # name already spells out every member) gets its
-                    # chevron back the moment one member starts failing -
-                    # that premise only holds while every member is fine,
-                    # and a failure is exactly the kind of thing worth a
-                    # pill to point at.
-                    expandable=(key not in FAMILY_NO_EXPAND) or bool(failing),
+                    family_models=[m.model for m in members],
+                    expandable=key not in FAMILY_NO_EXPAND,
                 )
             )
         else:

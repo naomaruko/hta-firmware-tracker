@@ -642,17 +642,12 @@ tr.row-update_detected td {
 .family-pill {
   background: var(--neutral-bg);
   color: var(--text);
-  border: 1px solid transparent;
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 0.78rem;
   font-weight: 600;
   white-space: nowrap;
 }
-/* A member whose own check failed, inside an otherwise-fine family row -
-   same red used for the "Check failed" badge elsewhere, so it reads as
-   the same kind of problem rather than a new color language. */
-.family-pill-error { background: var(--critical-bg); color: var(--critical); border-color: var(--critical); }
 
 /* ---------- Phone card list (hidden on desktop - see media query below) ---------- */
 

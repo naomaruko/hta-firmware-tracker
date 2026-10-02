@@ -176,23 +176,19 @@ as the Quantum family right above it - no dedicated subsection, since both
 are genuinely the same equipment type.
 
 A family's members are supposed to always report identically (same
-`CheckResult`, one `check_all()` call), but that premise can still be
+`CheckResult`, one `check_all()` call), but that premise could still be
 violated by something outside any single check run - a member added to
-the family mid-session before its first real check, stale state left over
-from before it joined, a future checker bug. `_consolidate_families`
-doesn't just trust the first member for the row's displayed status in
-that case: it picks whichever member's status is most urgent (error beats
-a pending update beats "ok"), so one failing member can never get quietly
-absorbed into a row that otherwise looks fine. A family with any failing
-member shows "Check failed" even if the rest are "Up to date", names
-exactly which model(s) failed and why in the error line underneath (same
-`⚠ <text>` row a normal failing item gets), and - critically - gets its
-chevron back even if it's normally a `FAMILY_NO_EXPAND` family with no
-expand control at all, since "the name already says everything" stops
-being true the moment there's a failure to point at. In the expanded
-pills, the specific failing model's pill gets a red border and a ⚠ (with
-the actual error as a tooltip), so it's clear which one broke, not just
-that something in the group did.
+the family before its first real check, stale state from before it
+joined, a future checker bug. So `_consolidate_families` doesn't just
+trust the first member for the row's displayed status: it picks whichever
+member's status is most urgent (error beats a pending update beats "ok"),
+so a failing member can't be quietly absorbed into a row that otherwise
+looks fine. A family with any failing member shows "Check failed" on its
+row, with the failing model(s) named in the error line underneath. There's
+deliberately no per-model marker in the expanded pills - with every
+current checker assigning one shared result per `checker_key`, a single
+member failing alone can't happen in practice, so the row-level status is
+all that's needed.
 
 The stats panel's two counts deliberately mean different things. "Tracked"
 is a coverage number - every real, individually-tracked piece of
