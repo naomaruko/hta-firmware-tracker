@@ -41,6 +41,22 @@ CATEGORY_ORDER = [
 ]
 
 
+def _family_error(members, failing):
+    """One error line for a family row. The normal case is every member
+    failing together with the identical message (one shared fetch failed) -
+    that's just the message, once, rather than the same text repeated per
+    model. Models are only named when the failure doesn't cover the whole
+    family or the messages differ."""
+    if not failing:
+        return None
+    by_message = defaultdict(list)
+    for m in failing:
+        by_message[m.last_error or "check failed"].append(m.model)
+    if len(by_message) == 1 and len(failing) == len(members):
+        return next(iter(by_message))
+    return "; ".join(f"{', '.join(models)}: {msg}" for msg, models in by_message.items())
+
+
 def _consolidate_families(items):
     """Collapses items sharing a checker_key (see app/families.py) into one
     pseudo-item per family, for display only - a family is "genuinely the
@@ -64,8 +80,8 @@ def _consolidate_families(items):
     most urgent status per _STATUS_PRIORITY above - normally every member
     agrees anyway, so this is just "the first member" in practice, but it
     means a genuinely failing member can never be masked by an 'ok' one:
-    the row shows "Check failed", and last_error names which model(s)
-    broke and why, rather than reusing some other member's (irrelevant)
+    the row shows "Check failed", and last_error says why (see
+    _family_error), rather than reusing some other member's (irrelevant)
     error text. Its `category` is the one all members share; if they don't
     (e.g. Yamaha's RIVAGE PM family spans Consoles/DSP Engines/I/O Racks),
     it's FAMILY_CATEGORIES.get(key) instead - a dedicated heading for that
@@ -107,11 +123,7 @@ def _consolidate_families(items):
                     status=representative.status,
                     last_checked_at=representative.last_checked_at,
                     last_changed_at=representative.last_changed_at,
-                    last_error=(
-                        "; ".join(f"{m.model}: {m.last_error}" if m.last_error else f"{m.model}: check failed" for m in failing)
-                        if failing
-                        else None
-                    ),
+                    last_error=_family_error(members, failing),
                     notes=None,
                     platforms=None,
                     is_family=True,

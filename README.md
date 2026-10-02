@@ -184,7 +184,9 @@ trust the first member for the row's displayed status: it picks whichever
 member's status is most urgent (error beats a pending update beats "ok"),
 so a failing member can't be quietly absorbed into a row that otherwise
 looks fine. A family with any failing member shows "Check failed" on its
-row, with the failing model(s) named in the error line underneath. There's
+row. The error line underneath is the message once when the whole family
+failed together (the normal case - one shared fetch), and names specific
+models only when just some failed or the messages differ. There's
 deliberately no per-model marker in the expanded pills - with every
 current checker assigning one shared result per `checker_key`, a single
 member failing alone can't happen in practice, so the row-level status is
