@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+{# Internal dashboard - ask search engines not to index it. Also sent as an
+   X-Robots-Tag header (vercel.json) so non-HTML files are covered too. This
+   is a request that well-behaved crawlers honor, not access control. #}
+<meta name="robots" content="noindex, nofollow, noarchive">
 <title>HTA Firmware Tracker</title>
 <link rel="manifest" href="/static/manifest.json">
 <meta name="theme-color" content="#009B67">

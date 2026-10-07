@@ -3,5 +3,16 @@
   "outputDirectory": "public",
   "cleanUrls": true,
   "buildCommand": null,
-  "installCommand": null
+  "installCommand": null,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    }
+  ]
 }
