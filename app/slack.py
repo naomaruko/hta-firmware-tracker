@@ -127,6 +127,37 @@ def notify_updates(changes, webhook_url):
     return _post_all(_group_changes(changes), _format_message, webhook_url, "update")
 
 
+def _mention(alert_user_id):
+    """"<@U123ABC> " for a well-formed Slack member ID, else "" (no ping).
+    Same pattern the workflow's "daily run failed" step checks. Member IDs
+    belong to a workspace, so one from a different workspace won't resolve."""
+    if alert_user_id and re.match(r"^[UW][A-Z0-9]{6,}$", alert_user_id):
+        return f"<@{alert_user_id}> "
+    return ""
+
+
+def send_test(webhook_url, alert_user_id=None):
+    """Posts one clearly-labelled test message, for checking a new webhook
+    or alert recipient before relying on it. Unlike the real notifiers this
+    raises on failure (requests.HTTPError, with Slack's reason in the
+    response body) - the whole point is to find out whether it worked. No
+    @channel, so testing never pings everyone. Returns True if the alert
+    recipient was a valid member ID and got mentioned."""
+    mention = _mention(alert_user_id)
+    note = (
+        "You're mentioned above because this is the person real failure alerts will ping."
+        if mention
+        else "No one is mentioned: SLACK_ALERT_USER_ID is unset or isn't a Slack member ID (like U01ABCDE2F)."
+    )
+    text = (
+        f"{mention}:white_check_mark: *TEST* - the HTA Firmware Tracker can post to this channel. "
+        f"Nothing is wrong; this is only a connection check.\n{note}\n\n<{DASHBOARD_URL}|View dashboard>"
+    )
+    r = requests.post(webhook_url, json={"text": text}, timeout=10)
+    r.raise_for_status()
+    return bool(mention)
+
+
 def _format_error_message(key, group, mention=""):
     label = _family_label(key, group)
     # One shared fetch failing gives every member of a family the identical
@@ -154,7 +185,7 @@ def notify_errors(errors, webhook_url, alert_user_id=None):
     if not webhook_url:
         logger.info("SLACK_WEBHOOK_URL not set - skipping notification for %d error(s)", len(errors))
         return "skipped (no SLACK_WEBHOOK_URL)"
-    mention = f"<@{alert_user_id}> " if alert_user_id and re.match(r"^[UW][A-Z0-9]{6,}$", alert_user_id) else ""
+    mention = _mention(alert_user_id)
     return _post_all(
         _group_changes(errors),
         lambda key, group: _format_error_message(key, group, mention),

@@ -6,13 +6,37 @@ on:
     # a few minutes under load - "once a day" is the guarantee, not an exact
     # time of day.
     - cron: "0 13 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      slack_test:
+        description: "Only send a test Slack message (skips the firmware checks and the commit)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
 
 jobs:
+  # Manual "Run workflow" with slack_test ticked: posts one labelled test
+  # message with the real secrets and stops - for confirming a new webhook /
+  # alert recipient. Fails the run (red) if Slack rejects it.
+  slack-test:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.slack_test }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests
+      - name: Send test message
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_ALERT_USER_ID: ${{ secrets.SLACK_ALERT_USER_ID }}
+        run: python scripts/slack_test.py
+
   check:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.slack_test) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

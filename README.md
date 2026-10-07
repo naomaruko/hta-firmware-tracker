@@ -310,6 +310,19 @@ output automatically). Missing the secret, or the POST itself failing,
 never breaks the daily commit - `notify_updates()` in `app/slack.py`
 degrades to a no-op (logged, not raised) in either case.
 
+**Testing Slack (new webhook, new recipient).** GitHub → Actions → "Daily
+firmware check" → Run workflow → tick `slack_test`. That runs only
+`scripts/slack_test.py` - no firmware checks, no commit - and posts one
+clearly-labelled TEST message (no `@channel`) using the real
+`SLACK_WEBHOOK_URL` and `SLACK_ALERT_USER_ID`, mentioning the alert
+recipient so you can see exactly who real failure alerts will ping. The run
+goes red if Slack rejects it, with Slack's reason in the log (e.g.
+`no_service` = webhook revoked, `channel_not_found`). Locally:
+`SLACK_WEBHOOK_URL=... SLACK_ALERT_USER_ID=U01ABCDE2F python3 scripts/slack_test.py`.
+A webhook posts to the one channel picked when it was created, and member
+IDs belong to a workspace - so moving to a different workspace means
+replacing *both* secrets.
+
 ### Local automatic checking
 
 If you run this locally instead of relying on the deployed site, the
