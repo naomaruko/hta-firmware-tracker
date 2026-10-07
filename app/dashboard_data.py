@@ -9,6 +9,33 @@ from collections import defaultdict
 
 from app.families import FAMILY_CATEGORIES, FAMILY_FORCE, FAMILY_NO_EXPAND, family_label
 
+# Explicit row order within a manufacturer's section, by the product code
+# before " - " in the model name; anything not listed keeps its default
+# alphabetical position, after the listed ones. Shure's firmware ships in
+# release lines whose members share a version number, so rows that move
+# together sit together (checked against Shure's own release notes, which
+# name "Axient Digital 1.6.18" and "Axient Digital PSM 1.3.6" as the system
+# versions): the Axient Digital line (receiver, then transmitters, then
+# ShowLink access point and charger) and the PSM line (transmitter, then
+# receiver, then charger). This is a fixed order, not a sort by whatever
+# version a row currently shows, so rows don't jump around if one product's
+# version ever diverges from the rest of its line.
+MODEL_ORDER = {
+    "Shure": [
+        "AD4Q", "ADX1/ADX2", "AD610", "SBC240",
+        "ADTQ", "ADXR", "SBC441",
+    ],
+}
+
+
+def _model_rank(item):
+    order = MODEL_ORDER.get(item.manufacturer)
+    if not order:
+        return 0
+    code = item.model.split(" — ")[0]
+    return order.index(code) if code in order else len(order)
+
+
 # Status precedence for a family's rolled-up display. Every checker
 # assigns one identical CheckResult to every member of a checker_key in a
 # given run, so this should never actually have to pick a "winner" from
@@ -142,7 +169,9 @@ def build_dashboard_context(items):
     # tracked piece of equipment, unaffected by how rows are grouped for
     # display. The two stat counts below deliberately read from different
     # lists, for different reasons - see the summary dict.
-    display_items = _consolidate_families(items)
+    # Stable sort: only reorders manufacturers that have a MODEL_ORDER; every
+    # other row keeps the order it arrived in.
+    display_items = sorted(_consolidate_families(items), key=_model_rank)
 
     # manufacturer -> category -> [items]. category is None for manufacturers
     # that don't use sub-grouping (the template renders those as a flat list,

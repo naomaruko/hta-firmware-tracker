@@ -231,6 +231,19 @@ current checker assigning one shared result per `checker_key`, a single
 member failing alone can't happen in practice, so the row-level status is
 all that's needed.
 
+Rows within a manufacturer are alphabetical by default; `MODEL_ORDER` in
+`app/dashboard_data.py` overrides that where it helps. Shure's is a fixed
+order following its release lines - Shure's own release notes name "Axient
+Digital 1.6.18" and "Axient Digital PSM 1.3.6" as system versions - so rows
+that share a version sit together: AD4Q, ADX1/ADX2, AD610, SBC240, then
+ADTQ, ADXR, SBC441, then the rest. It's deliberately fixed rather than a
+sort by whatever version each row currently shows, so rows don't jump
+around if one product's version ever diverges from the rest of its line
+(it has before - AD610 shipped a 1.4.33 the others never got). Those
+products stay separate rows with separate checks and separate Slack
+messages: Shure publishes them as separate firmware listings that
+currently agree, not as one package.
+
 The stats panel's two counts deliberately mean different things. "Tracked"
 is a coverage number - every real, individually-tracked piece of
 equipment, unaffected by how many rows that collapses into on screen, so
