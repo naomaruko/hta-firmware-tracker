@@ -68,6 +68,12 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Automated firmware check $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            # main can move during the run (someone pushing, or an earlier
+            # run finishing) - sync first so an unrelated commit doesn't
+            # reject our push and fail the whole run. A genuine conflict (the
+            # same file changed on both sides) still fails here, loudly,
+            # rather than overwriting anything.
+            git pull --rebase origin main
             git push
           fi
 
