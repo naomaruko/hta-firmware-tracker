@@ -263,14 +263,16 @@ app — there's no server running continuously anywhere. Instead:
   "Log" or "Acknowledge" buttons) — it's a pure status *display*, matching
   what a backend-less static site can actually support. Update flags clear
   themselves automatically instead (see below).
-- The site asks search engines not to index it: a `<meta name="robots"
-  content="noindex, nofollow, noarchive">` tag in the template plus an
-  `X-Robots-Tag` header for every file (`vercel.json`). That's a request
-  well-behaved crawlers honor, not access control - anyone with the link
-  can still open it, and it doesn't cover the public GitHub repo itself
-  (GitHub has no setting to keep a public repo out of search). There's
-  deliberately no `robots.txt` blocking crawling: a crawler has to be
-  allowed to fetch the page to see the noindex instruction.
+- The site asks search engines not to index it, via a `<meta name="robots"
+  content="noindex, nofollow, noarchive">` tag in the template. That's a
+  request well-behaved crawlers honor, not access control - anyone with the
+  link can still open it, and it doesn't cover the public GitHub repo
+  itself (GitHub has no setting to keep a public repo out of search). An
+  `X-Robots-Tag` header via `vercel.json` was tried too, but Vercel never
+  sent it (cause not found), so it was removed rather than left as config
+  that doesn't do anything. There's deliberately no `robots.txt` blocking
+  crawling: a crawler has to be allowed to fetch the page to see the
+  noindex instruction.
 - `data/tracker.db` (SQLite) is still what the local interactive app uses
   day-to-day and is gitignored, same as always - it's not part of the
   deployment at all.
