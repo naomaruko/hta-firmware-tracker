@@ -12,7 +12,7 @@
     "release_date": "Jan 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:30.461352",
+    "last_checked_at": "2026-10-16T13:31:22.081461",
     "last_changed_at": null,
     "last_error": null
   },
@@ -29,7 +29,7 @@
     "release_date": "Jan 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:30.461382",
+    "last_checked_at": "2026-10-16T13:31:22.081489",
     "last_changed_at": null,
     "last_error": null
   },
@@ -46,7 +46,7 @@
     "release_date": "Jan 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:30.461314",
+    "last_checked_at": "2026-10-16T13:31:22.081415",
     "last_changed_at": null,
     "last_error": null
   },
@@ -63,7 +63,7 @@
     "release_date": "Jan 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:30.461205",
+    "last_checked_at": "2026-10-16T13:31:22.081258",
     "last_changed_at": null,
     "last_error": null
   },
@@ -105,7 +105,7 @@
       }
     ],
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:34:09.763389",
+    "last_checked_at": "2026-10-16T13:31:58.684062",
     "last_changed_at": null,
     "last_error": null
   },
@@ -122,7 +122,7 @@
     "release_date": "Feb 16, 2024",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:19.154288",
+    "last_checked_at": "2026-10-16T13:31:16.465759",
     "last_changed_at": null,
     "last_error": null
   },
@@ -139,7 +139,7 @@
     "release_date": "Aug 14, 2025",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:19.154261",
+    "last_checked_at": "2026-10-16T13:31:16.465733",
     "last_changed_at": null,
     "last_error": null
   },
@@ -156,7 +156,7 @@
     "release_date": "Apr 1, 2025",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:19.154229",
+    "last_checked_at": "2026-10-16T13:31:16.465704",
     "last_changed_at": null,
     "last_error": null
   },
@@ -173,7 +173,7 @@
     "release_date": "Mar 20, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:19.154170",
+    "last_checked_at": "2026-10-16T13:31:16.465652",
     "last_changed_at": null,
     "last_error": null
   },
@@ -190,7 +190,7 @@
     "release_date": "Mar 20, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:19.154142",
+    "last_checked_at": "2026-10-16T13:31:16.465625",
     "last_changed_at": null,
     "last_error": null
   },
@@ -207,7 +207,7 @@
     "release_date": "Mar 20, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:19.154114",
+    "last_checked_at": "2026-10-16T13:31:16.465598",
     "last_changed_at": null,
     "last_error": null
   },
@@ -224,7 +224,7 @@
     "release_date": "Mar 20, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:19.154084",
+    "last_checked_at": "2026-10-16T13:31:16.465569",
     "last_changed_at": null,
     "last_error": null
   },
@@ -241,7 +241,7 @@
     "release_date": "Mar 20, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:19.154047",
+    "last_checked_at": "2026-10-16T13:31:16.465531",
     "last_changed_at": null,
     "last_error": null
   },
@@ -258,7 +258,7 @@
     "release_date": "Mar 20, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:19.153914",
+    "last_checked_at": "2026-10-16T13:31:16.465391",
     "last_changed_at": null,
     "last_error": null
   },
@@ -275,7 +275,7 @@
     "release_date": "Mar 20, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:19.154198",
+    "last_checked_at": "2026-10-16T13:31:16.465677",
     "last_changed_at": null,
     "last_error": null
   },
@@ -292,7 +292,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:56.427531",
+    "last_checked_at": "2026-10-16T13:31:46.897189",
     "last_changed_at": "2026-10-07T13:13:02.399823",
     "last_error": null
   },
@@ -309,7 +309,7 @@
     "release_date": "Jul 23, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:56.427686",
+    "last_checked_at": "2026-10-16T13:31:46.897315",
     "last_changed_at": null,
     "last_error": null
   },
@@ -326,7 +326,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:56.427735",
+    "last_checked_at": "2026-10-16T13:31:46.897376",
     "last_changed_at": "2026-10-07T13:13:02.399981",
     "last_error": null
   },
@@ -343,7 +343,7 @@
     "release_date": "May 27, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:56.427770",
+    "last_checked_at": "2026-10-16T13:31:46.897409",
     "last_changed_at": null,
     "last_error": null
   },
@@ -360,7 +360,7 @@
     "release_date": "May 15, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:56.427800",
+    "last_checked_at": "2026-10-16T13:31:46.897437",
     "last_changed_at": null,
     "last_error": null
   },
@@ -377,7 +377,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:56.427829",
+    "last_checked_at": "2026-10-16T13:31:46.897465",
     "last_changed_at": "2026-10-07T13:13:02.400071",
     "last_error": null
   },
@@ -394,7 +394,7 @@
     "release_date": "May 15, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:56.427858",
+    "last_checked_at": "2026-10-16T13:31:46.897491",
     "last_changed_at": null,
     "last_error": null
   },
@@ -411,7 +411,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:56.427888",
+    "last_checked_at": "2026-10-16T13:31:46.897517",
     "last_changed_at": "2026-10-07T13:13:02.400113",
     "last_error": null
   },
@@ -428,7 +428,7 @@
     "release_date": "May 15, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:56.427918",
+    "last_checked_at": "2026-10-16T13:31:46.897542",
     "last_changed_at": null,
     "last_error": null
   },
@@ -445,7 +445,7 @@
     "release_date": "Apr 02, 2025",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:56.427951",
+    "last_checked_at": "2026-10-16T13:31:46.897568",
     "last_changed_at": null,
     "last_error": null
   },
@@ -462,7 +462,7 @@
     "release_date": "Jul 2, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:26.415356",
+    "last_checked_at": "2026-10-16T13:31:18.075109",
     "last_changed_at": null,
     "last_error": null
   },
@@ -479,7 +479,7 @@
     "release_date": "Apr 29, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:26.415293",
+    "last_checked_at": "2026-10-16T13:31:18.075057",
     "last_changed_at": null,
     "last_error": null
   },
@@ -496,7 +496,7 @@
     "release_date": "Apr 29, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:26.415258",
+    "last_checked_at": "2026-10-16T13:31:18.075021",
     "last_changed_at": null,
     "last_error": null
   },
@@ -513,7 +513,7 @@
     "release_date": "Apr 29, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:26.415153",
+    "last_checked_at": "2026-10-16T13:31:18.074909",
     "last_changed_at": null,
     "last_error": null
   },
@@ -530,7 +530,7 @@
     "release_date": "Jul 2, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:26.415327",
+    "last_checked_at": "2026-10-16T13:31:18.075084",
     "last_changed_at": null,
     "last_error": null
   },
@@ -547,7 +547,7 @@
     "release_date": "Oct 15, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:25.706962",
+    "last_checked_at": "2026-10-16T13:31:17.063008",
     "last_changed_at": "2026-10-15T13:33:25.706962",
     "last_error": null
   },
@@ -564,7 +564,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:25.707027",
+    "last_checked_at": "2026-10-16T13:31:17.063037",
     "last_changed_at": "2026-09-30T13:11:16.730944",
     "last_error": null
   },
@@ -581,7 +581,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:25.707063",
+    "last_checked_at": "2026-10-16T13:31:17.063063",
     "last_changed_at": "2026-09-30T13:11:16.730972",
     "last_error": null
   },
@@ -598,7 +598,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:25.707094",
+    "last_checked_at": "2026-10-16T13:31:17.063087",
     "last_changed_at": "2026-09-30T13:11:16.731000",
     "last_error": null
   },
@@ -615,7 +615,7 @@
     "release_date": "May 19, 2022",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:25.707272",
+    "last_checked_at": "2026-10-16T13:31:17.063235",
     "last_changed_at": null,
     "last_error": null
   },
@@ -632,7 +632,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:25.707158",
+    "last_checked_at": "2026-10-16T13:31:17.063139",
     "last_changed_at": "2026-09-30T13:11:16.731054",
     "last_error": null
   },
@@ -649,7 +649,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:25.707122",
+    "last_checked_at": "2026-10-16T13:31:17.063111",
     "last_changed_at": "2026-09-30T13:11:16.731027",
     "last_error": null
   },
@@ -666,7 +666,7 @@
     "release_date": "Sep 16, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:25.707216",
+    "last_checked_at": "2026-10-16T13:31:17.063187",
     "last_changed_at": null,
     "last_error": null
   },
@@ -683,7 +683,7 @@
     "release_date": "Sep 16, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:25.707187",
+    "last_checked_at": "2026-10-16T13:31:17.063164",
     "last_changed_at": null,
     "last_error": null
   },
@@ -700,7 +700,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:25.706753",
+    "last_checked_at": "2026-10-16T13:31:17.062812",
     "last_changed_at": "2026-09-30T13:11:16.730692",
     "last_error": null
   },
@@ -717,7 +717,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:25.706929",
+    "last_checked_at": "2026-10-16T13:31:17.062978",
     "last_changed_at": "2026-09-30T13:11:16.730885",
     "last_error": null
   },
@@ -734,7 +734,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-10-15T13:33:25.706887",
+    "last_checked_at": "2026-10-16T13:31:17.062940",
     "last_changed_at": "2026-09-30T13:11:16.730843",
     "last_error": null
   },
@@ -751,7 +751,7 @@
     "release_date": "Jan 17, 2024",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:33:25.707243",
+    "last_checked_at": "2026-10-16T13:31:17.063211",
     "last_changed_at": null,
     "last_error": null
   },
@@ -768,7 +768,7 @@
     "release_date": "May 27, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:34:03.564990",
+    "last_checked_at": "2026-10-16T13:31:53.830217",
     "last_changed_at": null,
     "last_error": null
   },
@@ -785,7 +785,7 @@
     "release_date": "May 27, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:34:03.565109",
+    "last_checked_at": "2026-10-16T13:31:53.830372",
     "last_changed_at": null,
     "last_error": null
   },
@@ -802,7 +802,7 @@
     "release_date": "May 27, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:34:03.565149",
+    "last_checked_at": "2026-10-16T13:31:53.830411",
     "last_changed_at": null,
     "last_error": null
   },
@@ -819,7 +819,7 @@
     "release_date": "Aug 18, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-10-15T13:34:03.565183",
+    "last_checked_at": "2026-10-16T13:31:53.830440",
     "last_changed_at": null,
     "last_error": null
   }
