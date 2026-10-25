@@ -85,3 +85,29 @@ def iso_to_readable_date(iso_str):
         return dt.datetime.fromisoformat(iso_str.replace("Z", "+00:00")).strftime("%b %-d, %Y")
     except ValueError:
         return None
+
+
+def describe_page(status, title, text, words=12):
+    """One-line description of a page a checker couldn't find its version
+    on, for putting in the failure message - e.g.
+        HTTP 200, title "Just a moment...", starts "Checking your browser before"
+    so a failure says what the page actually was (a bot-protection
+    interstitial, an error page, a redesign) instead of leaving it a mystery
+    to reproduce later. Any piece can be None. Whitespace is collapsed,
+    control characters dropped, and everything capped, since this text comes
+    from a third-party page and ends up in Slack and on the dashboard."""
+
+    def clean(value, limit):
+        value = re.sub(r"[\x00-\x1f\x7f]+", " ", value or "")
+        value = re.sub(r"\s+", " ", value).strip()
+        return value[: limit - 1] + "\u2026" if len(value) > limit else value
+
+    parts = []
+    if status is not None:
+        parts.append(f"HTTP {status}")
+    title = clean(title, 80)
+    if title:
+        parts.append(f'title "{title}"')
+    start = clean(" ".join((text or "").split()[:words]), 90)
+    parts.append(f'starts "{start}"' if start else "page text empty")
+    return ", ".join(parts)

@@ -11,6 +11,7 @@ value in step output automatically, so that's covered without this module
 needing its own redaction.
 """
 import logging
+import os
 import re
 
 import requests
@@ -22,6 +23,23 @@ logger = logging.getLogger("firmware_tracker.slack")
 # Not a secret - just where the dashboard happens to be hosted right now.
 # Update if that ever moves to a custom domain (see TODO.md).
 DASHBOARD_URL = "https://hta-firmware-tracker.vercel.app/"
+
+
+def alerts_webhook_url(environ=None):
+    """Where failure and recovery messages go: SLACK_ALERTS_WEBHOOK_URL (a
+    separate, private channel) if set, else the main SLACK_WEBHOOK_URL - so
+    leaving the new secret out never silences failure alerts, they just land
+    with the update alerts as before. Firmware-update messages always use
+    SLACK_WEBHOOK_URL."""
+    environ = os.environ if environ is None else environ
+    return environ.get("SLACK_ALERTS_WEBHOOK_URL") or environ.get("SLACK_WEBHOOK_URL")
+
+
+def _escape(text):
+    """Slack's required escaping (&, <, >) for text we didn't write. Error
+    messages now quote third-party page content, and an unescaped "<!channel>"
+    or "<@U123>" in a page's title or text would otherwise ping people."""
+    return str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 def _group_changes(changes):
@@ -169,7 +187,7 @@ def _format_error_message(key, group, mention=""):
         detail = next(iter(by_message))
     else:
         detail = "; ".join(f"{', '.join(models)}: {msg}" for msg, models in by_message.items())
-    return f"{mention}:warning: Firmware check failed for *{label}*: {detail}\n\n<{DASHBOARD_URL}|View dashboard>"
+    return f"{mention}:warning: Firmware check failed for *{label}*: {_escape(detail)}\n\n<{DASHBOARD_URL}|View dashboard>"
 
 
 def notify_errors(errors, webhook_url, alert_user_id=None):
@@ -179,7 +197,8 @@ def notify_errors(errors, webhook_url, alert_user_id=None):
     is one message, not one per model. Pings just one person (alert_user_id,
     the same Slack member ID the "daily run failed" alert uses) rather than
     @channel - a broken scraper needs one person to look, not everyone
-    informed. Same never-raises guarantee as notify_updates."""
+    informed. Pass alerts_webhook_url() as the webhook. Same never-raises
+    guarantee as notify_updates."""
     if not errors:
         return "no new errors"
     if not webhook_url:
@@ -192,3 +211,56 @@ def notify_errors(errors, webhook_url, alert_user_id=None):
         webhook_url,
         "error",
     )
+
+
+def _format_recovery_message(key, group):
+    label = _family_label(key, group)
+    versions = sorted({c["current_version"] for c in group if c.get("current_version")})
+    version = f" (now {', '.join(_escape(v) for v in versions)})" if versions else ""
+    return f":white_check_mark: Firmware check recovered for *{label}*{version}\n\n<{DASHBOARD_URL}|View dashboard>"
+
+
+def notify_recoveries(recoveries, webhook_url):
+    """recoveries: list of {manufacturer, model, checker_key, current_version}
+    dicts, one per item that was failing at the end of the previous run and
+    isn't any more (see changes.find_recoveries). Grouped by family, one
+    message each. No mention - nothing needs doing; it just closes the loop on
+    an earlier failure alert. A failure that cleared on a retry within the
+    same run never alerted, so it never "recovers" either. Never raises."""
+    if not recoveries:
+        return "no recoveries"
+    if not webhook_url:
+        logger.info("No Slack webhook set - skipping %d recovery notification(s)", len(recoveries))
+        return "skipped (no webhook)"
+    return _post_all(_group_changes(recoveries), _format_recovery_message, webhook_url, "recovery")
+
+
+SAMPLE_ERROR = (
+    'Fetch failed: Version pattern not found on page '
+    '(HTTP 200, title "Example page", starts "Just a moment... Checking your browser")'
+)
+
+
+def send_test_alerts(webhook_url, alert_user_id=None):
+    """Posts a sample failure message and a sample recovery message to the
+    alerts channel, built by the same formatters real alerts use (so what you
+    see is exactly what a real one will look like) about a fake "TEST Sample
+    item", each labelled as a test. Raises on failure like send_test. Returns
+    True if the alert recipient was mentioned on the failure message."""
+    mention = _mention(alert_user_id)
+    item = {
+        "manufacturer": "TEST",
+        "model": "Sample item",
+        "checker_key": "test:sample",
+        "error": SAMPLE_ERROR,
+        "current_version": "1.2.3",
+    }
+    group = [item]
+    note = "\n_This is a TEST of the failure-alert format - nothing is actually wrong._"
+    for text in (
+        _format_error_message("test:sample", group, mention) + note,
+        _format_recovery_message("test:sample", group) + note.replace("failure-alert", "recovery-message"),
+    ):
+        r = requests.post(webhook_url, json={"text": text}, timeout=10)
+        r.raise_for_status()
+    return bool(mention)

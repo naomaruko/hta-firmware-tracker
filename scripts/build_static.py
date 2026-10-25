@@ -55,7 +55,13 @@ def main():
     items = [_record_to_item(r) for r in records]
     context = build_dashboard_context(items)
 
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(TEMPLATES_DIR)))
+    # autoescape on, same as the live app's Jinja2Templates: error messages now
+    # quote third-party page content (see describe_page), which must never be
+    # able to inject markup into the published page.
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(str(TEMPLATES_DIR)),
+        autoescape=jinja2.select_autoescape(["html"]),
+    )
     env.filters["pacific"] = to_pacific
     # Cache-busting query param on every static asset URL, same purpose as
     # main.py's BUILD_VERSION - a fresh value per deploy so Vercel's CDN/the

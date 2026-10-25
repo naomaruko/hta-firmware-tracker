@@ -34,7 +34,7 @@ their own rio_d2 slug rather than each getting a separate key.
 import re
 from urllib.parse import urljoin
 
-from app.checkers.base import CheckResult, http_get, iso_to_readable_date
+from app.checkers.base import CheckResult, describe_page, http_get, iso_to_readable_date
 
 # Downloads pages that carry a firmware-table for at least one checker_key
 # below - fetched once each, not once per checker_key that reads from them.
@@ -65,13 +65,15 @@ VERSION_RE = re.compile(r"V([\d]+(?:\.[\d]+)*)", re.IGNORECASE)
 
 
 def _fetch_rows(url):
-    """Every (name, date, absolute_href) row from every #firmware-table on
-    a downloads page."""
+    """(rows, description): every (name, date, absolute_href) row from every
+    #firmware-table on a downloads page, plus a one-line description of the
+    page itself for failure messages (see describe_page)."""
     from bs4 import BeautifulSoup
 
     r = http_get(url)
     r.raise_for_status()
     soup = BeautifulSoup(r.text, "lxml")
+    description = describe_page(r.status_code, soup.title.get_text() if soup.title else None, soup.get_text(" "))
     rows = []
     for table in soup.find_all("table", id="firmware-table"):
         for tr in table.find_all("tr")[1:]:  # skip the header row
@@ -83,7 +85,7 @@ def _fetch_rows(url):
             date = tds[-1].get_text(strip=True)
             href = urljoin(url, a.get("href", ""))
             rows.append((name, date, href))
-    return rows
+    return rows, description
 
 
 def check_all(equipment_items):
@@ -91,10 +93,11 @@ def check_all(equipment_items):
     needed_pages = {ROWS[k][0] for k in needed_keys if k in ROWS}
 
     page_rows = {}
+    page_info = {}
     page_errors = {}
     for page_key in needed_pages:
         try:
-            page_rows[page_key] = _fetch_rows(PAGES[page_key])
+            page_rows[page_key], page_info[page_key] = _fetch_rows(PAGES[page_key])
         except Exception as e:  # noqa: BLE001
             page_errors[page_key] = f"Fetch failed: {e}"
 
@@ -110,7 +113,7 @@ def check_all(equipment_items):
         match = next(((n, d, h) for n, d, h in rows if pattern.search(n)), None)
         if not match:
             resolved[key] = CheckResult(
-                None, False, f"No row matching {pattern.pattern!r} on {PAGES[page_key]}"
+                None, False, f"No row matching {pattern.pattern!r} on {PAGES[page_key]} ({page_info[page_key]})"
             )
             continue
         name, date, href = match

@@ -12,7 +12,7 @@ import datetime as dt
 import re
 
 from app.checkers.base import CheckResult
-from app.checkers.browser_base import browser_page, dismiss_cookie_banner
+from app.checkers.browser_base import browser_page, describe_browser_page, dismiss_cookie_banner
 
 DOWNLOADS_URL = "https://www.dbaudio.com/global/en/service-and-support/downloads/"
 
@@ -48,14 +48,16 @@ def _fmt_ddmmyyyy(date_str):
         return date_str
 
 
-def _search(page, term, pattern):
+def _search(page, term, pattern, status=None):
     page.fill("input[name='searchTerm']", term)
     page.keyboard.press("Enter")
     page.wait_for_timeout(2000)
     text = page.inner_text("body")
     m = pattern.search(text)
     if not m:
-        raise ValueError(f"No result matching pattern for search {term!r}")
+        raise ValueError(
+            f"No result matching pattern for search {term!r} ({describe_browser_page(page, status, text)})"
+        )
     return m.group(1), _fmt_ddmmyyyy(m.group(2))
 
 
@@ -65,7 +67,8 @@ def check_all(equipment_items):
 
     try:
         with browser_page() as page:
-            page.goto(DOWNLOADS_URL, wait_until="domcontentloaded")
+            resp = page.goto(DOWNLOADS_URL, wait_until="domcontentloaded")
+            status = resp.status if resp else None
             page.wait_for_timeout(1000)
             dismiss_cookie_banner(page)
             page.wait_for_timeout(300)
@@ -77,7 +80,7 @@ def check_all(equipment_items):
                     continue
                 term, pattern = query
                 try:
-                    version, release_date = _search(page, term, pattern)
+                    version, release_date = _search(page, term, pattern, status)
                     resolved[key] = CheckResult(version, True, source_url=page.url, release_date=release_date)
                 except Exception as e:  # noqa: BLE001
                     resolved[key] = CheckResult(None, False, f"Fetch failed: {e}", source_url=DOWNLOADS_URL)

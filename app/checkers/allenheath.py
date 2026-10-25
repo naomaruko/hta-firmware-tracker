@@ -25,7 +25,7 @@ month and year is ever stated, never a day.
 import re
 
 from app.checkers.base import CheckResult, abbreviate_month, http_get
-from app.checkers.browser_base import browser_page
+from app.checkers.browser_base import browser_page, describe_browser_page
 
 DLIVE_URL = "https://www.allen-heath.com/hardware/dlive-series/all-models/resources/"
 VERSION_RE = re.compile(r"dLive Firmware\s+V([\d.]+)", re.IGNORECASE)
@@ -43,11 +43,13 @@ RELEASE_DATE_RE = re.compile(r"Version\s+[\d.]+\s*-[^.]*\.\s*([A-Za-z]+ \d{4})")
 
 def _fetch_dlive_version():
     with browser_page() as page:
-        page.goto(DLIVE_URL, wait_until="networkidle")
+        resp = page.goto(DLIVE_URL, wait_until="networkidle")
         text = page.inner_text("body")
-    m = VERSION_RE.search(text)
-    if not m:
-        raise ValueError("Version pattern not found on page")
+        m = VERSION_RE.search(text)
+        if not m:
+            raise ValueError(
+                f"Version pattern not found on page ({describe_browser_page(page, resp.status if resp else None, text)})"
+            )
     return f"V{m.group(1)}"
 
 

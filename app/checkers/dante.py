@@ -23,7 +23,7 @@ import datetime as dt
 import re
 
 from app.checkers.base import CheckResult, http_get, newest_version
-from app.checkers.browser_base import browser_page
+from app.checkers.browser_base import browser_page, describe_browser_page
 
 DOWNLOADS_URL = "https://www.getdante.com/resources/software-downloads/"
 
@@ -58,7 +58,7 @@ def _parse_release_date(text):
 def _fetch_dante_controller_platforms():
     """{platform name: version}, {platform name: its Release Notes URL}."""
     with browser_page() as page:
-        page.goto(DOWNLOADS_URL, wait_until="domcontentloaded")
+        resp = page.goto(DOWNLOADS_URL, wait_until="domcontentloaded")
         page.wait_for_timeout(1500)
         page.locator("a.toggle-software").filter(has_text="Dante Controller").first.click()
         page.wait_for_timeout(1500)
@@ -70,6 +70,7 @@ def _fetch_dante_controller_platforms():
             notes_link = li.locator("a", has_text="Release Notes")
             href = notes_link.get_attribute("href") if notes_link.count() else None
             rows.append((title, href))
+        page_info = describe_browser_page(page, resp.status if resp else None)
 
     platforms = {}
     release_notes_urls = {}
@@ -84,7 +85,7 @@ def _fetch_dante_controller_platforms():
             release_notes_urls.setdefault(name, href)
 
     if not platforms:
-        raise ValueError("Version pattern not found after expanding Dante Controller section")
+        raise ValueError(f"Version pattern not found after expanding Dante Controller section ({page_info})")
     return platforms, release_notes_urls
 
 

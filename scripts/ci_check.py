@@ -14,13 +14,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app.changes import find_changes, find_new_errors, snapshot_statuses, snapshot_versions  # noqa: E402
+from app.changes import find_changes, find_new_errors, find_recoveries, snapshot_statuses, snapshot_versions  # noqa: E402
 from app.database import Base, SessionLocal, engine, run_light_migrations  # noqa: E402
 from app.export import load_json, restore_equipment_state, write_json  # noqa: E402
 from app.models import Equipment  # noqa: E402
 from app.runner import check_all  # noqa: E402
 from app.seed import seed  # noqa: E402
-from app.slack import notify_errors, notify_updates  # noqa: E402
+from app.slack import alerts_webhook_url, notify_errors, notify_recoveries, notify_updates  # noqa: E402
 
 JSON_PATH = Path(__file__).resolve().parent.parent / "data" / "equipment.json"
 
@@ -63,16 +63,24 @@ def main():
             status = notify_updates(changes, os.environ.get("SLACK_WEBHOOK_URL"))
             print(f"Slack notification: {status}")
 
-        # A check that newly *failed* this run (not one still failing from
-        # before) - the run itself still succeeds, so the workflow's own
-        # "daily run failed" alert never fires for a single broken scraper.
-        new_errors = find_new_errors(db.query(Equipment).all(), old_statuses)
+        # Failures and recoveries go to the alerts channel (SLACK_ALERTS_WEBHOOK_URL,
+        # falling back to the main webhook if unset); firmware updates, above,
+        # always go to the main one. A check that newly *failed* this run (not
+        # one still failing from before) - the run itself still succeeds, so
+        # the workflow's own "daily run failed" alert never fires for a single
+        # broken scraper.
+        all_items = db.query(Equipment).all()
+        alerts_url = alerts_webhook_url()
+        new_errors = find_new_errors(all_items, old_statuses)
         if new_errors:
             print(f"{len(new_errors)} item(s) newly failing their check")
-            status = notify_errors(
-                new_errors, os.environ.get("SLACK_WEBHOOK_URL"), os.environ.get("SLACK_ALERT_USER_ID")
-            )
+            status = notify_errors(new_errors, alerts_url, os.environ.get("SLACK_ALERT_USER_ID"))
             print(f"Slack error notification: {status}")
+
+        recoveries = find_recoveries(all_items, old_statuses)
+        if recoveries:
+            print(f"{len(recoveries)} item(s) recovered from an earlier failure")
+            print(f"Slack recovery notification: {notify_recoveries(recoveries, alerts_url)}")
 
         JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
         write_json(db, JSON_PATH)

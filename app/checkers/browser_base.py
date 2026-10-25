@@ -7,7 +7,7 @@ isolated here rather than used by default everywhere.
 """
 from contextlib import contextmanager
 
-from app.checkers.base import USER_AGENT
+from app.checkers.base import USER_AGENT, describe_page
 
 NAV_TIMEOUT_MS = 30_000
 
@@ -40,3 +40,20 @@ def dismiss_cookie_banner(page):
         except Exception:  # noqa: BLE001
             continue
     return False
+
+
+def describe_browser_page(page, status=None, text=None):
+    """describe_page() for a live Playwright page. status is the HTTP status
+    of the navigation (page.goto's response.status) if the caller kept it;
+    text defaults to the whole body. Never raises - this runs while already
+    reporting a failure, so it must not be the thing that fails."""
+    try:
+        title = page.title()
+    except Exception:  # noqa: BLE001
+        title = None
+    if text is None:
+        try:
+            text = page.inner_text("body")
+        except Exception:  # noqa: BLE001
+            text = None
+    return describe_page(status, title, text)

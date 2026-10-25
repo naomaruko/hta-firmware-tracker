@@ -74,3 +74,21 @@ def find_new_errors(items, old_statuses):
         for item in items
         if item.status == "error" and old_statuses.get((item.manufacturer, item.model)) != "error"
     ]
+
+
+def find_recoveries(items, old_statuses):
+    """One dict per item that was in "error" at the end of the previous run
+    and isn't now - for a "recovered" message closing the loop on an earlier
+    failure alert. Only compares against what was recorded last time, so a
+    failure that cleared on a retry inside a single run (never recorded, never
+    alerted) is correctly not a recovery. Empty on the first-ever run."""
+    return [
+        {
+            "manufacturer": item.manufacturer,
+            "model": item.model,
+            "checker_key": item.checker_key,
+            "current_version": item.current_version,
+        }
+        for item in items
+        if item.status != "error" and old_statuses.get((item.manufacturer, item.model)) == "error"
+    ]

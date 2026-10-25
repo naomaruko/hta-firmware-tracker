@@ -323,18 +323,39 @@ page" and was fine the next day. A checker that really is broken still
 fails after the retries (costing about a minute extra per run), and the
 retries are logged in the Actions run.
 
-**Check-failure alerts.** A separate message goes out when an item's check
-*newly* fails (`find_new_errors` in `app/changes.py` compares each item's
-status before and after the run): "⚠️ Firmware check failed for *Yamaha
-Rivage PM series*: <error>". It fires once when the failure starts, not
-every morning while it stays broken, and a brand-new item failing its very
-first check counts too. Family members that share one fetch are one
-message with the error stated once. Unlike version alerts it pings one
-person, not `@channel` - the same `SLACK_ALERT_USER_ID` member ID the "daily
-run failed" alert uses. This matters because a single broken scraper
-doesn't fail the workflow (the runner records it and carries on), so the
-workflow-level alert would never fire for it. Not covered: a failed Vercel
-deploy, and a failure that is already present the first time this runs.
+**Check-failure alerts (a separate channel).** When an item's check *newly*
+fails, a message goes out ("⚠️ Firmware check failed for *Yamaha Rivage PM
+series*: <error>") - and a matching "✅ ... recovered (now V7.20)" when it
+comes back, so a failure alert is never left hanging. Both go to the
+**alerts** channel via `SLACK_ALERTS_WEBHOOK_URL`; firmware-update alerts keep
+going to the main channel via `SLACK_WEBHOOK_URL`. If the alerts secret is
+unset, failures and recoveries fall back to the main webhook rather than
+disappearing. Details:
+
+- **Once per incident.** `find_new_errors` / `find_recoveries` in
+  `app/changes.py` compare each item's status before and after the run, so a
+  failure alerts when it starts and "recovers" when it ends - not every morning
+  in between. A failure that clears on a retry within one run never alerts and
+  so never "recovers".
+- **Families.** Members that share one fetch are one message, with the error
+  stated once.
+- **Who's pinged.** Failures ping one person (`SLACK_ALERT_USER_ID`), not
+  `@channel`. Recoveries ping no one.
+- **Why it's needed.** A single broken scraper doesn't fail the workflow (the
+  runner records it and carries on), so the workflow-level alert never fires
+  for it. That alert - "daily run failed", `scripts/notify_run_failed.sh` -
+  also goes to the alerts channel.
+- **What the failure says.** When a page loads but the version isn't on it,
+  the message now includes what the page actually was - `(HTTP 200, title
+  "...", starts "...")`, built by `describe_page` in `app/checkers/base.py` -
+  so a bot-protection page or redesign is recognisable from Slack alone. This
+  covers the Allen & Heath, Dante, d&b, Shure and Yamaha checkers; DiGiCo and
+  SSL read a JSON API, so there's no page to describe. That page text comes
+  from a third-party site, so it's capped, escaped for Slack (a page can't
+  smuggle in an `@channel`), and the static dashboard build has HTML
+  autoescaping on for the same reason.
+
+Not covered: a failed Vercel deploy.
 
 Reads the webhook URL from the `SLACK_WEBHOOK_URL` repository secret (GitHub
 → Settings → Secrets and variables → Actions), passed to the workflow step
@@ -344,18 +365,28 @@ output automatically). Missing the secret, or the POST itself failing,
 never breaks the daily commit - `notify_updates()` in `app/slack.py`
 degrades to a no-op (logged, not raised) in either case.
 
-**Testing Slack (new webhook, new recipient).** GitHub → Actions → "Daily
-firmware check" → Run workflow → tick `slack_test`. That runs only
-`scripts/slack_test.py` - no firmware checks, no commit - and posts one
-clearly-labelled TEST message (no `@channel`) using the real
-`SLACK_WEBHOOK_URL` and `SLACK_ALERT_USER_ID`, mentioning the alert
-recipient so you can see exactly who real failure alerts will ping. The run
-goes red if Slack rejects it, with Slack's reason in the log (e.g.
-`no_service` = webhook revoked, `channel_not_found`). Locally:
-`SLACK_WEBHOOK_URL=... SLACK_ALERT_USER_ID=U01ABCDE2F python3 scripts/slack_test.py`.
-A webhook posts to the one channel picked when it was created, and member
-IDs belong to a workspace - so moving to a different workspace means
-replacing *both* secrets.
+**Testing Slack (new webhook, new recipient).** GitHub -> Actions -> "Daily
+firmware check" -> Run workflow -> tick `slack_test`. That skips the firmware
+checks and the commit and posts, with the real secrets, clearly-labelled TEST
+messages (never `@channel`):
+
+- to the **updates** channel (`SLACK_WEBHOOK_URL`): a connection check;
+- to the **alerts** channel (`SLACK_ALERTS_WEBHOOK_URL`): a sample *failure*
+  alert and a sample *recovered* message about a fake "TEST Sample item", built
+  by the same code real alerts use, so they look exactly like the real thing -
+  that's how you trigger a "test failure" without breaking anything;
+- also to the alerts channel: a sample "daily run failed" alert, through the
+  same `scripts/notify_run_failed.sh` the real failure path uses.
+
+Each mentions the alert recipient (`SLACK_ALERT_USER_ID`) so you can see who
+real failures will ping. The run goes red if Slack rejects any of it, with
+Slack's reason in the log (e.g. `no_service` = webhook revoked,
+`channel_not_found`), and the log says if `SLACK_ALERTS_WEBHOOK_URL` is unset
+(failures then use the main channel). Locally:
+`SLACK_WEBHOOK_URL=... SLACK_ALERTS_WEBHOOK_URL=... SLACK_ALERT_USER_ID=U01ABCDE2F python3 scripts/slack_test.py`.
+A webhook posts to the one channel picked when it was created, and member IDs
+belong to a workspace - so moving to a different workspace means replacing
+*all three* secrets.
 
 ### Local automatic checking
 
