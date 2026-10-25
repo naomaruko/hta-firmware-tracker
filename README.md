@@ -388,6 +388,24 @@ A webhook posts to the one channel picked when it was created, and member IDs
 belong to a workspace - so moving to a different workspace means replacing
 *all three* secrets.
 
+### Secrets
+
+Three GitHub Actions secrets (repo Settings -> Secrets and variables ->
+Actions), all for Slack. Their values are never in the repo and GitHub won't
+show them again once saved - to change one, save a new value over it. Vercel
+needs none, and `GITHUB_TOKEN` is supplied by GitHub automatically.
+
+| Secret | What it is | What uses it | If it's unset |
+|---|---|---|---|
+| `SLACK_WEBHOOK_URL` | Incoming-webhook URL for the main channel (#firmware-tracker) | Firmware-update alerts (`@channel`) | No update alerts are sent (the run still succeeds); failures with no alerts secret also lose their fallback |
+| `SLACK_ALERTS_WEBHOOK_URL` | Incoming-webhook URL for the private alerts channel | Check-failure alerts, "recovered" messages, and the "daily run failed" alert | Those fall back to `SLACK_WEBHOOK_URL`, so they still arrive, just in the main channel |
+| `SLACK_ALERT_USER_ID` | Slack member ID (like `U01ABCDE2F`) of the one person pinged on failures | The mention on failure alerts, the "daily run failed" alert, and test messages | The same messages post with no mention |
+
+A webhook always posts to the one channel picked when it was created, so
+sending something elsewhere means a new webhook and a new secret value. Member
+IDs belong to a workspace. Whether the secrets are working is checked by the
+manual `slack_test` run (see above), not by reading them.
+
 ### Local automatic checking
 
 If you run this locally instead of relying on the deployed site, the

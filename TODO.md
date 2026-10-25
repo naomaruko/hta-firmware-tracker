@@ -11,9 +11,11 @@ exists:
 
 1. Repo Settings -> General -> Danger Zone -> Transfer ownership. Keep the
    name `hta-firmware-tracker`, and avoid ~6 AM Pacific (the daily run).
-2. Re-enter the two secrets under Settings -> Secrets and variables ->
-   Actions: `SLACK_WEBHOOK_URL` and `SLACK_ALERT_USER_ID`. It isn't confirmed
-   that repo secrets survive a transfer, so don't assume they did.
+2. Re-enter the three secrets under Settings -> Secrets and variables ->
+   Actions: `SLACK_WEBHOOK_URL`, `SLACK_ALERTS_WEBHOOK_URL` and
+   `SLACK_ALERT_USER_ID` (what each does is in the README's "Secrets"
+   table). It isn't confirmed that repo secrets survive a transfer, so don't
+   assume they did.
 3. Check the Actions tab: workflows enabled and allowed by the org, workflow
    permissions allow writing, and no branch protection on `main` that
    blocks the bot's daily commit (a blocked push shows up as a "daily run
