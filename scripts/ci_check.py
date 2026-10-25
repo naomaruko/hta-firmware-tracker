@@ -7,6 +7,7 @@ and writes the updated state back to that JSON file for the workflow to
 commit. Local interactive use (start.command / app.main) never runs this and
 is unaffected.
 """
+import logging
 import os
 import sys
 from pathlib import Path
@@ -25,6 +26,12 @@ JSON_PATH = Path(__file__).resolve().parent.parent / "data" / "equipment.json"
 
 
 def main():
+    # Show this app's own log lines (retries, version changes) in the Actions
+    # log - without this they're silently dropped. Other libraries stay at
+    # WARNING so their chatter doesn't bury them.
+    logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
+    logging.getLogger("firmware_tracker").setLevel(logging.INFO)
+
     Base.metadata.create_all(bind=engine)
     run_light_migrations()
     seed()

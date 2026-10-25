@@ -1,6 +1,7 @@
 """Runs checkers against equipment rows and persists results."""
 import datetime as dt
 import logging
+import time
 from collections import defaultdict
 
 from sqlalchemy.orm import Session
@@ -21,6 +22,17 @@ logger = logging.getLogger("firmware_tracker.runner")
 # actually changing again) does, since that's the only thing that sets
 # last_changed_at.
 UPDATE_HIGHLIGHT_WINDOW = dt.timedelta(days=30)
+
+# A failed check gets this many more attempts, after a pause, before it
+# counts as failed (and so before it can show "Check failed" or alert
+# anyone). Most failures are momentary - a bot-protection page, a
+# half-rendered page, a slow response - and a minute later the same fetch
+# works; the dLive scraper failed exactly that way once and was fine the
+# next day. Only the items that failed are retried, and only the final
+# outcome is recorded, so a blip that clears on retry leaves no trace. A
+# genuinely broken checker costs ~1 extra minute per run, and still fails.
+RETRY_ATTEMPTS = 2
+RETRY_DELAY_SECONDS = 30
 
 
 def _apply_platforms(item: Equipment, result, now):
@@ -120,6 +132,36 @@ def _apply_result(db: Session, item: Equipment, result):
     item.release_date = result.release_date
 
 
+def _check_module(mod, items):
+    """Runs mod.check_all(items), retrying just the failures (see
+    RETRY_ATTEMPTS). Returns (results, crash): results is {item.id:
+    CheckResult} from the best attempt per item; crash is the exception from
+    the last attempt if the module raised on it (only meaningful for items
+    that never got a result)."""
+    results = {}
+    crash = None
+    pending = items
+    for attempt in range(1 + RETRY_ATTEMPTS):
+        if attempt:
+            logger.info(
+                "Retrying %d failed item(s) from %s in %ds (attempt %d of %d)",
+                len(pending), mod.__name__, RETRY_DELAY_SECONDS, attempt + 1, 1 + RETRY_ATTEMPTS,
+            )
+            time.sleep(RETRY_DELAY_SECONDS)
+        try:
+            got = mod.check_all(pending)
+        except Exception as e:  # noqa: BLE001
+            logger.exception("Checker module %s raised", mod.__name__)
+            crash = e
+            continue
+        crash = None
+        results.update(got)
+        pending = [i for i in pending if not (got.get(i.id) and got[i.id].success)]
+        if not pending:
+            break
+    return results, crash
+
+
 def check_equipment(db: Session, equipment_items):
     """Run checkers for the given list of Equipment rows."""
     if not equipment_items:
@@ -136,23 +178,12 @@ def check_equipment(db: Session, equipment_items):
 
     checked = 0
     for mod, items in grouped.items():
-        try:
-            results = mod.check_all(items)
-        except Exception as e:  # noqa: BLE001
-            logger.exception("Checker module %s raised", mod.__name__)
-            results = {i.id: None for i in items}
-            for item in items:
-                item.status = "error"
-                item.last_error = f"Checker crashed: {e}"
-                item.last_checked_at = dt.datetime.utcnow()
-                checked += 1
-            continue
-
+        results, crash = _check_module(mod, items)
         for item in items:
             result = results.get(item.id)
             if result is None:
                 item.status = "error"
-                item.last_error = "Checker returned no result"
+                item.last_error = f"Checker crashed: {crash}" if crash else "Checker returned no result"
                 item.last_checked_at = dt.datetime.utcnow()
             else:
                 _apply_result(db, item, result)

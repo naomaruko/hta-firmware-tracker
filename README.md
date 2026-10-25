@@ -312,6 +312,17 @@ never disagree about what counts as one family. A genuinely unrelated
 update detected the same day (different `checker_key`) always gets its own
 separate message, `@channel` and all - never bundled into someone else's.
 
+**Retries before anything counts as failed.** A failed check is retried up
+to twice more, 30 seconds apart (`RETRY_ATTEMPTS` / `RETRY_DELAY_SECONDS` in
+`app/runner.py`), and only the items that failed are re-sent to their
+checker. Only the final outcome is recorded, so a momentary problem - a
+bot-protection page, a half-rendered page - that clears on retry never
+shows "Check failed" and never reaches Slack. This was added after the
+Allen & Heath dLive check failed once with "Version pattern not found on
+page" and was fine the next day. A checker that really is broken still
+fails after the retries (costing about a minute extra per run), and the
+retries are logged in the Actions run.
+
 **Check-failure alerts.** A separate message goes out when an item's check
 *newly* fails (`find_new_errors` in `app/changes.py` compares each item's
 status before and after the run): "⚠️ Firmware check failed for *Yamaha
