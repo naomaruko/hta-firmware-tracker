@@ -223,7 +223,7 @@
     "previous_version": "V22",
     "release_date": "Jun 2026",
     "platforms": null,
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-11-03T13:25:39.535212",
     "last_changed_at": "2026-11-03T13:25:39.535212",
     "last_error": null
@@ -240,7 +240,7 @@
     "previous_version": "V22",
     "release_date": "Jun 2026",
     "platforms": null,
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-11-03T13:25:39.535158",
     "last_changed_at": "2026-11-03T13:25:39.535158",
     "last_error": null
@@ -257,7 +257,7 @@
     "previous_version": "V22",
     "release_date": "Jun 2026",
     "platforms": null,
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-11-03T13:25:39.535099",
     "last_changed_at": "2026-11-03T13:25:39.535099",
     "last_error": null
@@ -274,7 +274,7 @@
     "previous_version": "V22",
     "release_date": "Jun 2026",
     "platforms": null,
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-11-03T13:25:39.534851",
     "last_changed_at": "2026-11-03T13:25:39.534851",
     "last_error": null
@@ -291,7 +291,7 @@
     "previous_version": "V22",
     "release_date": "Jun 2026",
     "platforms": null,
-    "status": "update_detected",
+    "status": "ok",
     "last_checked_at": "2026-11-03T13:25:39.535383",
     "last_changed_at": "2026-11-03T13:25:39.535383",
     "last_error": null
