@@ -12,9 +12,9 @@ from ever disagreeing about what counts as "the same family."
 
 Sharing a source does not guarantee sharing a version: a source can publish
 a different build for some members (DiGiCo's v2242.4 for the Q1/Q2 consoles
-only). A family is therefore one row/one message only while every member
-reports the same version; when they differ each shows separately, and it
-re-forms once they match again.
+only). So within a family, members on the same version collapse together (one
+row, one Slack message) and members on a different version form their own -
+recomputed every build, so it's one row again once they all match.
 """
 # checker_key -> a human-readable name for the family, shown instead of
 # listing every model. Only worth naming here for keys that actually cover

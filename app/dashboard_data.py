@@ -4,10 +4,12 @@ route and the static-site build script (scripts/build_static.py) so the two
 can never drift apart - there's exactly one place this grouping/sorting logic
 lives.
 """
+import os
+import re
 import types
 from collections import defaultdict
 
-from app.families import FAMILY_CATEGORIES, FAMILY_FORCE, FAMILY_NO_EXPAND, family_label
+from app.families import FAMILY_CATEGORIES, FAMILY_FORCE, FAMILY_NAMES, FAMILY_NO_EXPAND, family_label
 
 # Explicit row order within a manufacturer's section, by the product code
 # before " - " in the model name; anything not listed keeps its default
@@ -102,21 +104,92 @@ def _plain_row(item, category):
     return row
 
 
+def _version_groups(members):
+    """Splits a family's members into groups that currently share a version,
+    in first-seen order. If there's only one version among them (the normal
+    case), that's one group - and a member with no version yet (a newly added
+    item, not yet checked) rides along with it. If there are several, members
+    with no version can't be placed anywhere, so each stands alone."""
+    versions = list(dict.fromkeys(m.current_version for m in members if m.current_version))
+    if len(versions) <= 1:
+        return [members]
+    groups = {v: [] for v in versions}
+    unchecked = []
+    for m in members:
+        (groups[m.current_version] if m.current_version else unchecked).append(m)
+    return list(groups.values()) + [[m] for m in unchecked]
+
+
+def _natural(text):
+    return [int(p) if p.isdigit() else p.lower() for p in re.split(r"(\d+)", text)]
+
+
+def _subset_label(key, models):
+    """Name for part of a family that has split from the rest - the family
+    name alone would wrongly imply the whole line, and two rows with the same
+    name would look like a duplicate. "Quantum series (112, 225, 225DS)": the
+    models' shared leading words are dropped so the list stays short. A family
+    whose name already spells out its members (FAMILY_NO_EXPAND, e.g.
+    "D25/D40/D90") just lists the subset the same way ("D40/D90")."""
+    models = sorted(models, key=_natural)
+    if key in FAMILY_NO_EXPAND:
+        return "/".join(models)
+    name = FAMILY_NAMES.get(key)
+    if not name:
+        return family_label(key, models)
+    prefix = os.path.commonprefix(models)
+    prefix = prefix[: prefix.rfind(" ") + 1]  # whole words only
+    return f"{name} ({', '.join(m[len(prefix):] for m in models)})"
+
+
+def _family_row(key, members, label):
+    """One collapsed pseudo-item standing in for `members` (see
+    _consolidate_families for what it carries and why)."""
+    categories = {m.category for m in members}
+    shared_category = members[0].category if len(categories) == 1 else FAMILY_CATEGORIES.get(key)
+    first = members[0]
+    # Most urgent status wins; among equals prefer a member that has a
+    # version, so an unchecked newcomer doesn't blank the row.
+    representative = min(members, key=lambda m: (_STATUS_PRIORITY.get(m.status, 3), m.current_version is None))
+    failing = [m for m in members if m.status == "error"]
+    return types.SimpleNamespace(
+        id=first.id,
+        manufacturer=first.manufacturer,
+        model=label,
+        category=shared_category,
+        checker_key=key,
+        source_url=representative.source_url,
+        current_version=representative.current_version,
+        previous_version=representative.previous_version,
+        release_date=representative.release_date,
+        status=representative.status,
+        last_checked_at=representative.last_checked_at,
+        last_changed_at=representative.last_changed_at,
+        last_error=_family_error(members, failing),
+        notes=None,
+        platforms=None,
+        is_family=True,
+        family_models=[m.model for m in members],
+        expandable=key not in FAMILY_NO_EXPAND,
+    )
+
+
 def _consolidate_families(items):
-    """Collapses items sharing a checker_key (see app/families.py) into one
-    pseudo-item per family, for display only - but only while every member
-    reports the same version. A family is "genuinely the same platform", which
-    is what makes one row honest in the normal case (a shared source gives
-    every member the identical result), but a source can publish different
-    versions for different members: DiGiCo shipped v2242.4 for the Q1/Q2
-    consoles only, while the rest of the Quantum line stayed on v2242. The
-    moment members disagree the family stops being one row and each member
-    shows separately, with its own version/date/status (in FAMILY_CATEGORIES'
-    subsection if the family has one, otherwise its own category), and it
-    re-forms automatically once they match again. Members with no version yet
-    (a newly added item not yet checked) don't count as disagreeing. Items
-    that merely happen to report matching versions are still never grouped
-    (no shared checker_key means no consolidation, full stop).
+    """Collapses items sharing a checker_key (see app/families.py) into
+    pseudo-items, for display only. A family is "genuinely the same platform"
+    - which is what makes one row honest in the normal case, since a shared
+    source gives every member the identical result - but a source can publish
+    different versions for different members: DiGiCo shipped v2242.4 for the
+    Q112/Q225/Q225DS only, while the rest of the Quantum line stayed on
+    v2242. So within a family, members that currently share a version
+    collapse together and members on a different version don't: two
+    collapsed rows for that Quantum case ("Quantum series (112, 225, 225DS)"
+    and "Quantum series (5, 7, 326, 338)", see _subset_label), a plain row
+    for a lone member on its own version. It's all recomputed from the
+    current versions every build, so the family is back to one row the moment
+    everyone matches again. Items that merely happen to report matching
+    versions are still never grouped (no shared checker_key means no
+    consolidation, full stop).
     A checker_key with exactly one current item renders as a plain row
     (its own model name, no chevron) unless it's in FAMILY_FORCE (see
     app/families.py) - a product line tracked today through only one
@@ -141,7 +214,8 @@ def _consolidate_families(items):
     family, rather than attributing a multi-component system to one of its
     parts arbitrarily - or None if that's not set either, which renders
     with no sub-heading at all, same as how a manufacturer with no
-    sub-grouping already renders.
+    sub-grouping already renders. A lone member split off from such a family
+    stays in that same dedicated subsection.
     """
     by_key = defaultdict(list)
     for item in items:
@@ -156,39 +230,15 @@ def _consolidate_families(items):
             if key in seen_keys:
                 continue
             seen_keys.add(key)
-            members = by_key[key]
-            if len({m.current_version for m in members if m.current_version}) > 1:
-                result.extend(_plain_row(m, FAMILY_CATEGORIES.get(key, m.category)) for m in members)
-                continue
-            categories = {m.category for m in members}
-            shared_category = members[0].category if len(categories) == 1 else FAMILY_CATEGORIES.get(key)
-            first = members[0]
-            # Most urgent status wins; among equals prefer a member that has a
-            # version, so an unchecked newcomer doesn't blank the row.
-            representative = min(members, key=lambda m: (_STATUS_PRIORITY.get(m.status, 3), m.current_version is None))
-            failing = [m for m in members if m.status == "error"]
-            result.append(
-                types.SimpleNamespace(
-                    id=first.id,
-                    manufacturer=first.manufacturer,
-                    model=family_label(key, [m.model for m in members]),
-                    category=shared_category,
-                    checker_key=key,
-                    source_url=representative.source_url,
-                    current_version=representative.current_version,
-                    previous_version=representative.previous_version,
-                    release_date=representative.release_date,
-                    status=representative.status,
-                    last_checked_at=representative.last_checked_at,
-                    last_changed_at=representative.last_changed_at,
-                    last_error=_family_error(members, failing),
-                    notes=None,
-                    platforms=None,
-                    is_family=True,
-                    family_models=[m.model for m in members],
-                    expandable=key not in FAMILY_NO_EXPAND,
-                )
-            )
+            groups = _version_groups(by_key[key])
+            whole = len(groups) == 1
+            for group in groups:
+                if len(group) == 1 and not (whole and key in FAMILY_FORCE):
+                    result.append(_plain_row(group[0], FAMILY_CATEGORIES.get(key, group[0].category)))
+                else:
+                    models = [m.model for m in group]
+                    label = family_label(key, models) if whole else _subset_label(key, models)
+                    result.append(_family_row(key, group, label))
         else:
             item.is_family = False
             result.append(item)

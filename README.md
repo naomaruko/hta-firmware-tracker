@@ -179,25 +179,32 @@ name that wouldn't also fit some other d&b product - skips the
 chevron/expand entirely on both desktop and phone, in `FAMILY_NO_EXPAND`
 (`app/families.py`): there's nothing left for it to reveal.
 
-**A family is one row only while every member agrees.** Sharing a source
-doesn't guarantee sharing a version - DiGiCo's v2242.4 shipped for three
-Quantum models while the rest stayed on v2242. So the moment members report
-different versions, `_consolidate_families` stops treating them as one: each
-member shows as its own row with its own version, release date and status
-(under the family's subsection if it has one, like Rivage PM; otherwise its
-own category), and it re-forms into one row as soon as they match again. A
-member that hasn't been checked yet (no version) doesn't count as
-disagreeing. Slack follows suit: one update message per distinct new
-version, and when only part of a family moved it names the models ("DiGiCo
-Quantum series (Quantum 112, Quantum 225) -> V2242.4"). For this to matter a
-checker has to be able to tell members apart, which only some sources allow:
-DiGiCo (per-model download buttons) and the Yamaha Rio pair (two separate
-rows on Yamaha's page, each read by model name) do. The rest publish one
-version for the whole family by their own documentation - Yamaha's
-compatibility chart for Rivage PM, one combined release note for d&b's amps,
-one firmware download for dLive, one SOLSA article / firmware bundle for SSL
-- so there's nothing to split; Shure isn't a family at all (one row, one
-check per product).
+**Members that share a version stay together; ones that don't, don't.**
+Sharing a source doesn't guarantee sharing a version - DiGiCo's v2242.4
+shipped for three Quantum models while the rest stayed on v2242. So
+`_consolidate_families` groups a family's members by their *current version*:
+each group of two or more is one collapsed row, and a lone member on its own
+version is a plain row. In that Quantum case you get two collapsed rows -
+"Quantum series (112, 225, 225DS)" on V2242.4 and "Quantum series (5, 7, 326,
+338)" on V2242 - each with its own pills, version, release date and status.
+The models are in the name (the shared leading words dropped) because two rows
+both called "Quantum series" would look like a duplicate; for a family whose
+name already lists its members it's just the subset ("D40/D90"). It's all
+recomputed from the current versions on every build, so it's back to one row
+the moment everyone matches. A member with no version yet (newly added, not
+yet checked) rides along with the family when there's only one version, and
+stands alone when there are several. A lone member split off a family with its
+own subsection (Rivage PM) stays in that subsection. Slack follows the same
+idea: one update message per distinct new version, naming the models when only
+part of a family moved ("DiGiCo Quantum series (Quantum 112, Quantum 225) ->
+V2242.4"). For this to matter a checker has to be able to tell members apart,
+which only some sources allow: DiGiCo (per-model download buttons) and the
+Yamaha Rio pair (two separate rows on Yamaha's page, each read by model name)
+do. The rest publish one version for the whole family by their own
+documentation - Yamaha's compatibility chart for Rivage PM, one combined
+release note for d&b's amps, one firmware download for dLive, one SOLSA
+article / firmware bundle for SSL - so there's nothing to split; Shure isn't a
+family at all (one row, one check per product).
 
 This is deliberately **not** based on matching version-number strings -
 two unrelated products could coincidentally share a version number (Shure's
