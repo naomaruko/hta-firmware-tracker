@@ -92,7 +92,7 @@ checkers — see below.)
 
 | Manufacturer | Method | Notes |
 |---|---|---|
-| DiGiCo | ✅ Scraped | `support.digico.biz`'s Zendesk help-center JSON API |
+| DiGiCo | ✅ Scraped | `support.digico.biz`'s Zendesk help-center JSON API. Console software (Quantum, SD) is read per model from the article's download buttons, not its title - see below |
 | Yamaha | ✅ Scraped | Each product's Downloads page on `usa.yamaha.com` (a `#firmware-table` with a genuine "Last Update" date per file, not just a version) |
 | Solid State Logic | ✅ Scraped | `support.solidstatelogic.com`'s Zendesk API too; tracked via SOLSA (versions 1:1 with SSL Live console software) and the Network I/O firmware bundle |
 | Allen & Heath | ✅ Scraped (headless) | Version: `www.allen-heath.com` returns HTTP 403 to plain requests (bot protection) — works fine in a real headless browser. Release date: a separate evergreen article on `support.allen-heath.com` (a Zendesk help centre, read via its public JSON API — even a real browser can't get past that subdomain's own Cloudflare challenge page), month/year only, no day |
@@ -119,9 +119,21 @@ platform's date matches the headline version.
 
 **Article-based sources (DiGiCo, SSL).** These manufacturers announce
 firmware in a help-centre *article* rather than on a dedicated firmware page,
-so a new release shows up as a new article/title/version and is handled like
-any other update - same title/version-based detection as every other
-checker. The DMI-Dante64@96 card is tracked as two rows (Zynq HC and the
+so a new release normally shows up as a new article/title/version and is
+handled like any other update. DiGiCo's console software is the exception:
+it keeps one article per major release ("V22 Quantum Console Software") and
+edits it in place as point releases ship - v2242 in June, then v2242.4 in
+October for only the Q112/Q225 consoles - without changing the title or
+creation date, which are all a title-based check can see. That's how the
+tracker once showed Quantum at "V22" while v2242.4 was out. So for the
+Quantum and SD keys, each tracked model is matched to its own download
+button in the article body (`<span class="download-link" data-link=".../
+Quantum1_V2242-4x_Update_Package.zip">Quantum 112</span>`): the version comes
+from the file name ("V2242-4x" -> V2242.4) and the release month from the
+upload path (`/2026/10/` -> Oct 2026). If the buttons disappear or a model
+isn't listed, that model shows "Check failed" rather than quietly falling
+back to the title. Not tracked: Q225DS (a separate package from the plain
+Q225) and the Quantum 852. The DMI-Dante64@96 card is tracked as two rows (Zynq HC and the
 older Summit HC), since they're separate hardware variants with their own
 firmware lines - one shared row used to flip between whichever line
 published most recently.
@@ -151,7 +163,7 @@ point the relevant `app/seed.py` rows at it with `"scrape"` + a `checker_key`.
 Some rows track the same underlying platform from one firmware source -
 DiGiCo's six Quantum consoles, Allen & Heath's four dLive surfaces/
 MixRacks, Yamaha's two Rio-D2 I/O racks, Yamaha's eight Rivage PM
-components, d&b's three D-series amps - and always report the identical
+components, d&b's three D-series amps - and normally report the identical
 version because they're assigned the same `CheckResult` from one
 `check_all()` call. Those collapse into a single dashboard row (e.g.
 "Quantum series", under DiGiCo's own section heading) instead of six
@@ -167,6 +179,26 @@ out every member - d&b's amp group is named "D25/D40/D90", not a generic
 name that wouldn't also fit some other d&b product - skips the
 chevron/expand entirely on both desktop and phone, in `FAMILY_NO_EXPAND`
 (`app/families.py`): there's nothing left for it to reveal.
+
+**A family is one row only while every member agrees.** Sharing a source
+doesn't guarantee sharing a version - DiGiCo's v2242.4 shipped for three
+Quantum models while the rest stayed on v2242. So the moment members report
+different versions, `_consolidate_families` stops treating them as one: each
+member shows as its own row with its own version, release date and status
+(under the family's subsection if it has one, like Rivage PM; otherwise its
+own category), and it re-forms into one row as soon as they match again. A
+member that hasn't been checked yet (no version) doesn't count as
+disagreeing. Slack follows suit: one update message per distinct new
+version, and when only part of a family moved it names the models ("DiGiCo
+Quantum series (Quantum 112, Quantum 225) -> V2242.4"). For this to matter a
+checker has to be able to tell members apart, which only some sources allow:
+DiGiCo (per-model download buttons) and the Yamaha Rio pair (two separate
+rows on Yamaha's page, each read by model name) do. The rest publish one
+version for the whole family by their own documentation - Yamaha's
+compatibility chart for Rivage PM, one combined release note for d&b's amps,
+one firmware download for dLive, one SOLSA article / firmware bundle for SSL
+- so there's nothing to split; Shure isn't a family at all (one row, one
+check per product).
 
 This is deliberately **not** based on matching version-number strings -
 two unrelated products could coincidentally share a version number (Shure's
@@ -300,7 +332,7 @@ after its 1-month window, doesn't trigger a repeat message; only an actual
 change does.
 
 Items are grouped by family before posting - e.g. all 6 DiGiCo Quantum
-consoles updating together becomes one message ("New firmware available
+consoles updating together to the same version becomes one message ("New firmware available
 for *DiGiCo Quantum series* → V23"), not six. Grouped by `checker_key`
 (items that share one get checked together and always report the same new
 version, by construction - a more reliable "these are really the same
@@ -453,6 +485,7 @@ app/
 scripts/
   ci_check.py        Entry point for the daily GitHub Actions run
   build_static.py    Renders the dashboard to public/ for Vercel
+  make_pdf.py        README.md / TODO.md -> the committed README.pdf / TODO.pdf
 data/tracker.db      SQLite database (created on first run, local dev only)
 data/equipment.json  Git-committed source of truth for the deployed site
 ```

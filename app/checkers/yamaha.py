@@ -28,8 +28,11 @@ itself, so those stay bundled under the rivage_pm slug. Rio3224-D2 and
 Rio1608-D2 are on their own separate firmware track entirely from the
 console (shown as a distinct column in that chart) - but HTA has confirmed
 the two of them ship one identical release between each other (same
-version, same changelog, every time), so they're bundled together under
-their own rio_d2 slug rather than each getting a separate key.
+version, same changelog, every time), so they share their own rio_d2 slug
+rather than each getting a separate key. But Yamaha still lists them as two
+separate rows, so each is read from its own row (PER_MODEL_KEYS below) -
+if one ever gets a version the other doesn't, they report separately
+instead of one silently standing in for both.
 """
 import re
 from urllib.parse import urljoin
@@ -50,9 +53,8 @@ PAGES = {
 # after the model name so e.g. "HY144-D-SRC Firmware" can't accidentally
 # match the "HY144-D Firmware" row (a different, untracked product one
 # prefix short of it), and "Rio1608-D2 Firmware" can't match "Rio1608-D3".
-# rio_d2 matches whichever of the two model names' rows comes first on the
-# page - Rio1608-D2 and Rio3224-D2 ship one identical release (confirmed by
-# HTA), so either row carries the version that applies to both.
+# rio_d2's pattern here only decides which page to read; each of its models
+# is matched to its own row by name (see PER_MODEL_KEYS).
 ROWS = {
     "yamaha:rivage_pm": ("rivage_pm", re.compile(r"^RIVAGE PM Firmware\b")),
     "yamaha:dm7": ("dm7", re.compile(r"^DM7 Firmware\b")),
@@ -60,6 +62,10 @@ ROWS = {
     "yamaha:hy144dsrc": ("rivage_pm", re.compile(r"^HY144-D-SRC Firmware\b")),
     "yamaha:rio_d2": ("r_series_adda_2", re.compile(r"^Rio(?:1608|3224)-D2 Firmware\b")),
 }
+
+# Keys whose members each have their own row on the page, matched by model
+# name instead of sharing one result.
+PER_MODEL_KEYS = {"yamaha:rio_d2"}
 
 VERSION_RE = re.compile(r"V([\d]+(?:\.[\d]+)*)", re.IGNORECASE)
 
@@ -101,33 +107,35 @@ def check_all(equipment_items):
         except Exception as e:  # noqa: BLE001
             page_errors[page_key] = f"Fetch failed: {e}"
 
-    resolved = {}
-    for key in needed_keys:
-        if key not in ROWS:
-            continue
-        page_key, pattern = ROWS[key]
+    def resolve(page_key, pattern):
         if page_key in page_errors:
-            resolved[key] = CheckResult(None, False, page_errors[page_key])
-            continue
+            return CheckResult(None, False, page_errors[page_key])
         rows = page_rows.get(page_key, [])
         match = next(((n, d, h) for n, d, h in rows if pattern.search(n)), None)
         if not match:
-            resolved[key] = CheckResult(
+            return CheckResult(
                 None, False, f"No row matching {pattern.pattern!r} on {PAGES[page_key]} ({page_info[page_key]})"
             )
-            continue
         name, date, href = match
         vm = VERSION_RE.search(name)
         if not vm:
-            resolved[key] = CheckResult(None, False, f"Could not find version in row text: {name!r}")
-            continue
-        resolved[key] = CheckResult(
-            vm.group(0), True, source_url=href, release_date=iso_to_readable_date(date)
-        )
+            return CheckResult(None, False, f"Could not find version in row text: {name!r}")
+        return CheckResult(vm.group(0), True, source_url=href, release_date=iso_to_readable_date(date))
+
+    resolved = {}
+    for key in needed_keys:
+        if key in ROWS and key not in PER_MODEL_KEYS:
+            page_key, pattern = ROWS[key]
+            resolved[key] = resolve(page_key, pattern)
 
     results = {}
     for item in equipment_items:
-        results[item.id] = resolved.get(
-            item.checker_key, CheckResult(None, False, "Unknown Yamaha checker key")
-        )
+        if item.checker_key in PER_MODEL_KEYS:
+            page_key = ROWS[item.checker_key][0]
+            pattern = re.compile(rf"^{re.escape(item.model)} Firmware\b")
+            results[item.id] = resolve(page_key, pattern)
+        else:
+            results[item.id] = resolved.get(
+                item.checker_key, CheckResult(None, False, "Unknown Yamaha checker key")
+            )
     return results

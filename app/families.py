@@ -1,7 +1,6 @@
-"""Firmware families: groups of equipment that share one checker_key, and
-therefore are always checked together and always report the identical
-version from one source - as opposed to items that just happen to report
-matching version numbers by coincidence, which are never grouped.
+"""Firmware families: groups of equipment that share one checker_key - one
+firmware source, checked together - as opposed to items that just happen to
+report matching version numbers by coincidence, which are never grouped.
 
 checker_key is assigned per actual firmware source (see app/seed.py), not
 per observed version match, so this is a reliable "these are really the
@@ -10,8 +9,13 @@ update notifications into one message per family (app/slack.py) and to
 consolidate the dashboard's table/card rows into one row per family
 (app/dashboard_data.py) - sharing this one mapping is what keeps the two
 from ever disagreeing about what counts as "the same family."
-"""
 
+Sharing a source does not guarantee sharing a version: a source can publish
+a different build for some members (DiGiCo's v2242.4 for the Q1/Q2 consoles
+only). A family is therefore one row/one message only while every member
+reports the same version; when they differ each shows separately, and it
+re-forms once they match again.
+"""
 # checker_key -> a human-readable name for the family, shown instead of
 # listing every model. Only worth naming here for keys that actually cover
 # more than one item, or that stand for a whole product family even though

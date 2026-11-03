@@ -23,12 +23,18 @@ def find_changes(items, old_versions, old_platforms):
     for a version with no prior value to compare against (first-ever run, or
     a platform seen for the first time)."""
     changes = []
+    # How many tracked items share each checker_key, so a message can tell
+    # "the whole Quantum line updated" from "two Quantum models did".
+    sizes = {}
+    for item in items:
+        sizes[item.checker_key] = sizes.get(item.checker_key, 0) + 1
     for item in items:
         key = (item.manufacturer, item.model)
         base = {
             "manufacturer": item.manufacturer,
             "model": item.model,
             "checker_key": item.checker_key,
+            "family_size": sizes[item.checker_key] if item.checker_key else 1,
         }
         if item.platforms:
             before = old_platforms.get(key, {})

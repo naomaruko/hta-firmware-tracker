@@ -42,24 +42,31 @@ def _escape(text):
     return str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def _group_changes(changes):
+def _group_changes(changes, split_by_version=False):
     """Groups changes by checker_key, preserving first-seen order (so
     messages post in a stable, deterministic sequence) - items sharing a
-    checker_key were checked together and always carry the same new
-    version, which is what makes collapsing them into one message correct
-    rather than just convenient. Items with no checker_key (shouldn't
-    happen, but not load-bearing to assume) fall
-    back to grouping by (manufacturer, model), i.e. their own singleton
-    group."""
+    checker_key come from one source, which is what makes collapsing them
+    into one message correct rather than just convenient. Items with no
+    checker_key (shouldn't happen, but not load-bearing to assume) fall back
+    to grouping by (manufacturer, model), i.e. their own singleton group.
+
+    split_by_version (firmware-update messages): members of one family can
+    land on different new versions - DiGiCo's v2242.4 shipped for only some
+    Quantum consoles - and one message can only state one version, so each
+    distinct version gets its own message. Per-platform changes (Dante
+    Controller) are exempt: one message deliberately lists every platform's
+    version together. Returns [(checker_key, [changes])]."""
     groups = {}
-    order = []
     for c in changes:
         key = c.get("checker_key") or (c["manufacturer"], c["model"])
-        if key not in groups:
-            groups[key] = []
-            order.append(key)
-        groups[key].append(c)
-    return [(key, groups[key]) for key in order]
+        gkey = (key, c.get("current_version")) if split_by_version and c.get("checker_key") and not c.get("platform") else key
+        groups.setdefault(gkey, (key, []))[1].append(c)
+    return list(groups.values())
+
+
+def _natural(text):
+    """Sort key putting "Quantum 5" before "Quantum 112" (numbers by value)."""
+    return [int(p) if p.isdigit() else p.lower() for p in re.split(r"(\d+)", text)]
 
 
 def _family_label(key, group):
@@ -74,7 +81,14 @@ def _family_label(key, group):
             # stored casing doesn't already read naturally in a sentence).
             manufacturer = group[0]["manufacturer"]
             manufacturer = MANUFACTURER_LABELS.get(manufacturer, manufacturer)
-            return f"{manufacturer} {name}"
+            label = f"{manufacturer} {name}"
+            # Only part of the family changed (e.g. 2 of the 6 Quantum
+            # consoles) - say which, rather than implying the whole line.
+            models = sorted(dict.fromkeys(c["model"] for c in group), key=_natural)
+            size = group[0].get("family_size")
+            if size and len(models) < size:
+                label += f" ({', '.join(models)})"
+            return label
     # Several entries can be the same *item* (one per changed platform), not
     # several items - count distinct models.
     models = list(dict.fromkeys(c["model"] for c in group))
@@ -142,7 +156,7 @@ def notify_updates(changes, webhook_url):
     if not webhook_url:
         logger.info("SLACK_WEBHOOK_URL not set - skipping notification for %d update(s)", len(changes))
         return "skipped (no SLACK_WEBHOOK_URL)"
-    return _post_all(_group_changes(changes), _format_message, webhook_url, "update")
+    return _post_all(_group_changes(changes, split_by_version=True), _format_message, webhook_url, "update")
 
 
 def _mention(alert_user_id):

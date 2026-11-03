@@ -84,13 +84,39 @@ def _family_error(members, failing):
     return "; ".join(f"{', '.join(models)}: {msg}" for msg, models in by_message.items())
 
 
+_ROW_FIELDS = (
+    "id", "manufacturer", "model", "checker_key", "source_url", "notes", "current_version",
+    "previous_version", "release_date", "platforms", "status", "last_checked_at",
+    "last_changed_at", "last_error",
+)
+
+
+def _plain_row(item, category):
+    """A standalone row for one member of a family that has split apart.
+    A copy rather than the item itself, because items from the live app are
+    database rows and setting a column (category) on one could get written
+    back; this is display-only."""
+    row = types.SimpleNamespace(**{f: getattr(item, f, None) for f in _ROW_FIELDS})
+    row.category = category
+    row.is_family = False
+    return row
+
+
 def _consolidate_families(items):
     """Collapses items sharing a checker_key (see app/families.py) into one
-    pseudo-item per family, for display only - a family is "genuinely the
-    same platform, always moves together" by construction (every member
-    gets assigned the identical CheckResult from one check_all() call), not
-    just items that happen to report matching version numbers, which are
-    never grouped (no shared checker_key means no consolidation, full stop).
+    pseudo-item per family, for display only - but only while every member
+    reports the same version. A family is "genuinely the same platform", which
+    is what makes one row honest in the normal case (a shared source gives
+    every member the identical result), but a source can publish different
+    versions for different members: DiGiCo shipped v2242.4 for the Q1/Q2
+    consoles only, while the rest of the Quantum line stayed on v2242. The
+    moment members disagree the family stops being one row and each member
+    shows separately, with its own version/date/status (in FAMILY_CATEGORIES'
+    subsection if the family has one, otherwise its own category), and it
+    re-forms automatically once they match again. Members with no version yet
+    (a newly added item not yet checked) don't count as disagreeing. Items
+    that merely happen to report matching versions are still never grouped
+    (no shared checker_key means no consolidation, full stop).
     A checker_key with exactly one current item renders as a plain row
     (its own model name, no chevron) unless it's in FAMILY_FORCE (see
     app/families.py) - a product line tracked today through only one
@@ -131,10 +157,15 @@ def _consolidate_families(items):
                 continue
             seen_keys.add(key)
             members = by_key[key]
+            if len({m.current_version for m in members if m.current_version}) > 1:
+                result.extend(_plain_row(m, FAMILY_CATEGORIES.get(key, m.category)) for m in members)
+                continue
             categories = {m.category for m in members}
             shared_category = members[0].category if len(categories) == 1 else FAMILY_CATEGORIES.get(key)
             first = members[0]
-            representative = min(members, key=lambda m: _STATUS_PRIORITY.get(m.status, 3))
+            # Most urgent status wins; among equals prefer a member that has a
+            # version, so an unchecked newcomer doesn't blank the row.
+            representative = min(members, key=lambda m: (_STATUS_PRIORITY.get(m.status, 3), m.current_version is None))
             failing = [m for m in members if m.status == "error"]
             result.append(
                 types.SimpleNamespace(

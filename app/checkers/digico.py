@@ -7,8 +7,27 @@ Software" (DiGiCo switched from build-number to marketing-style version
 names, so we can't just pick the numerically highest version). Instead we
 sort articles by creation date (newest first) and take the first title that
 matches each product family.
+
+Console software (Quantum, SD) is the exception to "the title is the version":
+DiGiCo keeps one article per major release (e.g. "V22 Quantum Console
+Software") and edits it in place as point releases ship - v2242 in June, then
+v2242.4 in October for only the Q1/Q2 consoles - without touching the title
+or creation date. The real versions are in the download buttons in the
+article body, one per model, with the version in the file name and the
+upload month in its path:
+
+    <span class="download-link"
+          data-link=".../uploads/2026/10/Quantum1_V2242-4x_Update_Package.zip">Quantum 112</span>
+
+So for those two keys each tracked model is matched to its own button and
+gets its own version and release month. Models in one family can therefore
+differ, which the dashboard and Slack alerts are built to show (a family is
+one row only while every member agrees).
 """
+import datetime as dt
 import re
+
+from bs4 import BeautifulSoup
 
 from app.checkers.base import CheckResult, http_get, iso_to_readable_date
 
@@ -40,6 +59,60 @@ TITLE_VERSION_PATTERNS = {
     "digico:dmidante_summit": DMI_VERSION_RE,
 }
 
+# Keys whose versions are read per model from the article's download buttons
+# rather than from its title (see the module docstring).
+PER_MODEL_KEYS = {"digico:quantum", "digico:sd"}
+
+# ".../uploads/2026/10/Quantum1_V2242-4x_Update_Package.zip" -> year, month,
+# "2242", "4". The trailing letter (x/z) is a build flavour, not part of the
+# version DiGiCo quotes (v2242.4).
+PACKAGE_RE = re.compile(r"/uploads/(\d{4})/(\d{2})/[^/]*?_V(\d+)(?:-(\d+))?[a-z]*_[^/]*\.zip", re.IGNORECASE)
+
+
+def _download_links(article):
+    """[(label, url)] for every download button in an article body."""
+    soup = BeautifulSoup(article.get("body") or "", "lxml")
+    links = []
+    for el in soup.find_all(True):
+        url = el.get("data-link") or (el.get("href") if el.name == "a" else None)
+        if url and url.lower().split("?")[0].endswith(".zip"):
+            links.append((el.get_text(" ", strip=True), url))
+    return links
+
+
+def _label_models(label):
+    """Model names a download button covers: "Quantum 326 & 338" is both
+    "Quantum 326" and "Quantum 338"; "Quantum 225 Dual Screen" is only itself,
+    so it never matches the plain "Quantum 225" model."""
+    parts = [p.strip() for p in label.split("&") if p.strip()]
+    m = re.match(r"^(\D*)\d", parts[0]) if parts else None
+    prefix = m.group(1) if m else ""
+    return {re.sub(r"\s+", " ", (p if i == 0 or not p[:1].isdigit() else prefix + p)).strip().lower() for i, p in enumerate(parts)}
+
+
+def _per_model_result(article, links, model):
+    """The CheckResult for one tracked model, from its own download button."""
+    if article is None:
+        return CheckResult(None, False, "No matching software article found on support.digico.biz")
+    title = article.get("title", "")
+    if not links:
+        return CheckResult(
+            None, False,
+            f"No download links found in {title!r} - has the article layout changed?",
+            source_url=article.get("html_url"),
+        )
+    wanted = re.sub(r"\s+", " ", model).strip().lower()
+    url = next((u for label, u in links if wanted in _label_models(label)), None)
+    if url is None:
+        return CheckResult(None, False, f"{model} isn't listed in {title!r}'s download links", source_url=article.get("html_url"))
+    m = PACKAGE_RE.search(url)
+    if not m:
+        return CheckResult(None, False, f"Couldn't read a version from the download link {url.rsplit('/', 1)[-1]!r}", source_url=article.get("html_url"))
+    year, month, major, minor = m.groups()
+    version = f"V{major}" + (f".{minor}" if minor else "")
+    release = dt.date(int(year), int(month), 1).strftime("%b %Y")
+    return CheckResult(version, True, source_url=article.get("html_url"), release_date=release)
+
 
 def _fetch_articles():
     articles = []
@@ -67,11 +140,14 @@ def check_all(equipment_items):
 
     # Resolve the newest matching article per checker_key once.
     resolved = {}
+    articles_by_key = {}  # per-model keys: (article, its download links)
     for key, patterns in PATTERNS.items():
         match = None
+        found = None
         for a in articles:
             title = a.get("title", "")
             if any(re.search(p, title, re.IGNORECASE) for p in patterns):
+                found = a
                 if key in TITLE_VERSION_PATTERNS:
                     m = TITLE_VERSION_PATTERNS[key].search(title)
                     version = m.group(1) if m else title
@@ -88,9 +164,15 @@ def check_all(equipment_items):
                 )
                 break
         resolved[key] = match
+        if key in PER_MODEL_KEYS:
+            articles_by_key[key] = (found, _download_links(found) if found else [])
 
     results = {}
     for item in equipment_items:
+        if item.checker_key in PER_MODEL_KEYS:
+            article, links = articles_by_key.get(item.checker_key, (None, []))
+            results[item.id] = _per_model_result(article, links, item.model)
+            continue
         match = resolved.get(item.checker_key)
         if match:
             results[item.id] = match
