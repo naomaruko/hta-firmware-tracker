@@ -39,6 +39,7 @@ EQUIPMENT = [
     ("DiGiCo", "Quantum 326", "Consoles", "digico:quantum", DIGICO_QUANTUM_URL, None),
     ("DiGiCo", "Quantum 225", "Consoles", "digico:quantum", DIGICO_QUANTUM_URL, None),
     ("DiGiCo", "Quantum 112", "Consoles", "digico:quantum", DIGICO_QUANTUM_URL, None),
+    ("DiGiCo", "Quantum 225DS", "Consoles", "digico:quantum", DIGICO_QUANTUM_URL, "Dual-screen Q225. Its update package is separate from the plain Q225's (the article says to install the one matching your console)."),
     # Filed under "Consoles" alongside the Quantum family, not its own
     # subsection - still renders as its own "SD series" row with a chevron
     # though (FAMILY_FORCE in app/families.py), since SD10 stands for the

@@ -5,9 +5,9 @@ audio gear, so nobody has to manually check manufacturer sites.
 
 ## What it does
 
-- Tracks 47 pieces of equipment across DiGiCo, Yamaha, Solid State Logic,
+- Tracks 48 pieces of equipment across DiGiCo, Yamaha, Solid State Logic,
   Allen & Heath, Shure, d&b audiotechnik, and Dante/Audinate.
-- **All 47 items are checked automatically** — most by scraping a static
+- **All 48 items are checked automatically** — most by scraping a static
   page, several manufacturers via a real headless browser where the site
   needs JavaScript or blocks plain requests (see
   [How each manufacturer is checked](#how-each-manufacturer-is-checked)).
@@ -26,7 +26,7 @@ audio gear, so nobody has to manually check manufacturer sites.
   to click anything to dismiss it. Installable as a PWA on a phone (Add to
   Home Screen) for a full-screen, app-like view.
 - Items that are genuinely the same underlying platform tracked from one
-  source — e.g. DiGiCo's six Quantum consoles — collapse into a single
+  source — e.g. DiGiCo's seven Quantum consoles — collapse into a single
   family row ("Quantum series", under DiGiCo's own section heading)
   instead of listing near-duplicate rows that always move together. See
   [Firmware families](#firmware-families) for how that grouping is
@@ -132,8 +132,7 @@ Quantum1_V2242-4x_Update_Package.zip">Quantum 112</span>`): the version comes
 from the file name ("V2242-4x" -> V2242.4) and the release month from the
 upload path (`/2026/10/` -> Oct 2026). If the buttons disappear or a model
 isn't listed, that model shows "Check failed" rather than quietly falling
-back to the title. Not tracked: Q225DS (a separate package from the plain
-Q225) and the Quantum 852. The DMI-Dante64@96 card is tracked as two rows (Zynq HC and the
+back to the title. The Q225DS has its own package, separate from the plain Q225's, and is matched to its own button (DiGiCo's "Dual Screen" is treated as "DS"). Not tracked: the Quantum 852. The DMI-Dante64@96 card is tracked as two rows (Zynq HC and the
 older Summit HC), since they're separate hardware variants with their own
 firmware lines - one shared row used to flip between whichever line
 published most recently.
@@ -161,7 +160,7 @@ point the relevant `app/seed.py` rows at it with `"scrape"` + a `checker_key`.
 ## Firmware families
 
 Some rows track the same underlying platform from one firmware source -
-DiGiCo's six Quantum consoles, Allen & Heath's four dLive surfaces/
+DiGiCo's seven Quantum consoles, Allen & Heath's four dLive surfaces/
 MixRacks, Yamaha's two Rio-D2 I/O racks, Yamaha's eight Rivage PM
 components, d&b's three D-series amps - and normally report the identical
 version because they're assigned the same `CheckResult` from one
@@ -170,7 +169,7 @@ version because they're assigned the same `CheckResult` from one
 near-identical ones. On desktop/tablet every field - status, version,
 release date, previous version, last checked, source - still shows
 directly in that one row, since it's identical for every member; only the
-individual model names (e.g. Quantum 112/225/326/338/5/7) sit behind the
+individual model names (e.g. Quantum 112/225/225DS/326/338/5/7) sit behind the
 chevron, as pill tags. On phone, where the whole row's detail is already a
 tap away, the model pills join the rest of that existing reveal instead of
 getting their own control. A family whose collective name already spells
@@ -331,9 +330,9 @@ that's still pending from a previous day, or one that just auto-cleared
 after its 1-month window, doesn't trigger a repeat message; only an actual
 change does.
 
-Items are grouped by family before posting - e.g. all 6 DiGiCo Quantum
+Items are grouped by family before posting - e.g. all 7 DiGiCo Quantum
 consoles updating together to the same version becomes one message ("New firmware available
-for *DiGiCo Quantum series* → V23"), not six. Grouped by `checker_key`
+for *DiGiCo Quantum series* → V23"), not seven. Grouped by `checker_key`
 (items that share one get checked together and always report the same new
 version, by construction - a more reliable "these are really the same
 family" signal than just matching version-number strings, which could
@@ -470,7 +469,7 @@ app/
   runner.py          Runs checkers, diffs versions, writes history,
                      auto-expires update flags after UPDATE_HIGHLIGHT_WINDOW
   scheduler.py       Background interval job (local interactive use only)
-  seed.py            The 47-item equipment list + which checker covers each
+  seed.py            The 48-item equipment list + which checker covers each
   export.py          Equipment <-> data/equipment.json round-trip, used by
                      the CI pipeline
   changes.py         Before/after diff of two JSON snapshots -> the genuine

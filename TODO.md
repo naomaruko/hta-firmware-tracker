@@ -39,7 +39,7 @@ first real one actually notifies the channel.
 
 ## Already done
 - Verifying the Shure accessories via SUU, and adding headless-browser
-  checkers for Solid State Logic, Allen & Heath, d&b, and Dante — all 47
+  checkers for Solid State Logic, Allen & Heath, d&b, and Dante — all 48
   tracked items are fully automatic now (Waves was dropped from tracking;
   d&b's DN1 Switch got its own automated checker).
 - Deployed as a static site (see README's "Deployment" section): a daily

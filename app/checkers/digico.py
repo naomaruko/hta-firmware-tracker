@@ -80,14 +80,23 @@ def _download_links(article):
     return links
 
 
+def _norm(name):
+    """Comparable form of a model name: lower-case, single spaces, and
+    DiGiCo's "Dual Screen" folded into "DS", so the article's "Quantum 225
+    Dual Screen" button matches our "Quantum 225DS" (and "Quantum 225 DS")."""
+    name = re.sub(r"\s+", " ", name).strip().lower()
+    name = re.sub(r"\s*dual screen$", "ds", name)
+    return re.sub(r"\s+ds$", "ds", name)
+
+
 def _label_models(label):
-    """Model names a download button covers: "Quantum 326 & 338" is both
-    "Quantum 326" and "Quantum 338"; "Quantum 225 Dual Screen" is only itself,
-    so it never matches the plain "Quantum 225" model."""
+    """Model names a download button covers (normalised): "Quantum 326 &
+    338" is both "Quantum 326" and "Quantum 338"; "Quantum 225 Dual Screen"
+    is only the DS model, so it never matches the plain "Quantum 225"."""
     parts = [p.strip() for p in label.split("&") if p.strip()]
     m = re.match(r"^(\D*)\d", parts[0]) if parts else None
     prefix = m.group(1) if m else ""
-    return {re.sub(r"\s+", " ", (p if i == 0 or not p[:1].isdigit() else prefix + p)).strip().lower() for i, p in enumerate(parts)}
+    return {_norm(p if i == 0 or not p[:1].isdigit() else prefix + p) for i, p in enumerate(parts)}
 
 
 def _per_model_result(article, links, model):
@@ -101,7 +110,7 @@ def _per_model_result(article, links, model):
             f"No download links found in {title!r} - has the article layout changed?",
             source_url=article.get("html_url"),
         )
-    wanted = re.sub(r"\s+", " ", model).strip().lower()
+    wanted = _norm(model)
     url = next((u for label, u in links if wanted in _label_models(label)), None)
     if url is None:
         return CheckResult(None, False, f"{model} isn't listed in {title!r}'s download links", source_url=article.get("html_url"))

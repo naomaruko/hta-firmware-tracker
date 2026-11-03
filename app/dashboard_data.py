@@ -231,8 +231,8 @@ def build_dashboard_context(items):
     by_manufacturer = dict(sorted(by_manufacturer.items(), key=lambda kv: kv[0].lower()))
 
     summary = {
-        # Real physical units, from the unconsolidated list - "47 Tracked"
-        # means 47 devices whether several of them currently share one row
+        # Real physical units, from the unconsolidated list - "48 Tracked"
+        # means 48 devices whether several of them currently share one row
         # or not. This is a coverage/scope number, so it shouldn't shrink
         # just because some of what it covers happens to report through
         # one firmware source.
