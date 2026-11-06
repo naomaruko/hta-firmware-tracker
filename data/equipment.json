@@ -12,7 +12,7 @@
     "release_date": "Jan 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:13.586659",
+    "last_checked_at": "2026-11-06T21:45:23.902004",
     "last_changed_at": null,
     "last_error": null
   },
@@ -29,7 +29,7 @@
     "release_date": "Jan 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:13.586684",
+    "last_checked_at": "2026-11-06T21:45:23.902034",
     "last_changed_at": null,
     "last_error": null
   },
@@ -46,7 +46,7 @@
     "release_date": "Jan 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:13.586626",
+    "last_checked_at": "2026-11-06T21:45:23.901968",
     "last_changed_at": null,
     "last_error": null
   },
@@ -63,7 +63,7 @@
     "release_date": "Jan 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:13.586504",
+    "last_checked_at": "2026-11-06T21:45:23.901857",
     "last_changed_at": null,
     "last_error": null
   },
@@ -105,7 +105,7 @@
       }
     ],
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:50.379036",
+    "last_checked_at": "2026-11-06T21:46:01.173925",
     "last_changed_at": null,
     "last_error": null
   },
@@ -122,7 +122,7 @@
     "release_date": "Feb 16, 2024",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:08.615488",
+    "last_checked_at": "2026-11-06T21:45:14.043637",
     "last_changed_at": null,
     "last_error": null
   },
@@ -139,7 +139,7 @@
     "release_date": "Aug 14, 2025",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:08.615449",
+    "last_checked_at": "2026-11-06T21:45:14.043609",
     "last_changed_at": null,
     "last_error": null
   },
@@ -156,7 +156,7 @@
     "release_date": "Oct 26, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-06T19:50:08.615392",
+    "last_checked_at": "2026-11-06T21:45:14.043580",
     "last_changed_at": "2026-10-26T18:59:15.052920",
     "last_error": null
   },
@@ -166,16 +166,16 @@
     "model": "Quantum 112",
     "category": "Consoles",
     "checker_key": "digico:quantum",
-    "source_url": "https://support.digico.biz/hc/en-gb/articles/22467567486481-Quantum-Console-Software-V1619",
+    "source_url": "https://support.digico.biz/hc/en-gb/articles/52664394111889-Version-22-Quantum-Software",
     "notes": null,
     "current_version": "V2242.4",
     "previous_version": "V22",
     "release_date": "Oct 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-06T19:50:08.615268",
+    "status": "update_detected",
+    "last_checked_at": "2026-11-06T21:45:14.043479",
     "last_changed_at": "2026-11-03T13:25:39.535308",
-    "last_error": "Quantum 112 isn't listed in 'Quantum Console Software V1619''s download links"
+    "last_error": null
   },
   {
     "id": 5,
@@ -183,14 +183,14 @@
     "model": "Quantum 225",
     "category": "Consoles",
     "checker_key": "digico:quantum",
-    "source_url": "https://support.digico.biz/hc/en-gb/articles/22467567486481-Quantum-Console-Software-V1619",
+    "source_url": "https://support.digico.biz/hc/en-gb/articles/52664394111889-Version-22-Quantum-Software",
     "notes": null,
     "current_version": "V2242.4",
     "previous_version": "V22",
     "release_date": "Oct 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-06T19:50:08.615197",
+    "last_checked_at": "2026-11-06T21:45:14.043437",
     "last_changed_at": "2026-11-03T13:25:39.535262",
     "last_error": null
   },
@@ -200,16 +200,16 @@
     "model": "Quantum 225DS",
     "category": "Consoles",
     "checker_key": "digico:quantum",
-    "source_url": "https://support.digico.biz/hc/en-gb/articles/22467567486481-Quantum-Console-Software-V1619",
+    "source_url": "https://support.digico.biz/hc/en-gb/articles/52664394111889-Version-22-Quantum-Software",
     "notes": "Dual-screen Q225. Its update package is separate from the plain Q225's (the article says to install the one matching your console).",
     "current_version": "V2242.4",
     "previous_version": null,
     "release_date": "Oct 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-06T19:50:08.615302",
+    "status": "ok",
+    "last_checked_at": "2026-11-06T21:45:14.043515",
     "last_changed_at": null,
-    "last_error": "Quantum 225DS isn't listed in 'Quantum Console Software V1619''s download links"
+    "last_error": null
   },
   {
     "id": 4,
@@ -217,16 +217,16 @@
     "model": "Quantum 326",
     "category": "Consoles",
     "checker_key": "digico:quantum",
-    "source_url": "https://support.digico.biz/hc/en-gb/articles/22467567486481-Quantum-Console-Software-V1619",
+    "source_url": "https://support.digico.biz/hc/en-gb/articles/52664394111889-Version-22-Quantum-Software",
     "notes": null,
     "current_version": "V2242",
     "previous_version": "V22",
     "release_date": "Jun 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-06T19:50:08.615163",
+    "status": "ok",
+    "last_checked_at": "2026-11-06T21:45:14.043366",
     "last_changed_at": null,
-    "last_error": "Quantum 326 isn't listed in 'Quantum Console Software V1619''s download links"
+    "last_error": null
   },
   {
     "id": 3,
@@ -234,14 +234,14 @@
     "model": "Quantum 338",
     "category": "Consoles",
     "checker_key": "digico:quantum",
-    "source_url": "https://support.digico.biz/hc/en-gb/articles/22467567486481-Quantum-Console-Software-V1619",
+    "source_url": "https://support.digico.biz/hc/en-gb/articles/52664394111889-Version-22-Quantum-Software",
     "notes": null,
     "current_version": "V2242",
     "previous_version": "V22",
     "release_date": "Jun 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:08.615052",
+    "last_checked_at": "2026-11-06T21:45:14.043334",
     "last_changed_at": null,
     "last_error": null
   },
@@ -251,14 +251,14 @@
     "model": "Quantum 5",
     "category": "Consoles",
     "checker_key": "digico:quantum",
-    "source_url": "https://support.digico.biz/hc/en-gb/articles/22467567486481-Quantum-Console-Software-V1619",
+    "source_url": "https://support.digico.biz/hc/en-gb/articles/52664394111889-Version-22-Quantum-Software",
     "notes": null,
     "current_version": "V2242",
     "previous_version": "V22",
     "release_date": "Jun 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:08.614955",
+    "last_checked_at": "2026-11-06T21:45:14.043296",
     "last_changed_at": null,
     "last_error": null
   },
@@ -268,14 +268,14 @@
     "model": "Quantum 7",
     "category": "Consoles",
     "checker_key": "digico:quantum",
-    "source_url": "https://support.digico.biz/hc/en-gb/articles/22467567486481-Quantum-Console-Software-V1619",
+    "source_url": "https://support.digico.biz/hc/en-gb/articles/52664394111889-Version-22-Quantum-Software",
     "notes": null,
     "current_version": "V2242",
     "previous_version": "V22",
     "release_date": "Jun 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:08.614692",
+    "last_checked_at": "2026-11-06T21:45:14.043167",
     "last_changed_at": null,
     "last_error": null
   },
@@ -285,14 +285,14 @@
     "model": "SD10",
     "category": "Consoles",
     "checker_key": "digico:sd",
-    "source_url": "https://support.digico.biz/hc/en-gb/articles/41478521772305-SD-Console-Software-V2126",
+    "source_url": "https://support.digico.biz/hc/en-gb/articles/52664429792529-Version-22-SD-Software",
     "notes": null,
     "current_version": "V2242",
     "previous_version": "V22",
     "release_date": "Jun 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:08.615326",
+    "last_checked_at": "2026-11-06T21:45:14.043547",
     "last_changed_at": null,
     "last_error": null
   },
@@ -309,7 +309,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:38.481701",
+    "last_checked_at": "2026-11-06T21:45:48.620827",
     "last_changed_at": "2026-10-07T13:13:02.399823",
     "last_error": null
   },
@@ -326,7 +326,7 @@
     "release_date": "Jul 23, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:38.481871",
+    "last_checked_at": "2026-11-06T21:45:48.620947",
     "last_changed_at": null,
     "last_error": null
   },
@@ -343,7 +343,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:38.481907",
+    "last_checked_at": "2026-11-06T21:45:48.620989",
     "last_changed_at": "2026-10-07T13:13:02.399981",
     "last_error": null
   },
@@ -360,7 +360,7 @@
     "release_date": "May 27, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:38.481934",
+    "last_checked_at": "2026-11-06T21:45:48.621023",
     "last_changed_at": null,
     "last_error": null
   },
@@ -377,7 +377,7 @@
     "release_date": "May 15, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:38.481959",
+    "last_checked_at": "2026-11-06T21:45:48.621054",
     "last_changed_at": null,
     "last_error": null
   },
@@ -394,7 +394,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:38.481983",
+    "last_checked_at": "2026-11-06T21:45:48.621083",
     "last_changed_at": "2026-10-07T13:13:02.400071",
     "last_error": null
   },
@@ -411,7 +411,7 @@
     "release_date": "May 15, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:38.482008",
+    "last_checked_at": "2026-11-06T21:45:48.621113",
     "last_changed_at": null,
     "last_error": null
   },
@@ -428,7 +428,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:38.482029",
+    "last_checked_at": "2026-11-06T21:45:48.621141",
     "last_changed_at": "2026-10-07T13:13:02.400113",
     "last_error": null
   },
@@ -445,7 +445,7 @@
     "release_date": "May 15, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:38.482052",
+    "last_checked_at": "2026-11-06T21:45:48.621170",
     "last_changed_at": null,
     "last_error": null
   },
@@ -462,7 +462,7 @@
     "release_date": "Apr 02, 2025",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:38.482073",
+    "last_checked_at": "2026-11-06T21:45:48.621198",
     "last_changed_at": null,
     "last_error": null
   },
@@ -479,7 +479,7 @@
     "release_date": "Jul 2, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:10.056216",
+    "last_checked_at": "2026-11-06T21:45:17.588962",
     "last_changed_at": null,
     "last_error": null
   },
@@ -496,7 +496,7 @@
     "release_date": "Apr 29, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:10.056165",
+    "last_checked_at": "2026-11-06T21:45:17.588905",
     "last_changed_at": null,
     "last_error": null
   },
@@ -513,7 +513,7 @@
     "release_date": "Apr 29, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:10.056132",
+    "last_checked_at": "2026-11-06T21:45:17.588868",
     "last_changed_at": null,
     "last_error": null
   },
@@ -530,7 +530,7 @@
     "release_date": "Apr 29, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:10.055975",
+    "last_checked_at": "2026-11-06T21:45:17.588750",
     "last_changed_at": null,
     "last_error": null
   },
@@ -547,7 +547,7 @@
     "release_date": "Jul 2, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:10.056191",
+    "last_checked_at": "2026-11-06T21:45:17.588935",
     "last_changed_at": null,
     "last_error": null
   },
@@ -564,7 +564,7 @@
     "release_date": "Oct 15, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-06T19:50:09.424956",
+    "last_checked_at": "2026-11-06T21:45:16.883962",
     "last_changed_at": "2026-10-15T13:33:25.706962",
     "last_error": null
   },
@@ -581,7 +581,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.424983",
+    "last_checked_at": "2026-11-06T21:45:16.883993",
     "last_changed_at": "2026-09-30T13:11:16.730944",
     "last_error": null
   },
@@ -598,7 +598,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.425005",
+    "last_checked_at": "2026-11-06T21:45:16.884022",
     "last_changed_at": "2026-09-30T13:11:16.730972",
     "last_error": null
   },
@@ -615,7 +615,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.425031",
+    "last_checked_at": "2026-11-06T21:45:16.884059",
     "last_changed_at": "2026-09-30T13:11:16.731000",
     "last_error": null
   },
@@ -632,7 +632,7 @@
     "release_date": "May 19, 2022",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.425165",
+    "last_checked_at": "2026-11-06T21:45:16.884225",
     "last_changed_at": null,
     "last_error": null
   },
@@ -649,7 +649,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.425076",
+    "last_checked_at": "2026-11-06T21:45:16.884117",
     "last_changed_at": "2026-09-30T13:11:16.731054",
     "last_error": null
   },
@@ -666,7 +666,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.425054",
+    "last_checked_at": "2026-11-06T21:45:16.884088",
     "last_changed_at": "2026-09-30T13:11:16.731027",
     "last_error": null
   },
@@ -683,7 +683,7 @@
     "release_date": "Sep 16, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.425119",
+    "last_checked_at": "2026-11-06T21:45:16.884171",
     "last_changed_at": null,
     "last_error": null
   },
@@ -700,7 +700,7 @@
     "release_date": "Sep 16, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.425097",
+    "last_checked_at": "2026-11-06T21:45:16.884144",
     "last_changed_at": null,
     "last_error": null
   },
@@ -717,7 +717,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.424764",
+    "last_checked_at": "2026-11-06T21:45:16.883776",
     "last_changed_at": "2026-09-30T13:11:16.730692",
     "last_error": null
   },
@@ -734,7 +734,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.424931",
+    "last_checked_at": "2026-11-06T21:45:16.883929",
     "last_changed_at": "2026-09-30T13:11:16.730885",
     "last_error": null
   },
@@ -751,7 +751,7 @@
     "release_date": "Sep 30, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.424898",
+    "last_checked_at": "2026-11-06T21:45:16.883892",
     "last_changed_at": "2026-09-30T13:11:16.730843",
     "last_error": null
   },
@@ -768,7 +768,7 @@
     "release_date": "Jan 17, 2024",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:09.425141",
+    "last_checked_at": "2026-11-06T21:45:16.884198",
     "last_changed_at": null,
     "last_error": null
   },
@@ -785,7 +785,7 @@
     "release_date": "Oct 20, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-06T19:50:45.257343",
+    "last_checked_at": "2026-11-06T21:45:55.855024",
     "last_changed_at": "2026-10-20T17:43:37.772330",
     "last_error": null
   },
@@ -802,7 +802,7 @@
     "release_date": "Oct 20, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-06T19:50:45.257477",
+    "last_checked_at": "2026-11-06T21:45:55.855138",
     "last_changed_at": "2026-10-20T17:43:37.772462",
     "last_error": null
   },
@@ -819,7 +819,7 @@
     "release_date": "Oct 20, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-06T19:50:45.257511",
+    "last_checked_at": "2026-11-06T21:45:55.855175",
     "last_changed_at": "2026-10-20T17:43:37.772505",
     "last_error": null
   },
@@ -836,7 +836,7 @@
     "release_date": "Aug 18, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-06T19:50:45.257537",
+    "last_checked_at": "2026-11-06T21:45:55.855208",
     "last_changed_at": null,
     "last_error": null
   }
