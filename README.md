@@ -120,19 +120,34 @@ platform's date matches the headline version.
 **Article-based sources (DiGiCo, SSL).** These manufacturers announce
 firmware in a help-centre *article* rather than on a dedicated firmware page,
 so a new release normally shows up as a new article/title/version and is
-handled like any other update. DiGiCo's console software is the exception:
-it keeps one article per major release ("V22 Quantum Console Software") and
-edits it in place as point releases ship - v2242 in June, then v2242.4 in
-October for only the Q112/Q225 consoles - without changing the title or
-creation date, which are all a title-based check can see. That's how the
-tracker once showed Quantum at "V22" while v2242.4 was out. So for the
-Quantum and SD keys, each tracked model is matched to its own download
-button in the article body (`<span class="download-link" data-link=".../
-Quantum1_V2242-4x_Update_Package.zip">Quantum 112</span>`): the version comes
-from the file name ("V2242-4x" -> V2242.4) and the release month from the
-upload path (`/2026/10/` -> Oct 2026). If the buttons disappear or a model
-isn't listed, that model shows "Check failed" rather than quietly falling
-back to the title. The Q225DS has its own package, separate from the plain Q225's, and is matched to its own button (DiGiCo's "Dual Screen" is treated as "DS"). Not tracked: the Quantum 852. The DMI-Dante64@96 card is tracked as two rows (Zynq HC and the
+handled like any other update. DiGiCo's console software (Quantum, SD) is the
+exception, in two ways.
+
+First, it keeps one article per major release and edits it in place as point
+releases ship - v2242 in June, then v2242.4 in October for only the
+Q112/Q225/Q225DS - without changing the title or creation date, which are all
+a title-based check can see. That's how the tracker once showed Quantum at
+"V22" while v2242.4 was out. So each tracked model is matched to its own
+download link in the article body: the version comes from the file name
+(`Quantum1_V2242-4x_Update_Package.zip` -> V2242.4) and the release month from
+the upload path (`/2026/10/` -> Oct 2026). If a model isn't listed it shows
+"Check failed" rather than quietly falling back to the title. The Q225DS has
+its own package, matched separately (DiGiCo's "Dual Screen" is treated as
+"DS"). Not tracked: the Quantum 852.
+
+Second, DiGiCo reorganises these articles without notice - the title has gone
+"Quantum Console Software V2126" -> "V22 Quantum Console Software" ->
+"Version 22 Quantum Software", and the links from buttons to a dropdown (with
+"Quantum 326 & 338" becoming "326 / 338"). On 2026-11-06 a rename stopped the
+title match and the checker silently read an *older* article, recording V1619
+and V2126 as new "updates" and failing three models. So the article is now
+chosen by its contents - the newest one with console `Update_Package` files for
+the family, whatever it's called - and a tripwire fails the check loudly if a
+newer article's title looks like this family's console software but has no
+links we can read, rather than reading an older release. A failed check also
+no longer cancels an in-window "update available" flag when it recovers.
+SSL picks its article by title the same way the old DiGiCo check did, so it has
+the same exposure to a rename. The DMI-Dante64@96 card is tracked as two rows (Zynq HC and the
 older Summit HC), since they're separate hardware variants with their own
 firmware lines - one shared row used to flip between whichever line
 published most recently.

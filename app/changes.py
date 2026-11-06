@@ -88,12 +88,17 @@ def find_recoveries(items, old_statuses):
     failure alert. Only compares against what was recorded last time, so a
     failure that cleared on a retry inside a single run (never recorded, never
     alerted) is correctly not a recovery. Empty on the first-ever run."""
+    sizes = {}
+    for item in items:
+        sizes[item.checker_key] = sizes.get(item.checker_key, 0) + 1
     return [
         {
             "manufacturer": item.manufacturer,
             "model": item.model,
             "checker_key": item.checker_key,
             "current_version": item.current_version,
+            # lets the message name the models when only part of a family recovered
+            "family_size": sizes[item.checker_key] if item.checker_key else 1,
         }
         for item in items
         if item.status != "error" and old_statuses.get((item.manufacturer, item.model)) == "error"

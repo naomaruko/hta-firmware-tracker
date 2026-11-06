@@ -125,6 +125,20 @@ def _apply_result(db: Session, item: Equipment, result):
         # since it was *first* detected; otherwise stay flagged.
         if item.last_changed_at and now - item.last_changed_at >= UPDATE_HIGHLIGHT_WINDOW:
             item.status = "ok"
+    elif (
+        item.status == "error"
+        and result.version == item.current_version
+        and item.previous_version
+        and item.last_changed_at
+        and now - item.last_changed_at < UPDATE_HIGHLIGHT_WINDOW
+    ):
+        # A failed check overwrites "update_detected" with "error", so on
+        # recovery this item looks like any other 'ok' one - but it's still
+        # inside its highlight window, and a transient failure shouldn't
+        # quietly cancel an update flag that had days left to run. (Items whose
+        # flag was cleared on purpose have last_changed_at emptied, so they
+        # don't come back.)
+        item.status = "update_detected"
     else:
         item.status = "ok"
 
