@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from sqlalchemy.orm import Session
 
-from app.checkers.base import newest_version
+from app.checkers.base import CheckResult, newest_version, version_key, version_regression
 from app.checkers.registry import module_for
 from app.models import CheckLog, Equipment
 
@@ -146,6 +146,28 @@ def _apply_result(db: Session, item: Equipment, result):
     item.release_date = result.release_date
 
 
+def _regression_message(item, result):
+    """If a successful result looks like an OLDER release than the one this
+    item already has, why (else None). See version_regression. Per-platform
+    products (Dante Controller) are compared platform by platform."""
+    if result.platforms:
+        known = {p["name"]: p.get("current_version") for p in (item.platforms or [])}
+        for name, version in result.platforms.items():
+            if known.get(name) and version_key(version) < version_key(known[name]):
+                return (
+                    f"{name} is now reported as {version}, older than the last known {known[name]} - "
+                    "the site may have changed, so it was ignored rather than reported as an update"
+                )
+        return None
+    if version_regression(item.current_version, item.release_date, result.version, result.release_date):
+        return (
+            f"Found {result.version} ({result.release_date or 'no date'}), older than the last known "
+            f"{item.current_version} ({item.release_date or 'no date'}) - the site may have changed, "
+            "so it was ignored rather than reported as an update"
+        )
+    return None
+
+
 def _check_module(mod, items):
     """Runs mod.check_all(items), retrying just the failures (see
     RETRY_ATTEMPTS). Returns (results, crash): results is {item.id:
@@ -169,6 +191,17 @@ def _check_module(mod, items):
             crash = e
             continue
         crash = None
+        # A "successful" result that is older than what we already have is a
+        # failed check, not an update: it goes through the same retry and, if
+        # it persists, the same failure alert (private channel, pinging one
+        # person) as any other broken check - never the main channel as
+        # firmware news, and never overwriting the version on record.
+        by_id = {i.id: i for i in pending}
+        for item_id, r in list(got.items()):
+            if r is not None and r.success and item_id in by_id:
+                why = _regression_message(by_id[item_id], r)
+                if why:
+                    got[item_id] = CheckResult(None, False, why)
         results.update(got)
         pending = [i for i in pending if not (got.get(i.id) and got[i.id].success)]
         if not pending:

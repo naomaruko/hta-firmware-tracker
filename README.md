@@ -160,6 +160,34 @@ release_date - it's determined per manufacturer from the data (any item
 with a real release date), not a hardcoded list, so nothing needs to
 change here if that happens again.
 
+### Never report an older version
+
+A site changing its layout can make a checker read the wrong thing - the
+2026-11-06 DiGiCo incident, where a renamed article made the checker fall back
+to one from years ago and "update" Quantum to V1619. That's confusing for the
+team, so the runner (`_regression_message` in `app/runner.py`, using
+`version_regression` in `app/checkers/base.py`) refuses to treat a result that
+looks *older* than what's already recorded as news. Instead it's a failed check
+with the reason ("Found V1619 (Oct 2022), older than the last known V2242 (Jun
+2026) - the site may have changed, so it was ignored rather than reported as an
+update"): retried like any failure, never overwriting the recorded version, and
+if it persists it goes to the private alerts channel pinging one person - never
+the main channel as firmware news. It's the same alert any other broken check
+gets, and a "recovered" message follows when it clears.
+
+The release date decides when both sides have one - released earlier than what
+we have is a regression, released later never is - because version numbering
+sometimes changes scheme (DiGiCo's V2126 -> V22 sorts lower but is newer); with
+no usable dates, a lower version is a regression. Dante Controller is compared
+per platform. This covers every checker, including title-based ones like SSL.
+
+Replayed over all 83 recorded runs, it blocks the 5 incident changes and
+nothing genuine (the 62 version changes in that history include some deliberate
+"-test" versions planted to exercise Slack, which it also blocks). **If a
+manufacturer really does roll a release back**, the check will keep failing
+with that message; to accept it, set the item's `current_version` and
+`release_date` in `data/equipment.json` to the new values and commit.
+
 ### How the headless-browser checkers work
 
 `app/checkers/browser_base.py` holds a small Playwright helper

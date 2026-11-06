@@ -111,3 +111,52 @@ def describe_page(status, title, text, words=12):
     start = clean(" ".join((text or "").split()[:words]), 90)
     parts.append(f'starts "{start}"' if start else "page text empty")
     return ", ".join(parts)
+
+
+_DATE_FORMATS = ("%b %d, %Y", "%B %d, %Y", "%b %Y", "%B %Y")
+
+
+def parse_release_date(text):
+    """(year, month, day-or-None) from the date formats the checkers produce
+    ("Oct 26, 2026", "Jun 2026"), or None if it isn't one of them. Some
+    sources only give a month, hence the optional day."""
+    if not text:
+        return None
+    for fmt in _DATE_FORMATS:
+        try:
+            d = dt.datetime.strptime(text.strip(), fmt)
+        except ValueError:
+            continue
+        return (d.year, d.month, d.day if "%d" in fmt else None)
+    return None
+
+
+def _compare_dates(a, b):
+    """-1/0/1 for a before/equal/after b, or None if either is unknown. If
+    either only has a month, compares months ("Mar 2026" equals "Mar 20, 2026")."""
+    if a is None or b is None:
+        return None
+    if a[2] is None or b[2] is None:
+        a, b = a[:2], b[:2]
+    return (a > b) - (a < b)
+
+
+def version_regression(old_version, old_date, new_version, new_date):
+    """True if a result looks like an OLDER release than the one already
+    recorded - almost always a checker reading the wrong thing (a renamed
+    article that falls back to a years-old one, a layout change exposing a
+    stale list) rather than a manufacturer actually going backwards.
+
+    The release date, when both have one, is the better evidence, because
+    version numbering sometimes changes scheme (DiGiCo went from "V2126" to
+    "V22", which sorts lower though it's newer): released earlier than what we
+    have -> regression; released later -> never, whatever the version string
+    looks like. With no usable dates, a lower version is a regression."""
+    if not old_version or not new_version or old_version == new_version:
+        return False
+    by_date = _compare_dates(parse_release_date(new_date), parse_release_date(old_date))
+    if by_date is not None and by_date < 0:
+        return True
+    if by_date is not None and by_date > 0:
+        return False
+    return version_key(new_version) < version_key(old_version)
