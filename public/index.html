@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Firmware">
-<link rel="stylesheet" href="/static/style.css?v=20261110201129">
+<link rel="stylesheet" href="/static/style.css?v=20261111200153">
 </head>
 <body>
 
@@ -24,9 +24,9 @@
 
 
 
-<section class="hero-banner" style="--hero-image: url('/static/img/hero-banner.webp?v=20261110201129');">
+<section class="hero-banner" style="--hero-image: url('/static/img/hero-banner.webp?v=20261111200153');">
   <div class="hero-banner-content">
-    <img class="hero-logo" src="/static/img/hero-logo.png?v=20261110201129" alt="Hi-Tech Audio">
+    <img class="hero-logo" src="/static/img/hero-logo.png?v=20261111200153" alt="Hi-Tech Audio">
     <div class="hero-title-wrap">
       <h1 class="hero-title">Firmware Tracker</h1>
       
@@ -37,7 +37,7 @@
 <section class="stats-panel">
   <div class="stat-row">
     <div class="stat-card">
-      <img class="stat-icon" src="/static/img/stat-tracked.png?v=20261110201129" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-tracked.png?v=20261111200153" width="56" height="56" alt="">
       <div class="stat-text">
         <span class="stat-value">48</span>
         <span class="stat-label">Tracked</span>
@@ -46,7 +46,7 @@
     <div
       class="stat-card stat-alert stat-clickable"
       id="updates-kpi" role="button" tabindex="0" aria-label="Show the 3 rows with an update available">
-      <img class="stat-icon" src="/static/img/stat-updates.png?v=20261110201129" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-updates.png?v=20261111200153" width="56" height="56" alt="">
       <div class="stat-text">
         <span class="stat-value">3</span>
         <span class="stat-label">
@@ -59,17 +59,17 @@
       </div>
     </div>
     <div class="stat-card stat-warn">
-      <img class="stat-icon" src="/static/img/stat-errors.png?v=20261110201129" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-errors.png?v=20261111200153" width="56" height="56" alt="">
       <div class="stat-text">
-        <span class="stat-value">13</span>
+        <span class="stat-value">17</span>
         <span class="stat-label">Errors</span>
       </div>
     </div>
     <div class="stat-card">
-      <img class="stat-icon" src="/static/img/stat-last-checked.png?v=20261110201129" width="56" height="56" alt="">
+      <img class="stat-icon" src="/static/img/stat-last-checked.png?v=20261111200153" width="56" height="56" alt="">
       <div class="stat-text">
         
-        <span class="stat-value stat-value-text" id="last-run" data-utc="2026-11-10T20:11:28.436742" title="Nov 10, 12:11 PM PST">Nov 10, 12:11 PM PST</span>
+        <span class="stat-value stat-value-text" id="last-run" data-utc="2026-11-11T20:01:53.443094" title="Nov 11, 12:01 PM PST">Nov 11, 12:01 PM PST</span>
         <span class="stat-label">Last checked</span>
       </div>
     </div>
@@ -121,17 +121,17 @@
       
       
       <tr data-id="32"
-          data-status="ok"
+          data-status="error"
           data-category=""
           data-search="allen &amp; heath dlive series dlive cti1500 dlive dm0 mixrack dlive dm64 mixrack dlive s5000"
-          class="row-ok">
+          class="row-error">
         <td class="model-col">
           <div class="model-name">dLive series<button type="button" class="row-toggle" aria-expanded="false" aria-controls="family-32" aria-label="Show the 4 models in dLive series">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button></div>
         </td>
         <td>
-          <span class="badge badge-good">Up to date</span>
+          <span class="badge badge-critical">Check failed</span>
           
         </td>
         <td class="version-cell">V2.12</td>
@@ -140,7 +140,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:10:51.722085"><span class="time-text">Nov 10, 12:10 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:15.571650"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.allen-heath.com/hardware/dlive-series/all-models/resources/" target="_blank" rel="noopener" title="www.allen-heath.com" aria-label="Open source (www.allen-heath.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -153,7 +153,7 @@
       </tr>
       
       
-      <tr class="family-row row-ok" id="family-32" data-parent-id="32" hidden>
+      <tr class="family-row row-error" id="family-32" data-parent-id="32" hidden>
         <td colspan="7"><div class="family-wrap">
 <ul class="family-pill-list">
   <li class="family-pill">dLive CTi1500</li><li class="family-pill">dLive DM0 MixRack</li><li class="family-pill">dLive DM64 MixRack</li><li class="family-pill">dLive S5000</li>
@@ -161,6 +161,11 @@
 </div></td>
       </tr>
       
+      
+      <tr class="error-row" data-parent-id="32"><td colspan="7">⚠ Fetch failed: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to &#34;https://www.allen-heath.com/hardware/dlive-series/all-models/resources/&#34;, waiting until &#34;networkidle&#34;
+</td></tr>
       
       
       
@@ -175,15 +180,15 @@
     
     
     
-    <div class="item-card row-ok"
+    <div class="item-card row-error"
          data-id="32"
-         data-status="ok"
+         data-status="error"
          data-category=""
          data-search="allen &amp; heath dlive series dlive cti1500 dlive dm0 mixrack dlive dm64 mixrack dlive s5000">
       <div class="card-summary" role="button" tabindex="0" aria-expanded="false">
         <div class="card-summary-top">
           <h3 class="card-model">dLive series</h3>
-          <span class="badge badge-good">Up to date</span>
+          <span class="badge badge-critical">Check failed</span>
           
         </div>
         <div class="card-summary-bottom">
@@ -193,7 +198,10 @@
           </svg>
         </div>
       </div>
-      
+      <div class="card-error">⚠ Fetch failed: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to &#34;https://www.allen-heath.com/hardware/dlive-series/all-models/resources/&#34;, waiting until &#34;networkidle&#34;
+</div>
       <div class="card-details" hidden>
         
         <div class="card-family-pills">
@@ -214,7 +222,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:10:51.722085"><span class="time-text">Nov 10, 12:10 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:15.571650"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -272,7 +280,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:28.436742"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:53.443094"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.getdante.com/resources/software-downloads/" target="_blank" rel="noopener" title="www.getdante.com" aria-label="Open source (www.getdante.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -388,7 +396,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:28.436742"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:53.443094"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -444,7 +452,7 @@
           
         </td>
         <td class="version-cell muted">2.18.01</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:23.178428"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:47.667057"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.dbaudio.com/global/en/service-and-support/downloads/?searchTerm=D40%2520Firmware%2520Release%2520notes" target="_blank" rel="noopener" title="www.dbaudio.com" aria-label="Open source (www.dbaudio.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -479,7 +487,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:23.178580"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:47.667328"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.dbaudio.com/global/en/service-and-support/downloads/?searchTerm=DN1%2520Firmware%2520Release%2520notes" target="_blank" rel="noopener" title="www.dbaudio.com" aria-label="Open source (www.dbaudio.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -541,7 +549,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:23.178428"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:47.667057"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -587,7 +595,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:23.178580"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:47.667328"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -647,7 +655,7 @@
           
         </td>
         <td class="version-cell muted">V22</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:09:40.855729"><span class="time-text">Nov 10, 12:09 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:57:40.107842"><span class="time-text">Nov 11, 11:57 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://support.digico.biz/hc/en-gb/articles/52664394111889-Version-22-Quantum-Software" target="_blank" rel="noopener" title="support.digico.biz" aria-label="Open source (support.digico.biz) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -692,7 +700,7 @@
           
         </td>
         <td class="version-cell muted">V22</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:09:40.855700"><span class="time-text">Nov 10, 12:09 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:57:40.107791"><span class="time-text">Nov 11, 11:57 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://support.digico.biz/hc/en-gb/articles/52664394111889-Version-22-Quantum-Software" target="_blank" rel="noopener" title="support.digico.biz" aria-label="Open source (support.digico.biz) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -737,7 +745,7 @@
           
         </td>
         <td class="version-cell muted">V22</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:09:40.855757"><span class="time-text">Nov 10, 12:09 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:57:40.107891"><span class="time-text">Nov 11, 11:57 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://support.digico.biz/hc/en-gb/articles/52664429792529-Version-22-SD-Software" target="_blank" rel="noopener" title="support.digico.biz" aria-label="Open source (support.digico.biz) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -785,7 +793,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:09:40.855799"><span class="time-text">Nov 10, 12:09 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:57:40.107965"><span class="time-text">Nov 11, 11:57 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://support.digico.biz/hc/en-gb/articles/22606507471121-DMI-Dante-64-96-Summit-HC-Firmware-4-0-20-4-0-10-3-Update-Instructions" target="_blank" rel="noopener" title="support.digico.biz" aria-label="Open source (support.digico.biz) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -820,7 +828,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:09:40.855786"><span class="time-text">Nov 10, 12:09 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:57:40.107943"><span class="time-text">Nov 11, 11:57 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://support.digico.biz/hc/en-gb/articles/38090284286737-DMI-Dante64-96-with-IP-Zynq-HC-Upgrading-firmware-to-v4-2-11" target="_blank" rel="noopener" title="support.digico.biz" aria-label="Open source (support.digico.biz) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -860,7 +868,7 @@
           
         </td>
         <td class="version-cell muted">V3.0.0.88</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:09:40.855773"><span class="time-text">Nov 10, 12:09 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:57:40.107919"><span class="time-text">Nov 11, 11:57 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://support.digico.biz/hc/en-gb/articles/52316368465041-Orange-Box-Controller-V3-0-0-117" target="_blank" rel="noopener" title="support.digico.biz" aria-label="Open source (support.digico.biz) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -928,7 +936,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:09:40.855729"><span class="time-text">Nov 10, 12:09 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:57:40.107842"><span class="time-text">Nov 11, 11:57 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -978,7 +986,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:09:40.855700"><span class="time-text">Nov 10, 12:09 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:57:40.107791"><span class="time-text">Nov 11, 11:57 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1028,7 +1036,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:09:40.855757"><span class="time-text">Nov 10, 12:09 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:57:40.107891"><span class="time-text">Nov 11, 11:57 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1079,7 +1087,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:09:40.855799"><span class="time-text">Nov 10, 12:09 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:57:40.107965"><span class="time-text">Nov 11, 11:57 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1125,7 +1133,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:09:40.855786"><span class="time-text">Nov 10, 12:09 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:57:40.107943"><span class="time-text">Nov 11, 11:57 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1176,7 +1184,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:09:40.855773"><span class="time-text">Nov 10, 12:09 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:57:40.107919"><span class="time-text">Nov 11, 11:57 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1232,7 +1240,7 @@
           
         </td>
         <td class="version-cell muted">1.5.4</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:16.468833"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:40.460951"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=AD4Q&amp;size=n_10_n&amp;sort-field=versionreleasedate&amp;sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1267,7 +1275,7 @@
           
         </td>
         <td class="version-cell muted">1.5.4</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:16.469042"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:40.461198"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=AD1+AD2+ADX1+ADX2+transmitters&amp;size=n_10_n&amp;sort-field=versionreleasedate&amp;sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1302,7 +1310,7 @@
           
         </td>
         <td class="version-cell muted">1.5.4</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:16.468993"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:40.461116"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=AD610&amp;size=n_10_n&amp;sort-field=versionreleasedate&amp;sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1337,7 +1345,7 @@
           
         </td>
         <td class="version-cell muted">1.5.4</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:16.469073"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:40.461250"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=SBC240&amp;size=n_10_n&amp;sort-field=versionreleasedate&amp;sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1372,7 +1380,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:16.469027"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:40.461172"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=ADTQ&amp;size=n_10_n&amp;sort-field=versionreleasedate&amp;sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1407,7 +1415,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:16.469058"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:40.461225"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=ADXR&amp;size=n_10_n&amp;sort-field=versionreleasedate&amp;sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1442,7 +1450,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:16.469087"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:40.461274"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=SBC441&amp;size=n_10_n&amp;sort-field=versionreleasedate&amp;sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1477,7 +1485,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:16.468969"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:40.461080"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=AD600&amp;size=n_10_n&amp;sort-field=versionreleasedate&amp;sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1512,7 +1520,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:16.469010"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:40.461145"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=AD8C&amp;size=n_10_n&amp;sort-field=versionreleasedate&amp;sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1547,7 +1555,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:11:16.469100"><span class="time-text">Nov 10, 12:11 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T20:01:40.461298"><span class="time-text">Nov 11, 12:01 PM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://www.shure.com/en-US/support/downloads/software-firmware-archive?q=SBRC&amp;size=n_10_n&amp;sort-field=versionreleasedate&amp;sort-direction=desc" target="_blank" rel="noopener" title="www.shure.com" aria-label="Open source (www.shure.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1609,7 +1617,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:16.468833"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:40.460951"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1655,7 +1663,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:16.469042"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:40.461198"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1701,7 +1709,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:16.468993"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:40.461116"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1747,7 +1755,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:16.469073"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:40.461250"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1793,7 +1801,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:16.469027"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:40.461172"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1839,7 +1847,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:16.469058"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:40.461225"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1885,7 +1893,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:16.469087"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:40.461274"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1931,7 +1939,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:16.468969"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:40.461080"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -1977,7 +1985,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:16.469010"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:40.461145"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -2023,7 +2031,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:11:16.469100"><span class="time-text">Nov 10, 12:11 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T20:01:40.461298"><span class="time-text">Nov 11, 12:01 PM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -2083,7 +2091,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:10:48.261269"><span class="time-text">Nov 10, 12:10 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:58:43.875570"><span class="time-text">Nov 11, 11:58 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://support.solidstatelogic.com/hc/en-gb/articles/4455968923293-Live-SOLSA-Downloads" target="_blank" rel="noopener" title="support.solidstatelogic.com" aria-label="Open source (support.solidstatelogic.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2133,7 +2141,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:10:48.261301"><span class="time-text">Nov 10, 12:10 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:58:43.875621"><span class="time-text">Nov 11, 11:58 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://support.solidstatelogic.com/hc/en-gb/articles/4405815205021-Network-I-O-Downloads" target="_blank" rel="noopener" title="support.solidstatelogic.com" aria-label="Open source (support.solidstatelogic.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2209,7 +2217,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:10:48.261269"><span class="time-text">Nov 10, 12:10 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:58:43.875570"><span class="time-text">Nov 11, 11:58 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -2264,7 +2272,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:10:48.261301"><span class="time-text">Nov 10, 12:10 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:58:43.875621"><span class="time-text">Nov 11, 11:58 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -2324,7 +2332,7 @@
           
         </td>
         <td class="version-cell muted">V7.10</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:10:47.372563"><span class="time-text">Nov 10, 12:10 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:58:43.250382"><span class="time-text">Nov 11, 11:58 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://usa.yamaha.com/support/updates/rivage_pm_firm.html" target="_blank" rel="noopener" title="usa.yamaha.com" aria-label="Open source (usa.yamaha.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2374,7 +2382,7 @@
           
         </td>
         <td class="version-cell muted">V2.00</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:10:47.372549"><span class="time-text">Nov 10, 12:10 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:58:43.250359"><span class="time-text">Nov 11, 11:58 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://usa.yamaha.com/support/updates/dm7_firm.html" target="_blank" rel="noopener" title="usa.yamaha.com" aria-label="Open source (usa.yamaha.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2418,7 +2426,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:10:47.372641"><span class="time-text">Nov 10, 12:10 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:58:43.250543"><span class="time-text">Nov 11, 11:58 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://usa.yamaha.com/products/proaudio/interfaces/r_series_adda_2/downloads.html" target="_blank" rel="noopener" title="usa.yamaha.com" aria-label="Open source (usa.yamaha.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2468,7 +2476,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:10:47.372768"><span class="time-text">Nov 10, 12:10 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:58:43.250757"><span class="time-text">Nov 11, 11:58 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://usa.yamaha.com/support/updates/hy144-d-src_firm.html" target="_blank" rel="noopener" title="usa.yamaha.com" aria-label="Open source (usa.yamaha.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2505,7 +2513,7 @@
           
         </td>
         <td class="version-cell muted">—</td>
-        <td class="muted time-cell" data-utc="2026-11-10T20:10:47.372756"><span class="time-text">Nov 10, 12:10 PM PST</span></td>
+        <td class="muted time-cell" data-utc="2026-11-11T19:58:43.250733"><span class="time-text">Nov 11, 11:58 AM PST</span></td>
         <td class="source-col">
 <a class="source-link" href="https://usa.yamaha.com/support/updates/swp1_firm.html" target="_blank" rel="noopener" title="usa.yamaha.com" aria-label="Open source (usa.yamaha.com) in a new tab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2575,7 +2583,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:10:47.372563"><span class="time-text">Nov 10, 12:10 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:58:43.250382"><span class="time-text">Nov 11, 11:58 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -2626,7 +2634,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:10:47.372549"><span class="time-text">Nov 10, 12:10 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:58:43.250359"><span class="time-text">Nov 11, 11:58 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -2681,7 +2689,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:10:47.372641"><span class="time-text">Nov 10, 12:10 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:58:43.250543"><span class="time-text">Nov 11, 11:58 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -2732,7 +2740,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:10:47.372768"><span class="time-text">Nov 10, 12:10 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:58:43.250757"><span class="time-text">Nov 11, 11:58 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -2778,7 +2786,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>
-          <span class="card-detail-value muted time-cell" data-utc="2026-11-10T20:10:47.372756"><span class="time-text">Nov 10, 12:10 PM PST</span></span>
+          <span class="card-detail-value muted time-cell" data-utc="2026-11-11T19:58:43.250733"><span class="time-text">Nov 11, 11:58 AM PST</span></span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Source</span>
@@ -2805,6 +2813,6 @@
   </div>
 </div>
 
-<script src="/static/app.js?v=20261110201129"></script>
+<script src="/static/app.js?v=20261111200153"></script>
 </body>
 </html>
