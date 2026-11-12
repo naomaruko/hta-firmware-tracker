@@ -1,14 +1,28 @@
 """Yamaha checker.
 
-Source: each product's "Downloads" page (e.g.
-usa.yamaha.com/products/proaudio/mixers/dm7/downloads.html) has a
-`#firmware-table` listing every firmware/software file for sale, with a
-genuine manufacturer-published "Last Update" date per row - unlike the old
-approach (the standalone /support/updates/<slug>_firm.html release page),
-which only gave a version, not a date. A page can have more than one such
-table (Yamaha reuses a "related downloads" block across product families -
-DM7's page, for instance, also lists the R-series I/O racks it's compatible
-with), so every table on a page is searched.
+Source: each product's "Resources" page (e.g.
+usa.yamaha.com/business/audio/products/mixers/dm7/resources.html) lists every
+firmware/software file for the product, with a genuine manufacturer-published
+"Last Update" date per entry - unlike the old standalone
+/support/updates/<slug>_firm.html release pages, which only gave a version.
+A page can list files for more than one product (Yamaha reuses a "related
+downloads" block across product families - DM7's page, for instance, also
+lists the R-series I/O racks it's compatible with), so every entry on a page
+is searched.
+
+How the list is read changed on 2026-11-10, when Yamaha moved these pages from
+/products/proaudio/.../downloads.html to /business/audio/.../resources.html
+(the old URLs redirect). The old page had the list as a server-rendered
+`#firmware-table`; the new one ships empty tables and a script fills them from
+Yamaha's search service (yamaha.search.zetacx.net/api/search/assets) - so the
+checker saw a perfectly good page (HTTP 200) with no firmware on it, and every
+Yamaha item failed with "No row matching ...". That service refuses plain HTTP
+requests (403) but answers the page's own request, so the checker opens the
+page in the headless browser, copies the firmware search request the page
+itself makes (so the product list and settings are whatever Yamaha currently
+uses, not hard-coded IDs), and replays it asking for up to 200 entries rather
+than the page's 6. Each entry has a name ("RIVAGE PM Firmware V7.20"), a link
+to its release page and an ISO last-update date.
 
 Not every product we track has its own downloads page. DSP-R10/RX/RX-EX/
 RPio622/RPio222 share the console's own firmware (see below). Rio1608-D2
@@ -34,19 +48,25 @@ separate rows, so each is read from its own row (PER_MODEL_KEYS below) -
 if one ever gets a version the other doesn't, they report separately
 instead of one silently standing in for both.
 """
+import json
 import re
 from urllib.parse import urljoin
 
-from app.checkers.base import CheckResult, describe_page, http_get, iso_to_readable_date
+from app.checkers.base import CheckResult, iso_to_readable_date
+from app.checkers.browser_base import browser_page, describe_browser_page
 
-# Downloads pages that carry a firmware-table for at least one checker_key
-# below - fetched once each, not once per checker_key that reads from them.
+# Resource pages that list firmware for at least one checker_key below -
+# fetched once each, not once per checker_key that reads from them.
 PAGES = {
-    "rivage_pm": "https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html",
-    "dm7": "https://usa.yamaha.com/products/proaudio/mixers/dm7/downloads.html",
-    "swp1": "https://usa.yamaha.com/products/proaudio/network_switches/swp1/downloads.html",
-    "r_series_adda_2": "https://usa.yamaha.com/products/proaudio/interfaces/r_series_adda_2/downloads.html",
+    "rivage_pm": "https://usa.yamaha.com/business/audio/products/mixers/rivage-pm/resources.html",
+    "dm7": "https://usa.yamaha.com/business/audio/products/mixers/dm7/resources.html",
+    "swp1": "https://usa.yamaha.com/business/audio/products/network-devices/swp1/resources.html",
+    "r_series_adda_2": "https://usa.yamaha.com/business/audio/products/interfaces/r-series-adda-2/resources.html",
 }
+
+SITE = "https://usa.yamaha.com"
+SEARCH_API = "https://yamaha.search.zetacx.net/api/search/assets"
+PAGE_SIZE = 200  # the API's maximum ("must be 200 or less")
 
 # checker_key -> (which page in PAGES to read, regex matching that row's
 # exact link text). Anchored at the start and requiring "Firmware" right
@@ -70,28 +90,67 @@ PER_MODEL_KEYS = {"yamaha:rio_d2"}
 VERSION_RE = re.compile(r"V([\d]+(?:\.[\d]+)*)", re.IGNORECASE)
 
 
-def _fetch_rows(url):
-    """(rows, description): every (name, date, absolute_href) row from every
-    #firmware-table on a downloads page, plus a one-line description of the
-    page itself for failure messages (see describe_page)."""
-    from bs4 import BeautifulSoup
+_FETCH_JS = """async (fields) => {
+  const fd = new FormData();
+  for (const [k, v] of fields) fd.append(k, v);
+  const r = await fetch(%s, {method: 'POST', body: fd});
+  return {status: r.status, text: await r.text()};
+}""" % json.dumps(SEARCH_API)
 
-    r = http_get(url)
-    r.raise_for_status()
-    soup = BeautifulSoup(r.text, "lxml")
-    description = describe_page(r.status_code, soup.title.get_text() if soup.title else None, soup.get_text(" "))
-    rows = []
-    for table in soup.find_all("table", id="firmware-table"):
-        for tr in table.find_all("tr")[1:]:  # skip the header row
-            a = tr.find("a")
-            tds = tr.find_all("td")
-            if not a or not tds:
-                continue
-            name = a.get_text(strip=True)
-            date = tds[-1].get_text(strip=True)
-            href = urljoin(url, a.get("href", ""))
-            rows.append((name, date, href))
-    return rows, description
+
+def _form_fields(post_data):
+    """[(name, value)] from the multipart body of the page's search request."""
+    return [
+        (m.group(1), m.group(2))
+        for m in re.finditer(r'name="([^"]+)"\r?\n\r?\n(.*?)\r?\n------', (post_data or "") + "\n------", re.S)
+    ]
+
+
+def _is_firmware_search(request):
+    return (
+        "zetacx.net/api/search/assets" in request.url
+        and request.method == "POST"
+        and "downloadType" in (request.post_data or "")
+    )
+
+
+def _fetch_rows(page, url):
+    """(rows, description) for one resources page: every (name, date,
+    absolute_href) entry Yamaha lists for it - date being the ISO last-update
+    timestamp - plus a one-line description of the page itself for failure
+    messages. See the module docstring for how."""
+    from playwright.sync_api import TimeoutError as PlaywrightTimeout
+
+    resp = None
+    try:
+        with page.expect_request(_is_firmware_search, timeout=25_000) as captured:
+            resp = page.goto(url, wait_until="domcontentloaded")
+    except PlaywrightTimeout:
+        raise ValueError(
+            "The page never made its firmware search request - has Yamaha changed the page again? "
+            f"({describe_browser_page(page, resp.status if resp else None)})"
+        ) from None
+    status = resp.status if resp else None
+    base_fields = _form_fields(captured.value.post_data)
+    if not base_fields:
+        raise ValueError(f"Couldn't read the page's firmware search request ({describe_browser_page(page, status)})")
+
+    rows, offset = [], 0
+    while True:
+        fields = [(k, str(PAGE_SIZE) if k == "limit" else str(offset) if k == "offset" else v) for k, v in base_fields]
+        out = page.evaluate(_FETCH_JS, fields)
+        if out["status"] != 200:
+            raise ValueError(f"Yamaha's search service answered HTTP {out['status']}: {out['text'][:150]!r}")
+        data = json.loads(out["text"])
+        assets = data.get("assetsList", [])
+        rows += [
+            (a.get("assetName", ""), a.get("lastUpdateDate", ""), urljoin(SITE, a.get("assetUrl", "")))
+            for a in assets
+        ]
+        offset += len(assets)
+        if not assets or offset >= int(data.get("numberOfSearches") or 0) or offset >= 5 * PAGE_SIZE:
+            break
+    return rows, describe_browser_page(page, status, f"{len(rows)} downloads listed")
 
 
 def check_all(equipment_items):
@@ -101,11 +160,17 @@ def check_all(equipment_items):
     page_rows = {}
     page_info = {}
     page_errors = {}
-    for page_key in needed_pages:
+    if needed_pages:
         try:
-            page_rows[page_key], page_info[page_key] = _fetch_rows(PAGES[page_key])
+            with browser_page() as page:
+                for page_key in sorted(needed_pages):
+                    try:
+                        page_rows[page_key], page_info[page_key] = _fetch_rows(page, PAGES[page_key])
+                    except Exception as e:  # noqa: BLE001
+                        page_errors[page_key] = f"Fetch failed: {str(e).splitlines()[0] if str(e) else e.__class__.__name__}"
         except Exception as e:  # noqa: BLE001
-            page_errors[page_key] = f"Fetch failed: {e}"
+            for page_key in needed_pages - set(page_rows) - set(page_errors):
+                page_errors[page_key] = f"Browser session failed: {str(e).splitlines()[0] if str(e) else e.__class__.__name__}"
 
     def resolve(page_key, pattern):
         if page_key in page_errors:

@@ -25,7 +25,7 @@ month and year is ever stated, never a day.
 import re
 
 from app.checkers.base import CheckResult, abbreviate_month, http_get
-from app.checkers.browser_base import browser_page, describe_browser_page
+from app.checkers.browser_base import block_trackers, browser_page, describe_browser_page
 
 DLIVE_URL = "https://www.allen-heath.com/hardware/dlive-series/all-models/resources/"
 VERSION_RE = re.compile(r"dLive Firmware\s+V([\d.]+)", re.IGNORECASE)
@@ -42,13 +42,33 @@ RELEASE_DATE_RE = re.compile(r"Version\s+[\d.]+\s*-[^.]*\.\s*([A-Za-z]+ \d{4})")
 
 
 def _fetch_dlive_version():
+    from playwright.sync_api import TimeoutError as PlaywrightTimeout
+
     with browser_page() as page:
-        resp = page.goto(DLIVE_URL, wait_until="networkidle")
+        # Not wait_until="networkidle": that waits for every analytics/consent
+        # script to go quiet, and on 2026-11-11 it timed out three runs in a
+        # row from GitHub's servers (while the same page loaded in ~5s from a
+        # laptop). Trackers are blocked outright (they're not needed), and
+        # instead of waiting for the network we wait for the thing we want:
+        # the "dLive Firmware Vx.xx" text.
+        block_trackers(page)
+        try:
+            resp = page.goto(DLIVE_URL, wait_until="domcontentloaded", timeout=45_000)
+        except PlaywrightTimeout:
+            raise ValueError("The page didn't load within 45 seconds - is allen-heath.com slow or blocking this server?") from None
+        status = resp.status if resp else None
+        try:
+            page.wait_for_function(
+                "() => /dLive Firmware\\s+V[\\d.]+/i.test(document.body ? document.body.innerText : '')",
+                timeout=20_000,
+            )
+        except PlaywrightTimeout:
+            pass  # fall through: report what the page actually is, below
         text = page.inner_text("body")
         m = VERSION_RE.search(text)
         if not m:
             raise ValueError(
-                f"Version pattern not found on page ({describe_browser_page(page, resp.status if resp else None, text)})"
+                f"Version pattern not found on page ({describe_browser_page(page, status, text)})"
             )
     return f"V{m.group(1)}"
 

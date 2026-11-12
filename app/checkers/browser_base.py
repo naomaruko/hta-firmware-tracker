@@ -5,6 +5,7 @@ Used by manufacturers whose version info either renders client-side via JS
 Heath). Heavier and slower than the requests-based checkers, so it's kept
 isolated here rather than used by default everywhere.
 """
+import re
 from contextlib import contextmanager
 
 from app.checkers.base import USER_AGENT, describe_page
@@ -57,3 +58,20 @@ def describe_browser_page(page, status=None, text=None):
         except Exception:  # noqa: BLE001
             text = None
     return describe_page(status, title, text)
+
+
+# Third-party analytics / consent / ad hosts that no checker needs. Loading
+# them can only hurt: a checker that waits for the page to go quiet
+# ("networkidle") times out if any of them is slow or unreachable from the
+# CI runner, even though the page itself is fine.
+_TRACKER_HOSTS = re.compile(
+    r"cookiebot\.com|hs-scripts\.com|hs-analytics\.net|hs-banner\.com|hubspot\.com|hsforms\.|"
+    r"googletagmanager\.com|google-analytics\.com|doubleclick\.net|googlesyndication\.com|"
+    r"facebook\.(?:net|com)|hotjar\.com|clarity\.ms|crazyegg\.com|linkedin\.com/px"
+)
+
+
+def block_trackers(page):
+    """Abort requests to analytics/consent/ad hosts so they fail instantly
+    instead of being waited on. Call before page.goto()."""
+    page.route(_TRACKER_HOSTS, lambda route: route.abort())

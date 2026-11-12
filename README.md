@@ -93,9 +93,9 @@ checkers — see below.)
 | Manufacturer | Method | Notes |
 |---|---|---|
 | DiGiCo | ✅ Scraped | `support.digico.biz`'s Zendesk help-center JSON API. Console software (Quantum, SD) is read per model from the article's download buttons, not its title - see below |
-| Yamaha | ✅ Scraped | Each product's Downloads page on `usa.yamaha.com` (a `#firmware-table` with a genuine "Last Update" date per file, not just a version) |
+| Yamaha | ✅ Scraped (headless) | Each product's Resources page on `usa.yamaha.com`. The firmware list is filled in by a script from Yamaha's search service (`yamaha.search.zetacx.net`), which refuses plain HTTP, so the checker opens the page in the headless browser, copies the page's own firmware search request and replays it for up to 200 entries - each with a genuine "Last Update" date, not just a version. See "When a manufacturer's site changes" below |
 | Solid State Logic | ✅ Scraped | `support.solidstatelogic.com`'s Zendesk API too; tracked via SOLSA (versions 1:1 with SSL Live console software) and the Network I/O firmware bundle |
-| Allen & Heath | ✅ Scraped (headless) | Version: `www.allen-heath.com` returns HTTP 403 to plain requests (bot protection) — works fine in a real headless browser. Release date: a separate evergreen article on `support.allen-heath.com` (a Zendesk help centre, read via its public JSON API — even a real browser can't get past that subdomain's own Cloudflare challenge page), month/year only, no day |
+| Allen & Heath | ✅ Scraped (headless) | Version: `www.allen-heath.com` returns HTTP 403 to plain requests (bot protection) — works fine in a real headless browser (with analytics/consent scripts blocked and no wait for the network to go quiet - see below). Release date: a separate evergreen article on `support.allen-heath.com` (a Zendesk help centre, read via its public JSON API — even a real browser can't get past that subdomain's own Cloudflare challenge page), month/year only, no day |
 | Dante/Audinate | ✅ Scraped (headless) | The version table is inside a click-to-expand accordion, so it's not in the page until JS runs. Dante Controller is published as separate Windows / macOS Apple Silicon / macOS Intel builds with their own versions, so all three are tracked (see below) |
 | d&b audiotechnik | ✅ Scraped (headless) | Their Download Center is a JS-driven search box behind a cookie-consent overlay; D40/D90 share one firmware release, DN1 Switch has its own |
 | Shure | ✅ Scraped (headless) | Firmware versions come from `shure.com`'s searchable software/firmware archive listing |
@@ -159,6 +159,40 @@ whenever a future manufacturer's checker has nothing to put in
 release_date - it's determined per manufacturer from the data (any item
 with a real release date), not a hardcoded list, so nothing needs to
 change here if that happens again.
+
+### When a manufacturer's site changes
+
+Two real breakages worth knowing about, because the failure alerts look
+similar but the causes were different:
+
+**Yamaha (2026-11-10): the page moved and the data went with JavaScript.**
+Yamaha moved its product pages from `/products/proaudio/.../downloads.html` to
+`/business/audio/.../resources.html` (the old URLs redirect) and, at the same
+time, stopped putting the firmware list in the HTML: the old
+server-rendered `#firmware-table` became empty tables that a script fills from
+a search service. The checker got a perfectly healthy page (HTTP 200) with no
+firmware on it, so all 13 Yamaha items failed with "No row matching ...". It
+now reads that same search service from inside the page (see the table above),
+which is also more robust than scraping rendered markup: each entry arrives as
+structured data (name, version, ISO date, link). If Yamaha changes it again the
+error says what happened ("The page never made its firmware search request",
+"search service answered HTTP 403", or "No row matching ..." with the number of
+downloads the page did list).
+
+**Allen & Heath (2026-11-11): the page timed out from GitHub's servers.** The
+dLive checker waited for the page to go "network idle", i.e. for every
+analytics and cookie-consent script to finish, and that timed out on all three
+attempts from CI although the page loads in a few seconds from a laptop. Two
+things were done: analytics/consent/ad hosts are now blocked outright
+(`block_trackers` in `app/checkers/browser_base.py` - no checker needs them), and
+the checker waits for the thing it actually wants (the "dLive Firmware Vx.xx"
+text) instead of the network. What was actually being served to GitHub's
+servers that day couldn't be seen, and while testing the fix Allen & Heath
+briefly answered with a Cloudflare challenge ("HTTP 429, title 'Just a
+moment...'") after a burst of requests, so bot protection is the likely
+culprit - which a code change can't beat, only report. The error message now
+includes the page's HTTP status and title, so the next failure says which it
+was.
 
 ### Never report an older version
 
@@ -526,8 +560,9 @@ app/
                      version changes Slack is told about
   slack.py           Webhook notifications, one message per family
   checkers/
-    digico.py, yamaha.py, ssl.py                       Plain-HTTP (HTML / Zendesk JSON API)
-    allenheath.py, dante.py, dbaudio.py, shure.py      Headless-browser (Playwright)
+    digico.py, ssl.py                                  Plain-HTTP (Zendesk JSON API)
+    allenheath.py, dante.py, dbaudio.py, shure.py,
+    yamaha.py                                          Headless-browser (Playwright)
     browser_base.py    Shared Playwright helper
     registry.py         Routes a checker_key to its module
   templates/, static/  Dashboard UI

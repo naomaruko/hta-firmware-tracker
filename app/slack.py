@@ -91,14 +91,14 @@ def _family_label(key, group):
             return label
     # Several entries can be the same *item* (one per changed platform), not
     # several items - count distinct models.
+    manufacturer = group[0]["manufacturer"]
+    manufacturer = MANUFACTURER_LABELS.get(manufacturer, manufacturer)
     models = list(dict.fromkeys(c["model"] for c in group))
     if len(models) == 1:
-        c = group[0]
-        return f"{c['manufacturer']} {c['model']}"
+        return f"{manufacturer} {group[0]['model']}"
     # A genuinely multi-item family we haven't given a friendly name to
     # (e.g. a new checker_key added since) - list the actual models rather
     # than invent a collective name we can't vouch for.
-    manufacturer = group[0]["manufacturer"]
     return f"{manufacturer} {'/'.join(models)}"
 
 
