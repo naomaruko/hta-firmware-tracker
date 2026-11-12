@@ -11,10 +11,10 @@
     "previous_version": null,
     "release_date": "Jan 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T20:01:15.571650",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:17.252276",
     "last_changed_at": null,
-    "last_error": "Fetch failed: Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.allen-heath.com/hardware/dlive-series/all-models/resources/\", waiting until \"networkidle\"\n"
+    "last_error": null
   },
   {
     "id": 33,
@@ -28,10 +28,10 @@
     "previous_version": null,
     "release_date": "Jan 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T20:01:15.571677",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:17.252294",
     "last_changed_at": null,
-    "last_error": "Fetch failed: Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.allen-heath.com/hardware/dlive-series/all-models/resources/\", waiting until \"networkidle\"\n"
+    "last_error": null
   },
   {
     "id": 31,
@@ -45,10 +45,10 @@
     "previous_version": null,
     "release_date": "Jan 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T20:01:15.571616",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:17.252254",
     "last_changed_at": null,
-    "last_error": "Fetch failed: Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.allen-heath.com/hardware/dlive-series/all-models/resources/\", waiting until \"networkidle\"\n"
+    "last_error": null
   },
   {
     "id": 30,
@@ -62,10 +62,10 @@
     "previous_version": null,
     "release_date": "Jan 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T20:01:15.571488",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:17.252120",
     "last_changed_at": null,
-    "last_error": "Fetch failed: Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.allen-heath.com/hardware/dlive-series/all-models/resources/\", waiting until \"networkidle\"\n"
+    "last_error": null
   },
   {
     "id": 48,
@@ -105,7 +105,7 @@
       }
     ],
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:53.443094",
+    "last_checked_at": "2026-11-12T14:47:55.086600",
     "last_changed_at": null,
     "last_error": null
   },
@@ -122,7 +122,7 @@
     "release_date": "Feb 16, 2024",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:57:40.107965",
+    "last_checked_at": "2026-11-12T14:45:22.068259",
     "last_changed_at": null,
     "last_error": null
   },
@@ -139,7 +139,7 @@
     "release_date": "Aug 14, 2025",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:57:40.107943",
+    "last_checked_at": "2026-11-12T14:45:22.068243",
     "last_changed_at": null,
     "last_error": null
   },
@@ -156,7 +156,7 @@
     "release_date": "Oct 26, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-11T19:57:40.107919",
+    "last_checked_at": "2026-11-12T14:45:22.068227",
     "last_changed_at": "2026-10-26T18:59:15.052920",
     "last_error": null
   },
@@ -173,7 +173,7 @@
     "release_date": "Oct 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-11T19:57:40.107842",
+    "last_checked_at": "2026-11-12T14:45:22.068178",
     "last_changed_at": "2026-11-03T13:25:39.535308",
     "last_error": null
   },
@@ -190,7 +190,7 @@
     "release_date": "Oct 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-11T19:57:40.107816",
+    "last_checked_at": "2026-11-12T14:45:22.068160",
     "last_changed_at": "2026-11-03T13:25:39.535262",
     "last_error": null
   },
@@ -207,7 +207,7 @@
     "release_date": "Oct 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:57:40.107866",
+    "last_checked_at": "2026-11-12T14:45:22.068193",
     "last_changed_at": null,
     "last_error": null
   },
@@ -224,7 +224,7 @@
     "release_date": "Jun 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:57:40.107791",
+    "last_checked_at": "2026-11-12T14:45:22.068130",
     "last_changed_at": null,
     "last_error": null
   },
@@ -241,7 +241,7 @@
     "release_date": "Jun 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:57:40.107763",
+    "last_checked_at": "2026-11-12T14:45:22.068112",
     "last_changed_at": null,
     "last_error": null
   },
@@ -258,7 +258,7 @@
     "release_date": "Jun 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:57:40.107729",
+    "last_checked_at": "2026-11-12T14:45:22.068091",
     "last_changed_at": null,
     "last_error": null
   },
@@ -275,7 +275,7 @@
     "release_date": "Jun 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:57:40.107591",
+    "last_checked_at": "2026-11-12T14:45:22.067971",
     "last_changed_at": null,
     "last_error": null
   },
@@ -292,7 +292,7 @@
     "release_date": "Jun 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:57:40.107891",
+    "last_checked_at": "2026-11-12T14:45:22.068210",
     "last_changed_at": null,
     "last_error": null
   },
@@ -309,7 +309,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:40.460951",
+    "last_checked_at": "2026-11-12T14:47:42.433762",
     "last_changed_at": "2026-10-07T13:13:02.399823",
     "last_error": null
   },
@@ -326,7 +326,7 @@
     "release_date": "Jul 23, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:40.461080",
+    "last_checked_at": "2026-11-12T14:47:42.433885",
     "last_changed_at": null,
     "last_error": null
   },
@@ -343,7 +343,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:40.461116",
+    "last_checked_at": "2026-11-12T14:47:42.433908",
     "last_changed_at": "2026-10-07T13:13:02.399981",
     "last_error": null
   },
@@ -360,7 +360,7 @@
     "release_date": "May 27, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:40.461145",
+    "last_checked_at": "2026-11-12T14:47:42.433926",
     "last_changed_at": null,
     "last_error": null
   },
@@ -377,7 +377,7 @@
     "release_date": "May 15, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:40.461172",
+    "last_checked_at": "2026-11-12T14:47:42.433952",
     "last_changed_at": null,
     "last_error": null
   },
@@ -394,7 +394,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:40.461198",
+    "last_checked_at": "2026-11-12T14:47:42.433969",
     "last_changed_at": "2026-10-07T13:13:02.400071",
     "last_error": null
   },
@@ -411,7 +411,7 @@
     "release_date": "May 15, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:40.461225",
+    "last_checked_at": "2026-11-12T14:47:42.433985",
     "last_changed_at": null,
     "last_error": null
   },
@@ -428,7 +428,7 @@
     "release_date": "Oct 06, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:40.461250",
+    "last_checked_at": "2026-11-12T14:47:42.434000",
     "last_changed_at": "2026-10-07T13:13:02.400113",
     "last_error": null
   },
@@ -445,7 +445,7 @@
     "release_date": "May 15, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:40.461274",
+    "last_checked_at": "2026-11-12T14:47:42.434014",
     "last_changed_at": null,
     "last_error": null
   },
@@ -462,7 +462,7 @@
     "release_date": "Apr 02, 2025",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:40.461298",
+    "last_checked_at": "2026-11-12T14:47:42.434030",
     "last_changed_at": null,
     "last_error": null
   },
@@ -479,7 +479,7 @@
     "release_date": "Jul 2, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:58:43.875621",
+    "last_checked_at": "2026-11-12T14:47:15.569066",
     "last_changed_at": null,
     "last_error": null
   },
@@ -496,7 +496,7 @@
     "release_date": "Apr 29, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:58:43.875570",
+    "last_checked_at": "2026-11-12T14:47:15.569031",
     "last_changed_at": null,
     "last_error": null
   },
@@ -513,7 +513,7 @@
     "release_date": "Apr 29, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:58:43.875536",
+    "last_checked_at": "2026-11-12T14:47:15.569005",
     "last_changed_at": null,
     "last_error": null
   },
@@ -530,7 +530,7 @@
     "release_date": "Apr 29, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:58:43.875398",
+    "last_checked_at": "2026-11-12T14:47:15.568894",
     "last_changed_at": null,
     "last_error": null
   },
@@ -547,7 +547,7 @@
     "release_date": "Jul 2, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T19:58:43.875596",
+    "last_checked_at": "2026-11-12T14:47:15.569049",
     "last_changed_at": null,
     "last_error": null
   },
@@ -557,16 +557,16 @@
     "model": "DM7-EX",
     "category": "Consoles",
     "checker_key": "yamaha:dm7",
-    "source_url": "https://usa.yamaha.com/support/updates/dm7_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/dm7-firm.html",
     "notes": null,
     "current_version": "V2.01",
     "previous_version": "V2.00",
     "release_date": "Oct 15, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250359",
+    "status": "update_detected",
+    "last_checked_at": "2026-11-12T14:47:14.423602",
     "last_changed_at": "2026-10-15T13:33:25.706962",
-    "last_error": "No row matching '^DM7 Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/mixers/dm7/downloads.html (HTTP 200, title \"DM7 Professional Digital Audio Mixer Manuals - Yamaha USA\", starts \"DM7 Professional Digital Audio Mixer Manuals - Yamaha USA Business Business Audio\")"
+    "last_error": null
   },
   {
     "id": 16,
@@ -574,16 +574,16 @@
     "model": "DSP-R10",
     "category": "DSP Engines",
     "checker_key": "yamaha:rivage_pm",
-    "source_url": "https://usa.yamaha.com/support/updates/rivage_pm_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/rivage-pm-firm.html",
     "notes": "Shares the RIVAGE PM console firmware version (confirmed via Yamaha's official compatibility chart).",
     "current_version": "V7.20",
     "previous_version": "V7.10",
     "release_date": "Sep 30, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250382",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423622",
     "last_changed_at": "2026-09-30T13:11:16.730944",
-    "last_error": "No row matching '^RIVAGE PM Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html (HTTP 200, title \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA\", starts \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA Business Business\")"
+    "last_error": null
   },
   {
     "id": 17,
@@ -591,16 +591,16 @@
     "model": "DSP-RX",
     "category": "DSP Engines",
     "checker_key": "yamaha:rivage_pm",
-    "source_url": "https://usa.yamaha.com/support/updates/rivage_pm_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/rivage-pm-firm.html",
     "notes": "Shares the RIVAGE PM console firmware version (confirmed via Yamaha's official compatibility chart).",
     "current_version": "V7.20",
     "previous_version": "V7.10",
     "release_date": "Sep 30, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250402",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423640",
     "last_changed_at": "2026-09-30T13:11:16.730972",
-    "last_error": "No row matching '^RIVAGE PM Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html (HTTP 200, title \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA\", starts \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA Business Business\")"
+    "last_error": null
   },
   {
     "id": 18,
@@ -608,16 +608,16 @@
     "model": "DSP-RX-EX",
     "category": "DSP Engines",
     "checker_key": "yamaha:rivage_pm",
-    "source_url": "https://usa.yamaha.com/support/updates/rivage_pm_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/rivage-pm-firm.html",
     "notes": "Shares the RIVAGE PM console firmware version (confirmed via Yamaha's official compatibility chart).",
     "current_version": "V7.20",
     "previous_version": "V7.10",
     "release_date": "Sep 30, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250426",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423661",
     "last_changed_at": "2026-09-30T13:11:16.731000",
-    "last_error": "No row matching '^RIVAGE PM Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html (HTTP 200, title \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA\", starts \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA Business Business\")"
+    "last_error": null
   },
   {
     "id": 24,
@@ -625,16 +625,16 @@
     "model": "HY144-D-SRC",
     "category": "Network & Cards",
     "checker_key": "yamaha:hy144dsrc",
-    "source_url": "https://usa.yamaha.com/support/updates/hy144-d-src_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/hy144-d-src-firm.html",
     "notes": null,
     "current_version": "V4.2.3.2",
     "previous_version": null,
     "release_date": "May 19, 2022",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250757",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423758",
     "last_changed_at": null,
-    "last_error": "No row matching '^HY144-D-SRC Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html (HTTP 200, title \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA\", starts \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA Business Business\")"
+    "last_error": null
   },
   {
     "id": 20,
@@ -642,16 +642,16 @@
     "model": "RPio222",
     "category": "I/O Racks",
     "checker_key": "yamaha:rivage_pm",
-    "source_url": "https://usa.yamaha.com/support/updates/rivage_pm_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/rivage-pm-firm.html",
     "notes": "Shares the RIVAGE PM console firmware version (confirmed via Yamaha's official compatibility chart).",
     "current_version": "V7.20",
     "previous_version": "V7.10",
     "release_date": "Sep 30, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250500",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423695",
     "last_changed_at": "2026-09-30T13:11:16.731054",
-    "last_error": "No row matching '^RIVAGE PM Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html (HTTP 200, title \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA\", starts \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA Business Business\")"
+    "last_error": null
   },
   {
     "id": 19,
@@ -659,16 +659,16 @@
     "model": "RPio622",
     "category": "I/O Racks",
     "checker_key": "yamaha:rivage_pm",
-    "source_url": "https://usa.yamaha.com/support/updates/rivage_pm_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/rivage-pm-firm.html",
     "notes": "Shares the RIVAGE PM console firmware version (confirmed via Yamaha's official compatibility chart).",
     "current_version": "V7.20",
     "previous_version": "V7.10",
     "release_date": "Sep 30, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250446",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423678",
     "last_changed_at": "2026-09-30T13:11:16.731027",
-    "last_error": "No row matching '^RIVAGE PM Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html (HTTP 200, title \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA\", starts \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA Business Business\")"
+    "last_error": null
   },
   {
     "id": 22,
@@ -676,16 +676,16 @@
     "model": "Rio1608-D2",
     "category": "I/O Racks",
     "checker_key": "yamaha:rio_d2",
-    "source_url": "https://usa.yamaha.com/products/proaudio/interfaces/r_series_adda_2/downloads.html",
+    "source_url": "https://usa.yamaha.com/support/updates/rio1608-d2-firm.html",
     "notes": null,
     "current_version": "V1.91",
     "previous_version": null,
     "release_date": "Sep 16, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250543",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423727",
     "last_changed_at": null,
-    "last_error": "No row matching '^Rio1608\\\\-D2 Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/interfaces/r_series_adda_2/downloads.html (HTTP 200, title \"R Series (AD/DA): 2nd-generation - Resources - Interfaces - Products - Audio - \u2026\", starts \"R Series (AD/DA): 2nd-generation - Resources - Interfaces - Products - Audio\")"
+    "last_error": null
   },
   {
     "id": 21,
@@ -693,16 +693,16 @@
     "model": "Rio3224-D2",
     "category": "I/O Racks",
     "checker_key": "yamaha:rio_d2",
-    "source_url": "https://usa.yamaha.com/products/proaudio/interfaces/r_series_adda_2/downloads.html",
+    "source_url": "https://usa.yamaha.com/support/updates/rio3224-d2-firm.html",
     "notes": null,
     "current_version": "V1.91",
     "previous_version": null,
     "release_date": "Sep 16, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250523",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423711",
     "last_changed_at": null,
-    "last_error": "No row matching '^Rio3224\\\\-D2 Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/interfaces/r_series_adda_2/downloads.html (HTTP 200, title \"R Series (AD/DA): 2nd-generation - Resources - Interfaces - Products - Audio - \u2026\", starts \"R Series (AD/DA): 2nd-generation - Resources - Interfaces - Products - Audio\")"
+    "last_error": null
   },
   {
     "id": 12,
@@ -710,16 +710,16 @@
     "model": "Rivage PM10",
     "category": "Consoles",
     "checker_key": "yamaha:rivage_pm",
-    "source_url": "https://usa.yamaha.com/support/updates/rivage_pm_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/rivage-pm-firm.html",
     "notes": null,
     "current_version": "V7.20",
     "previous_version": "V7.10",
     "release_date": "Sep 30, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250187",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423425",
     "last_changed_at": "2026-09-30T13:11:16.730692",
-    "last_error": "No row matching '^RIVAGE PM Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html (HTTP 200, title \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA\", starts \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA Business Business\")"
+    "last_error": null
   },
   {
     "id": 14,
@@ -727,16 +727,16 @@
     "model": "Rivage PM5",
     "category": "Consoles",
     "checker_key": "yamaha:rivage_pm",
-    "source_url": "https://usa.yamaha.com/support/updates/rivage_pm_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/rivage-pm-firm.html",
     "notes": null,
     "current_version": "V7.20",
     "previous_version": "V7.10",
     "release_date": "Sep 30, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250336",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423580",
     "last_changed_at": "2026-09-30T13:11:16.730885",
-    "last_error": "No row matching '^RIVAGE PM Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html (HTTP 200, title \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA\", starts \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA Business Business\")"
+    "last_error": null
   },
   {
     "id": 13,
@@ -744,16 +744,16 @@
     "model": "Rivage PM7",
     "category": "Consoles",
     "checker_key": "yamaha:rivage_pm",
-    "source_url": "https://usa.yamaha.com/support/updates/rivage_pm_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/rivage-pm-firm.html",
     "notes": null,
     "current_version": "V7.20",
     "previous_version": "V7.10",
     "release_date": "Sep 30, 2026",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250305",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423554",
     "last_changed_at": "2026-09-30T13:11:16.730843",
-    "last_error": "No row matching '^RIVAGE PM Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/mixers/rivage_pm/downloads.html (HTTP 200, title \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA\", starts \"RIVAGE PM Console Mixer Manuals and Software - Yamaha USA Business Business\")"
+    "last_error": null
   },
   {
     "id": 23,
@@ -761,16 +761,16 @@
     "model": "SWP1-8",
     "category": "Network & Cards",
     "checker_key": "yamaha:swp1",
-    "source_url": "https://usa.yamaha.com/support/updates/swp1_firm.html",
+    "source_url": "https://usa.yamaha.com/support/updates/swp1-firm.html",
     "notes": null,
     "current_version": "V2.01.11",
     "previous_version": null,
     "release_date": "Jan 17, 2024",
     "platforms": null,
-    "status": "error",
-    "last_checked_at": "2026-11-11T19:58:43.250733",
+    "status": "ok",
+    "last_checked_at": "2026-11-12T14:47:14.423743",
     "last_changed_at": null,
-    "last_error": "No row matching '^SWP1 Firmware\\\\b' on https://usa.yamaha.com/products/proaudio/network_switches/swp1/downloads.html (HTTP 200, title \"SWP1-8, SWP1-8MMF, SWP1-16MMF Switch Downloads - Yamaha USA\", starts \"SWP1-8, SWP1-8MMF, SWP1-16MMF Switch Downloads - Yamaha USA Business Business Audio All\")"
+    "last_error": null
   },
   {
     "id": 44,
@@ -785,7 +785,7 @@
     "release_date": "Oct 20, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-11T20:01:47.667057",
+    "last_checked_at": "2026-11-12T14:47:50.037640",
     "last_changed_at": "2026-10-20T17:43:37.772330",
     "last_error": null
   },
@@ -802,7 +802,7 @@
     "release_date": "Oct 20, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-11T20:01:47.667223",
+    "last_checked_at": "2026-11-12T14:47:50.037764",
     "last_changed_at": "2026-10-20T17:43:37.772462",
     "last_error": null
   },
@@ -819,7 +819,7 @@
     "release_date": "Oct 20, 2026",
     "platforms": null,
     "status": "update_detected",
-    "last_checked_at": "2026-11-11T20:01:47.667279",
+    "last_checked_at": "2026-11-12T14:47:50.037787",
     "last_changed_at": "2026-10-20T17:43:37.772505",
     "last_error": null
   },
@@ -836,7 +836,7 @@
     "release_date": "Aug 18, 2026",
     "platforms": null,
     "status": "ok",
-    "last_checked_at": "2026-11-11T20:01:47.667328",
+    "last_checked_at": "2026-11-12T14:47:50.037804",
     "last_changed_at": null,
     "last_error": null
   }
