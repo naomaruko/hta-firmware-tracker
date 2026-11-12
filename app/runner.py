@@ -7,6 +7,7 @@ from collections import defaultdict
 from sqlalchemy.orm import Session
 
 from app.checkers.base import CheckResult, newest_version, version_key, version_regression
+from app.dashboard_data import display_version
 from app.checkers.registry import module_for
 from app.models import CheckLog, Equipment
 
@@ -155,14 +156,14 @@ def _regression_message(item, result):
         for name, version in result.platforms.items():
             if known.get(name) and version_key(version) < version_key(known[name]):
                 return (
-                    f"{name} is now reported as {version}, older than the last known {known[name]} - "
+                    f"{name} is now reported as {display_version(version)}, older than the last known {display_version(known[name])} - "
                     "the site may have changed, so it was ignored rather than reported as an update"
                 )
         return None
     if version_regression(item.current_version, item.release_date, result.version, result.release_date):
         return (
-            f"Found {result.version} ({result.release_date or 'no date'}), older than the last known "
-            f"{item.current_version} ({item.release_date or 'no date'}) - the site may have changed, "
+            f"Found {display_version(result.version)} ({result.release_date or 'no date'}), older than the last known "
+            f"{display_version(item.current_version)} ({item.release_date or 'no date'}) - the site may have changed, "
             "so it was ignored rather than reported as an update"
         )
     return None

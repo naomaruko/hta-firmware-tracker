@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import jinja2  # noqa: E402
 
-from app.dashboard_data import build_dashboard_context  # noqa: E402
+from app.dashboard_data import build_dashboard_context, display_version  # noqa: E402
 from app.export import load_json  # noqa: E402
 from app.timeutil import to_pacific  # noqa: E402
 
@@ -63,6 +63,7 @@ def main():
         autoescape=jinja2.select_autoescape(["html"]),
     )
     env.filters["pacific"] = to_pacific
+    env.filters["ver"] = display_version
     # Cache-busting query param on every static asset URL, same purpose as
     # main.py's BUILD_VERSION - a fresh value per deploy so Vercel's CDN/the
     # browser can't keep serving a stale style.css or app.js after a push.

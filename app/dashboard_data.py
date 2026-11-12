@@ -49,6 +49,23 @@ def _model_rank(item):
 # most urgent thing to surface, ahead of even a pending update.
 _STATUS_PRIORITY = {"error": 0, "update_detected": 1, "ok": 2}
 
+def display_version(version):
+    """How a version is shown: always with a leading "V" ("V2242", "V6.2.14").
+    Manufacturers write them both ways - DiGiCo/Yamaha "V22", Shure/d&b/SSL
+    "1.6.18" - and the dashboard and Slack read better consistent. Display
+    only: the stored value stays exactly as the source publishes it, because
+    update detection compares stored strings run to run, and adding a "V" there
+    would make every item look newly changed."""
+    if version is None:
+        return version
+    text = str(version).strip()
+    if text[:1].isdigit():
+        return "V" + text
+    if text[:1] == "v" and text[1:2].isdigit():
+        return "V" + text[1:]
+    return text
+
+
 # Sub-category display order within a manufacturer's section. Categories not
 # listed here (or None, for manufacturers with no sub-grouping) sort last,
 # in the order encountered. "Rivage PM Series" is a family's own dedicated

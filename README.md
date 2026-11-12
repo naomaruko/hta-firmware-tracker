@@ -521,6 +521,15 @@ sending something elsewhere means a new webhook and a new secret value. Member
 IDs belong to a workspace. Whether the secrets are working is checked by the
 manual `slack_test` run (see above), not by reading them.
 
+**Versions always show with a leading "V".** Manufacturers write them both
+ways - DiGiCo and Yamaha publish "V22", Shure, d&b and SSL publish "1.6.18" -
+so `display_version` in `app/dashboard_data.py` (the `|ver` template filter,
+also used by the Slack messages and the "older version" failure text) shows
+every one as "V1.6.18", "V6.2.14". It's display only: the stored value stays
+exactly as the source publishes it, because update detection compares stored
+strings from run to run, and adding the "V" there would make every item look
+newly changed. A version already starting with "V" is left alone.
+
 ### Local automatic checking
 
 If you run this locally instead of relying on the deployed site, the

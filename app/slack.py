@@ -16,6 +16,7 @@ import re
 
 import requests
 
+from app.dashboard_data import display_version
 from app.families import FAMILY_NAMES, MANUFACTURER_LABELS
 
 logger = logging.getLogger("firmware_tracker.slack")
@@ -108,11 +109,11 @@ def _format_message(key, group):
         # Per-platform product (Dante Controller): versions can differ by
         # platform, so name each one rather than implying a single version.
         if len(group) == 1:
-            label, version = f"{label} ({group[0]['platform']})", group[0]["current_version"]
+            label, version = f"{label} ({group[0]['platform']})", display_version(group[0]["current_version"])
         else:
-            version = ", ".join(f"{c['platform']} {c['current_version']}" for c in group)
+            version = ", ".join(f"{c['platform']} {display_version(c['current_version'])}" for c in group)
     else:
-        version = group[0]["current_version"]
+        version = display_version(group[0]["current_version"])
     return f"<!channel> New firmware available for *{label}* → {version}\n\n<{DASHBOARD_URL}|View dashboard>"
 
 
@@ -229,7 +230,7 @@ def notify_errors(errors, webhook_url, alert_user_id=None):
 
 def _format_recovery_message(key, group):
     label = _family_label(key, group)
-    versions = sorted({c["current_version"] for c in group if c.get("current_version")})
+    versions = sorted({display_version(c["current_version"]) for c in group if c.get("current_version")})
     version = f" (now {', '.join(_escape(v) for v in versions)})" if versions else ""
     return f":white_check_mark: Firmware check recovered for *{label}*{version}\n\n<{DASHBOARD_URL}|View dashboard>"
 

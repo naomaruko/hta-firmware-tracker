@@ -31,9 +31,9 @@
   {% for p in plats %}
   <li class="platform-item">
     <span class="platform-name">{{ p.name }}</span>
-    <span class="platform-version">{{ p.current_version }}</span>
+    <span class="platform-version">{{ p.current_version|ver }}</span>
     {% if p.release_date %}<span class="platform-date">{{ p.release_date }}</span>{% endif %}
-    {% if p.update_pending %}<span class="badge badge-warning platform-badge">Update</span>{% if p.previous_version %}<span class="platform-prev">was {{ p.previous_version }}</span>{% endif %}{% endif %}
+    {% if p.update_pending %}<span class="badge badge-warning platform-badge">Update</span>{% if p.previous_version %}<span class="platform-prev">was {{ p.previous_version|ver }}</span>{% endif %}{% endif %}
   </li>
   {% endfor %}
 </ul>
@@ -196,13 +196,13 @@
           {% else %}<span class="badge badge-neutral">Not checked yet</span>
           {% endif %}
         </td>
-        <td class="version-cell">{{ item.current_version or '—' }}{% if plats %}<span class="platform-hint">{{ plats|length }} platforms</span>{% endif %}</td>
+        <td class="version-cell">{{ item.current_version|ver or '—' }}{% if plats %}<span class="platform-hint">{{ plats|length }} platforms</span>{% endif %}</td>
         <td class="muted release-date-cell">
           {% if has_release_dates %}{{ item.release_date or '—' }}
           {% else %}{{ item.last_changed_at|pacific("%b %-d, %Y") if item.last_changed_at else '—' }}
           {% endif %}
         </td>
-        <td class="version-cell muted">{{ item.previous_version or '—' }}</td>
+        <td class="version-cell muted">{{ item.previous_version|ver or '—' }}</td>
         <td class="muted time-cell" data-utc="{{ item.last_checked_at.isoformat() if item.last_checked_at else '' }}"><span class="time-text">{{ item.last_checked_at|pacific if item.last_checked_at else '—' }}</span></td>
         <td class="source-col">{{ source_link(item) }}</td>
       </tr>
@@ -256,7 +256,7 @@
           {% endif %}
         </div>
         <div class="card-summary-bottom">
-          <span class="card-version">{{ item.current_version or '—' }}{% if plats %}<span class="platform-hint">{{ plats|length }} platforms</span>{% endif %}</span>
+          <span class="card-version">{{ item.current_version|ver or '—' }}{% if plats %}<span class="platform-hint">{{ plats|length }} platforms</span>{% endif %}</span>
           <svg class="card-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -276,7 +276,7 @@
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Previous</span>
-          <span class="card-detail-value">{{ item.previous_version or '—' }}</span>
+          <span class="card-detail-value">{{ item.previous_version|ver or '—' }}</span>
         </div>
         <div class="card-detail-row">
           <span class="card-detail-label">Last checked</span>

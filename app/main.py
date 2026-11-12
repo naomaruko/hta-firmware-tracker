@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from app.dashboard_data import build_dashboard_context
+from app.dashboard_data import build_dashboard_context, display_version
 from app.database import Base, engine, get_db, run_light_migrations
 from app.models import Equipment
 from app.runner import check_all, check_equipment
@@ -38,6 +38,7 @@ templates = Jinja2Templates(directory=str(APP_DIR / "templates"))
 BUILD_VERSION = str(int(time.time()))
 templates.env.globals["v"] = BUILD_VERSION
 templates.env.filters["pacific"] = to_pacific
+templates.env.filters["ver"] = display_version
 
 
 @app.on_event("startup")
