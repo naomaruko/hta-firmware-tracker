@@ -436,7 +436,7 @@ shows "Check failed" and never reaches Slack. This was added after the
 Allen & Heath dLive check failed once with "Version pattern not found on
 page" and was fine the next day. A checker that really is broken still
 fails after the retries (costing about a minute extra per run), and the
-retries are logged in the Actions run.
+each retry is logged in the Actions run together with the error that caused it ("... 12 item(s) failed attempt 1 of 3: <reason>"), so a check that needs a retry every day is visible even though it never alerts.
 
 **Check-failure alerts (a separate channel).** When an item's check *newly*
 fails, a message goes out ("⚠️ Firmware check failed for *Yamaha Rivage PM

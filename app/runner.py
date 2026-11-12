@@ -204,6 +204,14 @@ def _check_module(mod, items):
                     got[item_id] = CheckResult(None, False, why)
         results.update(got)
         pending = [i for i in pending if not (got.get(i.id) and got[i.id].success)]
+        if pending:
+            # Say *why*: a retry that later succeeds leaves no trace otherwise,
+            # and a check that needs a retry every run is worth knowing about.
+            reasons = sorted({(got[i.id].error or "no error text")[:200] for i in pending if got.get(i.id)})
+            logger.info(
+                "%s: %d item(s) failed attempt %d of %d: %s",
+                mod.__name__, len(pending), attempt + 1, 1 + RETRY_ATTEMPTS, " | ".join(reasons) or "no result",
+            )
         if not pending:
             break
     return results, crash
