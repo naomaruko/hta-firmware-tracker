@@ -95,7 +95,7 @@ checkers — see below.)
 | DiGiCo | ✅ Scraped | `support.digico.biz`'s Zendesk help-center JSON API. Console software (Quantum, SD) is read per model from the article's download buttons, not its title - see below |
 | Yamaha | ✅ Scraped (headless) | Each product's Resources page on `usa.yamaha.com`. The firmware list is filled in by a script from Yamaha's search service (`yamaha.search.zetacx.net`), which refuses plain HTTP, so the checker opens the page in the headless browser, copies the page's own firmware search request and replays it for up to 200 entries - each with a genuine "Last Update" date, not just a version. See "When a manufacturer's site changes" below |
 | Solid State Logic | ✅ Scraped | `support.solidstatelogic.com`'s Zendesk API too; tracked via SOLSA (versions 1:1 with SSL Live console software) and the Network I/O firmware bundle |
-| Allen & Heath | ✅ Scraped (headless) | Version: `www.allen-heath.com` returns HTTP 403 to plain requests (bot protection) — works fine in a real headless browser (with analytics/consent scripts blocked and no wait for the network to go quiet - see below). Release date: a separate evergreen article on `support.allen-heath.com` (a Zendesk help centre, read via its public JSON API — even a real browser can't get past that subdomain's own Cloudflare challenge page), month/year only, no day |
+| Allen & Heath | ✅ Scraped (headless) | Version: `www.allen-heath.com` returns HTTP 403 to plain requests (bot protection) — works fine in a real headless browser (with analytics/consent scripts blocked and no wait for the network to go quiet - see below). If the page is blocked (Cloudflare "Just a moment..." challenge, intermittent from GitHub's servers) the version is read from the release-notes article below instead. Release date: a separate evergreen article on `support.allen-heath.com` (a Zendesk help centre, read via its public JSON API — even a real browser can't get past that subdomain's own Cloudflare challenge page), month/year only, no day |
 | Dante/Audinate | ✅ Scraped (headless) | The version table is inside a click-to-expand accordion, so it's not in the page until JS runs. Dante Controller is published as separate Windows / macOS Apple Silicon / macOS Intel builds with their own versions, so all three are tracked (see below) |
 | d&b audiotechnik | ✅ Scraped (headless) | Their Download Center is a JS-driven search box behind a cookie-consent overlay; D40/D90 share one firmware release, DN1 Switch has its own |
 | Shure | ✅ Scraped (headless) | Firmware versions come from `shure.com`'s searchable software/firmware archive listing |
@@ -193,6 +193,20 @@ moment...'") after a burst of requests, so bot protection is the likely
 culprit - which a code change can't beat, only report. The error message now
 includes the page's HTTP status and title, so the next failure says which it
 was.
+
+**Allen & Heath (2026-11-18): it was bot protection, and it comes and goes.**
+The page then returned HTTP 200 with the title "Just a moment..." ("Performing
+security verification") to GitHub's servers on the 11th, 14th and 17th - and
+loaded normally on the other six days in between - so the retries (30 seconds
+apart) can't outlast it. The checker doesn't try to get past that
+challenge. Instead, when the product page can't be read, it takes the version
+from the same help-centre release-notes article that already supplies the release date
+(`_fetch_release_notes` in `app/checkers/allenheath.py`; that public API isn't
+behind the challenge). The article's title and its first "Version X.YY" entry
+must agree, or the fallback refuses to answer; and the usual "never report an
+older version" guard still applies. If both sources fail, the item errors as
+before. The product page stays the primary source, so a day where it loads
+is unchanged.
 
 ### Never report an older version
 

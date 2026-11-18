@@ -21,6 +21,12 @@ January 2026 / [...] / Previous Version Release Notes / Version 2.11 -
 ... July 2025 / ...", so taking the *first* "Version X.YY - ... Month
 YYYY" match is what gets the current one, not a stale older entry. Only a
 month and year is ever stated, never a day.
+
+The product page has the same kind of protection, but only intermittently
+for GitHub's servers (it passed on 6 of the 9 daily runs from 2026-11-09 to
+-17). When it doesn't pass, the version is read from that same release-notes
+article instead (see check_all) - no attempt is made to get around the
+challenge. If both sources fail, the item errors as before.
 """
 import re
 
@@ -39,6 +45,8 @@ RELEASE_NOTES_SECTION_URL = (
     "42052149659153/articles.json"
 )
 RELEASE_DATE_RE = re.compile(r"Version\s+[\d.]+\s*-[^.]*\.\s*([A-Za-z]+ \d{4})")
+NOTES_VERSION_RE = re.compile(r"Version\s+(\d+(?:\.\d+)+)\s*-")
+NOTES_TITLE_VERSION_RE = re.compile(r"Version\s+(\d+(?:\.\d+)+)")
 
 
 def _fetch_dlive_version():
@@ -73,7 +81,10 @@ def _fetch_dlive_version():
     return f"V{m.group(1)}"
 
 
-def _fetch_dlive_release_date():
+def _fetch_release_notes():
+    """(version, release_date, article_url) from the help-centre release-notes
+    article. Raises ValueError rather than guess if the article doesn't read
+    the way it's expected to."""
     from bs4 import BeautifulSoup
 
     r = http_get(RELEASE_NOTES_SECTION_URL, params={"sort_by": "created_at", "sort_order": "desc", "per_page": 1})
@@ -86,22 +97,51 @@ def _fetch_dlive_release_date():
     m = RELEASE_DATE_RE.search(text)
     if not m:
         raise ValueError(f"Release-date pattern not found in article {article['id']}")
-    return abbreviate_month(m.group(1)), article["html_url"]
+    version_m = NOTES_VERSION_RE.search(text)
+    if not version_m:
+        raise ValueError(f"Version not found in article {article['id']}")
+    # The title ("... - Firmware Version 2.12") is a second, independent
+    # statement of the current version; if the two ever disagree the article
+    # has been restructured and neither can be trusted.
+    title_m = NOTES_TITLE_VERSION_RE.search(article.get("title", ""))
+    if title_m and title_m.group(1) != version_m.group(1):
+        raise ValueError(
+            f"Release-notes article title says {title_m.group(1)} but its text starts with {version_m.group(1)}"
+        )
+    return f"V{version_m.group(1)}", abbreviate_month(m.group(1)), article["html_url"]
 
 
 def check_all(equipment_items):
+    release_date = None
     try:
         version = _fetch_dlive_version()
     except Exception as e:  # noqa: BLE001
-        result = CheckResult(None, False, f"Fetch failed: {e}", source_url=DLIVE_URL)
-        return {item.id: result for item in equipment_items}
+        # The product page is behind Cloudflare bot protection, which
+        # intermittently serves GitHub's servers a "Just a moment..."
+        # challenge instead of the page (seen 2026-11-11, -14 and -17). Don't
+        # try to get past it - Allen & Heath publish the same version in
+        # their help-centre release notes, whose public API isn't behind it,
+        # so read it from there instead.
+        page_error = str(e)
+        try:
+            version, release_date, _ = _fetch_release_notes()
+        except Exception as e2:  # noqa: BLE001
+            result = CheckResult(
+                None, False,
+                f"Fetch failed: {page_error} | release-notes fallback also failed: {e2}",
+                source_url=DLIVE_URL,
+            )
+            return {item.id: result for item in equipment_items}
+        return {
+            item.id: CheckResult(version, True, source_url=DLIVE_URL, release_date=release_date)
+            for item in equipment_items
+        }
 
     # The release date is a nice-to-have on top of a working version check,
     # not a requirement - a change to Allen & Heath's help centre shouldn't
     # turn a perfectly good version check into a failed one.
-    release_date = None
     try:
-        release_date, _ = _fetch_dlive_release_date()
+        _, release_date, _ = _fetch_release_notes()
     except Exception:  # noqa: BLE001
         pass
 
